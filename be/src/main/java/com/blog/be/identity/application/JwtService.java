@@ -1,23 +1,35 @@
 package com.blog.be.identity.application;
-
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.JWSAlgorithm;
-import com.nimbusds.jose.JWSHeader;
-import com.nimbusds.jose.JWSSigner;
-import com.nimbusds.jose.crypto.MACSigner;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
 
+@RequiredArgsConstructor
 @Service
-public class TokenService {
+public class JwtService {
+
+    private final JwtEncoder jwtEncoder;
+
+    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+    private  String issuerUri;
+
+    @Value("${identity.audience}")
+    private String expectedAudience;
+
+    @Value("${identity.expire-at-minute}")
+    private int expireAtMinute;
+    @Value("${identity.expire-rt-day}")
+    private int expireRtDay;
+
     public Jwt getCurrentJwt() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -54,6 +66,7 @@ public class TokenService {
         }
         return null;
     }
+
     public boolean hasRequiredScopes(List<String> requiredScopes) {
         Jwt jwt = getCurrentJwt();
         if (jwt == null) {
@@ -76,15 +89,42 @@ public class TokenService {
 
         return new HashSet<>(tokenScopes).containsAll(requiredScopes);
     }
-    public String signToken(String username) throws JOSEException {
-        JWSHeader header = new JWSHeader(JWSAlgorithm.HS256);
+    public String generateAccessToken(Long userId, List<GrantedAuthority> roles) {
+        Instant now = Instant.now();
 
-        SignedJWT signedJWT = new SignedJWT(header, claimsSet);
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer(issuerUri)
+                .subject(String.valueOf(userId))
+                .issuedAt(now)
+                .expiresAt(now.plus(expireAtMinute, ChronoUnit.MINUTES))
+                .claim("userId", userId)
+                .claim("roles", roles)
+                .claim("type", "access_token") // Đánh dấu loại token
+                .build();
 
-        JWSSigner signer = new MACSigner(SECRET_KEY.getBytes());
-        signedJWT.sign(signer);
+        return signToken(claims);
+    }
+    public String generateRefreshToken(Long userId) {
+        Instant now = Instant.now();
 
-        // 5. Chuyển đổi thành chuỗi String để trả về cho Client
-        return signedJWT.serialize();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer(issuerUri)
+                .subject(String.valueOf(userId))
+                .issuedAt(now)
+                .expiresAt(now.plus(expireRtDay, ChronoUnit.DAYS))
+                .claim("userId", userId)
+                .claim("type", "refresh_token")
+                .build();
+
+        return signToken(claims);
+    }
+    private String signToken(JwtClaimsSet claims) {
+        // Cố định thuật toán ký là HS256
+        JwsHeader jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        // Tiến hành ký
+        return this.jwtEncoder
+                .encode(JwtEncoderParameters.from(jwsHeader, claims))
+                .getTokenValue();
     }
 }
