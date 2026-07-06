@@ -1,7 +1,6 @@
-package com.blog.be.interaction.domain.entity;
+package com.blog.be.identity.domain.entity;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.be.identity.domain.enums.UserRoleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,30 +10,38 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
-public class Comment {
+public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String content;
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    private User creator;
-    @ManyToOne
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "reply_id")
-    private List<Comment> reply;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id")
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private UserRoleStatus status;
+
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime modifiedDate;
+
+    public Role getRole() {
+        return role;
+    }
+
+    public UserRoleStatus getStatus() {
+        return status;
+    }
 }
