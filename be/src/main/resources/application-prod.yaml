@@ -1,0 +1,16 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: ${PROD_DB_URL:jdbc:postgresql://prod-db-server:5432/blog_prod}
+    username: ${PROD_DB_USERNAME:prod_user}
+    password: ${PROD_DB_PASSWORD:prod_password}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
