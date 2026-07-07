@@ -1,4 +1,4 @@
-package com.blog.be.common.domain.enums;
+package com.blog.be.notification.domain.enums;
 
 public enum ImageStatus {
     ACTIVE,

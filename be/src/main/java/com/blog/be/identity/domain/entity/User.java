@@ -1,12 +1,13 @@
 package com.blog.be.identity.domain.entity;
 
-import com.blog.be.common.domain.entity.Image;
+import com.blog.be.notification.domain.entity.Image;
 import com.blog.be.content.domain.entity.Blog;
 import com.blog.be.interaction.domain.entity.Bookmark;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.blog.be.identity.domain.enums.UserStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.stream.Collectors;
 @Builder
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@Setter
 public class User implements UserDetails {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,7 +43,7 @@ public class User implements UserDetails {
     private String phone;
     @Column(columnDefinition = "TEXT")
     private String bio;
-    private LocalDateTime birthDate;
+    private LocalDate birthDate;
     @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "avatar_id")
     private Image avatar;
@@ -50,22 +53,13 @@ public class User implements UserDetails {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "bookmark_id")
     private List<Bookmark>  bookmarks;
-    private Boolean enabled;
+    private Boolean enabled = false;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate
     private LocalDateTime modifiedDate;
-
-    public Image getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(Image avatar) {
-        this.avatar = avatar;
-    }
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -104,5 +98,9 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public void active() {
+        this.enabled = true;
     }
 }

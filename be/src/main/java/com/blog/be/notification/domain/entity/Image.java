@@ -1,15 +1,14 @@
-package com.blog.be.common.domain.entity;
+package com.blog.be.notification.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.blog.be.common.domain.enums.ImageStatus;
+import com.blog.be.notification.domain.enums.ImageStatus;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.blog.be.notification.application;
+package com.blog.be.notification.application.service;
 
 public interface MailService {
     void sendMail(String to, String subject, String body);

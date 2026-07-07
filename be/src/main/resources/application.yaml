@@ -8,7 +8,25 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080
-
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_USERNAME}
+    password: ${GMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+  task:
+    execution:
+      pool:
+        core-size: 5           # Số lượng thread tối thiểu
+        max-size: 20           # Số lượng thread tối đa
+        queue-capacity: 100    # Hàng đợi chờ xử lý
+      thread-name-prefix: "MyAsync-Task-" # Tiền tố để dễ debug
 identity:
   expire-at-minute: 30
   expire-rt-day: 7
