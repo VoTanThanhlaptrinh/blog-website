@@ -18,18 +18,30 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import com.blog.be.identity.domain.exception.InvalidTokenException;
 import com.blog.be.identity.domain.exception.UserNotFoundException;
+import com.blog.be.identity.api.dto.ForgotPasswordRequest;
+import com.blog.be.identity.api.dto.ResetPasswordRequest;
 import com.blog.be.identity.api.dto.UpdateProfileRequest;
 import com.blog.be.identity.api.dto.UserProfileResponse;
+import com.blog.be.identity.api.dto.VerifyOtpRequest;
+import com.blog.be.identity.domain.event.ForgotPasswordEvent;
 import com.blog.be.identity.domain.exception.AccountAlreadyActiveException;
+import com.blog.be.identity.domain.exception.ExpiredOtpException;
 import com.blog.be.identity.domain.exception.IncorrectPasswordException;
+import com.blog.be.identity.domain.exception.InvalidOtpException;
+import com.blog.be.identity.domain.exception.InvalidResetTokenException;
+import com.blog.be.identity.domain.exception.PasswordMismatchException;
+import org.springframework.data.redis.core.RedisTemplate;
+
+import java.security.Principal;
+import java.util.concurrent.TimeUnit;
+import java.util.UUID;
+import java.util.Random;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +58,14 @@ public class AuthServiceImpl implements AuthService {
     @Value("${app.cookie.same-site}")
     private String sameSite;
     private final ApplicationEventPublisher publisher;
+    private final RedisTemplate<String, String> redisTemplate;
+    
+    private String generateOtp() {
+        Random random = new Random();
+        int otp = 100000 + random.nextInt(900000);
+        return String.valueOf(otp);
+    }
+    
     @Override
     public AuthResponse login(AccountLoginRequest loginRequest, HttpServletResponse response) {
         Optional<User> user = userRepository.findUserByEmail(loginRequest.email());
@@ -84,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
                 .password(bcryptEncoder.encode(request.password())).build();
         userRepository.saveAndFlush(user);
         String token = jwtService.generateActiveToken(user.getId());
-        UserRegistrationEvent event = new UserRegistrationEvent(request.email(), token);
+        UserRegistrationEvent event = new UserRegistrationEvent(this, request.email(), token);
         publisher.publishEvent(event);
     }
 
@@ -122,8 +142,71 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public void forgotPassword(ChangePasswordRequest request) {
+    public void forgotPassword(ForgotPasswordRequest request) {
+        User user = userRepository.findUserByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
+        
+        String otp = generateOtp();
+        String key = "forgot_password_otp:" + request.getEmail();
+        
+        // Save OTP to Redis with 2 minutes TTL
+        redisTemplate.opsForValue().set(key, otp, 2, TimeUnit.MINUTES);
+        
+        // Publish event to send email
+        publisher.publishEvent(new ForgotPasswordEvent(this, request.getEmail(), otp));
+    }
 
+    @Override
+    public String verifyOtp(VerifyOtpRequest request) {
+        String key = "forgot_password_otp:" + request.getEmail();
+        String savedOtp = redisTemplate.opsForValue().get(key);
+        
+        if (savedOtp == null) {
+            throw new ExpiredOtpException("Mã OTP đã hết hạn hoặc không tồn tại!");
+        }
+        
+        if (!savedOtp.equals(request.getOtp())) {
+            throw new InvalidOtpException("Mã OTP không chính xác!");
+        }
+        
+        User user = userRepository.findUserByEmail(request.getEmail())
+                .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
+        
+        // Generate UUID token
+        String uuid = UUID.randomUUID().toString();
+        String tokenKey = "forgot_password_token:" + uuid;
+        
+        // Save to Redis (UUID -> userId) with 15 minutes TTL
+        redisTemplate.opsForValue().set(tokenKey, String.valueOf(user.getId()), 15, TimeUnit.MINUTES);
+        
+        // Delete OTP from Redis
+        redisTemplate.delete(key);
+        
+        return uuid;
+    }
+
+    @Override
+    public void resetPassword(ResetPasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new PasswordMismatchException("Mật khẩu xác nhận không khớp!");
+        }
+        
+        String tokenKey = "forgot_password_token:" + request.getToken();
+        String userIdStr = redisTemplate.opsForValue().get(tokenKey);
+        
+        if (userIdStr == null) {
+            throw new InvalidResetTokenException("Token không hợp lệ hoặc đã hết hạn!");
+        }
+        
+        Long userId = Long.valueOf(userIdStr);
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
+                
+        user.setPassword(bcryptEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+        
+        // Delete token from Redis
+        redisTemplate.delete(tokenKey);
     }
 
     @Override
@@ -151,5 +234,29 @@ public class AuthServiceImpl implements AuthService {
         //  kích hoạt tài khoản
         user.active();
         userRepository.save(user);
+    }
+
+    @Override
+    public UserProfileResponse profile(Principal principal) {
+        long userId = Long.parseLong(principal.getName());
+        User user = userRepository.findUserById(userId).orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .bio(user.getBio())
+                .birthDate(user.getBirthDate())
+                .build();
+    }
+
+    @Override
+    public AuthResponse refreshToken(String token) {
+        if(token == null || !jwtService.isTokenValid(token)){
+            return new AuthResponse();
+        }
+        Long  userId = jwtService.getClaim(token, "sub", Long.class);
+        User user = userRepository.findUserById(userId).orElseThrow(() -> new UserNotFoundException("Tai khoan khong tim thay"));
+        return AuthResponse.builder().accessToken(jwtService
+                .generateAccessToken(userId, (List<GrantedAuthority>) user.getAuthorities())).build();
     }
 }

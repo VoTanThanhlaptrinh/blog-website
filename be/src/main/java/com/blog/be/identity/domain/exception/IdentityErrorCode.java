@@ -7,7 +7,11 @@ public enum IdentityErrorCode implements ErrorCode {
     INVALID_TOKEN(401, "Invalid or expired token"),
     USER_NOT_FOUND(404, "User not found"),
     ACCOUNT_ALREADY_ACTIVE(400, "Account is already active"),
-    INCORRECT_OLD_PASSWORD(400, "Incorrect old password");
+    INCORRECT_OLD_PASSWORD(400, "Incorrect old password"),
+    INVALID_OTP(400, "Invalid OTP"),
+    EXPIRED_OTP(400, "OTP has expired or does not exist"),
+    INVALID_RESET_TOKEN(400, "Invalid or expired reset token"),
+    PASSWORD_MISMATCH(400, "Passwords do not match");
 
     private final int code;
     private final String message;

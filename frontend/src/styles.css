@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+/* You can add global styles to this file, and also import other style files */
+
+/* ===== Bảng màu Anthropic: nền kem ấm + điểm nhấn đất nung (clay) ===== */
+@theme {
+  --color-cream: #f0eee6;
+
+  --color-clay-50: #faf6f3;
+  --color-clay-100: #f4e8e1;
+  --color-clay-200: #e9d0c2;
+  --color-clay-300: #dab29b;
+  --color-clay-400: #d29677;
+  --color-clay-500: #cc785c;
+  --color-clay-600: #bd5f43;
+  --color-clay-700: #9d4c36;
+  --color-clay-800: #814030;
+  --color-clay-900: #6b372b;
+  --color-clay-950: #3a1b15;
+}
+
+/* ===== Keyframes ===== */
+@keyframes blob {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1.1);
+  }
+  66% {
+    transform: translate(-25px, 25px) scale(0.95);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes word-cycle {
+  0%,
+  26% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  33%,
+  93% {
+    opacity: 0;
+    transform: translateY(-12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Utilities ===== */
+.animate-blob {
+  animation: blob 14s ease-in-out infinite;
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-gradient-x {
+  background-size: 200% 200%;
+  animation: gradient-x 6s ease infinite;
+}
+
+.animate-word {
+  background-size: 200% 200%;
+  animation: fade-up 0.6s ease, gradient-x 6s ease infinite;
+}
+
+.animation-delay-2000 {
+  animation-delay: 2s;
+}
+
+.animation-delay-4000 {
+  animation-delay: 4s;
+}
+
+/* Reveal: animation CSS thuần, tự kết thúc ở trạng thái hiện (fill-mode both) — không phụ thuộc JS */
+.reveal {
+  animation: fade-up 0.7s ease both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-blob,
+  .animate-float,
+  .animate-gradient-x {
+    animation: none;
+  }
+  .reveal {
+    animation: none;
+  }
+}

@@ -79,4 +79,42 @@ public class StringHelper {
                 "</body>\n" +
                 "</html>";
     }
+
+    public static String mailBodyForForgotPassword(String email, String otp) {
+        return "<!DOCTYPE html>\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <meta charset=\"UTF-8\">\n" +
+                "    <title>Khôi phục mật khẩu</title>\n" +
+                "    <style>\n" +
+                "        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }\n" +
+                "        .container { max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); overflow: hidden; }\n" +
+                "        .header { background-color: #dc3545; color: #ffffff; text-align: center; padding: 20px; }\n" +
+                "        .content { padding: 30px; color: #333333; line-height: 1.6; }\n" +
+                "        .otp-box { display: inline-block; background-color: #f8f9fa; border: 2px dashed #dc3545; color: #dc3545; font-size: 24px; font-weight: bold; padding: 15px 30px; letter-spacing: 5px; margin: 20px 0; border-radius: 5px; }\n" +
+                "        .footer { background-color: #f4f4f4; color: #777777; text-align: center; padding: 15px; font-size: 12px; }\n" +
+                "    </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "    <div class=\"container\">\n" +
+                "        <div class=\"header\">\n" +
+                "            <h2>Yêu cầu khôi phục mật khẩu</h2>\n" +
+                "        </div>\n" +
+                "        <div class=\"content\">\n" +
+                "            <p>Xin chào <strong>" + email + "</strong>,</p>\n" +
+                "            <p>Chúng tôi nhận được yêu cầu khôi phục mật khẩu cho tài khoản của bạn. Vui lòng sử dụng mã xác thực (OTP) dưới đây để tiếp tục:</p>\n" +
+                "            <div style=\"text-align: center;\">\n" +
+                "                <div class=\"otp-box\">" + otp + "</div>\n" +
+                "            </div>\n" +
+                "            <p><em>*Lưu ý: Mã xác thực này chỉ có hiệu lực trong vòng <strong>2 phút</strong>. Tuyệt đối không chia sẻ mã này cho bất kỳ ai.</em></p>\n" +
+                "            <p>Nếu bạn không yêu cầu khôi phục mật khẩu, vui lòng bỏ qua email này. Tài khoản của bạn vẫn an toàn.</p>\n" +
+                "            <p>Trân trọng,<br><strong>Đội ngũ phát triển</strong></p>\n" +
+                "        </div>\n" +
+                "        <div class=\"footer\">\n" +
+                "            <p>Email này được gửi tự động, vui lòng không trả lời.</p>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</body>\n" +
+                "</html>";
+    }
 }
