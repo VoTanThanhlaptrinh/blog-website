@@ -21,6 +21,8 @@ spring:
       password:
       database: 0
 app:
+  frontend:
+    url: https://my-frontend.com
   cookie:
     secure: true
     same-site: None

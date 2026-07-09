@@ -33,10 +33,12 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>(res, "Dang nhap thanh cong", 200));
     }
 
-    @PostMapping("/login/social")
-    public ResponseEntity<AuthResponse> socialLogin(@RequestBody SocialLoginRequest request) {
-        // TODO: Implement social login logic (Google, Facebook)
-        return ResponseEntity.ok(new AuthResponse());
+    @GetMapping("/login/social")
+    public ResponseEntity<ApiResponse<java.util.Map<String, String>>> getSocialLoginUrls() {
+        java.util.Map<String, String> urls = new java.util.HashMap<>();
+        urls.put("google", "/oauth2/authorization/google");
+        urls.put("facebook", "/oauth2/authorization/facebook");
+        return ResponseEntity.ok(new ApiResponse<>(urls, "Danh sách URL đăng nhập mạng xã hội", 200));
     }
 
     @PostMapping("/register")
