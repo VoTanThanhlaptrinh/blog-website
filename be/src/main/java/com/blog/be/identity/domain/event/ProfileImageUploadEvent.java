@@ -1,0 +1,20 @@
+package com.blog.be.identity.domain.event;
+
+import com.blog.be.storage.api.dto.UploadPostResponse;
+import com.blog.be.storage.api.dto.UploadUrlRequest;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.context.ApplicationEvent;
+
+@Getter
+public class ProfileImageUploadEvent extends ApplicationEvent {
+    private final UploadUrlRequest request;
+    
+    @Setter
+    private UploadPostResponse response;
+
+    public ProfileImageUploadEvent(Object source, UploadUrlRequest request) {
+        super(source);
+        this.request = request;
+    }
+}

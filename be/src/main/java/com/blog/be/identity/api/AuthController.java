@@ -3,11 +3,15 @@ package com.blog.be.identity.api;
 import com.blog.be.notification.api.ApiResponse;
 import com.blog.be.identity.api.dto.*;
 import com.blog.be.identity.application.AuthService;
+import com.blog.be.identity.domain.event.ProfileImageUploadEvent;
+import com.blog.be.storage.api.dto.UploadUrlRequest;
+import com.blog.be.storage.api.dto.UploadPostResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,6 +26,7 @@ import java.util.Objects;
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
+    private final ApplicationEventPublisher applicationEventPublisher;
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AccountLoginRequest request
             , BindingResult bindingResult, HttpServletResponse response) {
@@ -33,10 +38,12 @@ public class AuthController {
         return ResponseEntity.ok(new ApiResponse<>(res, "Dang nhap thanh cong", 200));
     }
 
-    @PostMapping("/login/social")
-    public ResponseEntity<AuthResponse> socialLogin(@RequestBody SocialLoginRequest request) {
-        // TODO: Implement social login logic (Google, Facebook)
-        return ResponseEntity.ok(new AuthResponse());
+    @GetMapping("/login/social")
+    public ResponseEntity<ApiResponse<java.util.Map<String, String>>> getSocialLoginUrls() {
+        java.util.Map<String, String> urls = new java.util.HashMap<>();
+        urls.put("google", "/oauth2/authorization/google");
+        urls.put("facebook", "/oauth2/authorization/facebook");
+        return ResponseEntity.ok(new ApiResponse<>(urls, "Danh sách URL đăng nhập mạng xã hội", 200));
     }
 
     @PostMapping("/register")
@@ -66,6 +73,20 @@ public class AuthController {
         Long userId = Long.valueOf(principal.getName());
         UserProfileResponse res = authService.updateProfile(userId, request);
         return ResponseEntity.ok(new  ApiResponse<>(res, "Cập nhật thành công", 200));
+    }
+
+    @PostMapping("/profile/avatar/upload-url")
+    public ResponseEntity<ApiResponse<UploadPostResponse>> getAvatarUploadUrl(@AuthenticationPrincipal Principal principal, @Valid @RequestBody UploadUrlRequest request
+            , BindingResult bindingResult) {
+        if(bindingResult.hasErrors()){
+            return ResponseEntity.badRequest().body(new ApiResponse<>(null
+                    , Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), 400));
+        }
+        
+        ProfileImageUploadEvent event = new ProfileImageUploadEvent(this, request);
+        applicationEventPublisher.publishEvent(event);
+        
+        return ResponseEntity.ok(new ApiResponse<>(event.getResponse(), "Lấy upload url thành công", 200));
     }
 
     @PostMapping("/forgot-password")

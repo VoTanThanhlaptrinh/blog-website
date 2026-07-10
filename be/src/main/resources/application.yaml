@@ -5,6 +5,16 @@ spring:
     active: dev
   security:
     oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: email, profile
+          facebook:
+            client-id: ${FACEBOOK_CLIENT_ID}
+            client-secret: ${FACEBOOK_CLIENT_SECRET}
+            scope: email, public_profile
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080
@@ -39,3 +49,21 @@ cloudflare:
     access-key: ${CLOUDFLARE_R2_ACCESS_KEY}
     secret-key: ${CLOUDFLARE_R2_SECRET_KEY}
     bucket: ${CLOUDFLARE_R2_BUCKET}
+    public-url: ${CLOUDFLARE_R2_PUBLIC_URL}
+
+app:
+  storage:
+    identity:
+      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
+      temp-folder-prefix: "identity/temp/"
+      region: "auto"
+      service: "s3"
+      algorithm: "AWS4-HMAC-SHA256"
+      max-file-size-bytes: 5242880
+    blog:
+      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
+      temp-folder-prefix: "blog/temp/"
+      region: "auto"
+      service: "s3"
+      algorithm: "AWS4-HMAC-SHA256"
+      max-file-size-bytes: 5242880

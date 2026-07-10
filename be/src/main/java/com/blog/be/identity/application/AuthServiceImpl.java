@@ -26,6 +26,8 @@ import com.blog.be.identity.api.dto.UpdateProfileRequest;
 import com.blog.be.identity.api.dto.UserProfileResponse;
 import com.blog.be.identity.api.dto.VerifyOtpRequest;
 import com.blog.be.identity.domain.event.ForgotPasswordEvent;
+import com.blog.be.identity.domain.event.ProfileImageConfirmEvent;
+import com.blog.be.storage.domain.entity.Image;
 import com.blog.be.identity.domain.exception.AccountAlreadyActiveException;
 import com.blog.be.identity.domain.exception.ExpiredOtpException;
 import com.blog.be.identity.domain.exception.IncorrectPasswordException;
@@ -122,6 +124,7 @@ public class AuthServiceImpl implements AuthService {
     }
     
     @Override
+    @Transactional
     public UserProfileResponse updateProfile(Long userId, UpdateProfileRequest request) {
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
@@ -130,7 +133,20 @@ public class AuthServiceImpl implements AuthService {
         user.setBio(request.getBio());
         user.setBirthDate(request.getBirthDate());
         
-        userRepository.save(user);
+        if (request.getAvatarUrl() != null && !request.getAvatarUrl().isBlank()) {
+            if (user.getAvatar() == null) {
+                user.setAvatar(new Image());
+            }
+            user.getAvatar().setUrl(request.getAvatarUrl());
+            
+            // Lưu và flush để sinh ID cho Image
+            userRepository.saveAndFlush(user);
+            
+            ProfileImageConfirmEvent event = new ProfileImageConfirmEvent(this, user.getAvatar().getId(), request.getAvatarUrl());
+            publisher.publishEvent(event);
+        } else {
+            userRepository.save(user);
+        }
         
         return UserProfileResponse.builder()
                 .id(user.getId())
@@ -138,6 +154,7 @@ public class AuthServiceImpl implements AuthService {
                 .phone(user.getPhone())
                 .bio(user.getBio())
                 .birthDate(user.getBirthDate())
+                .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
                 .build();
     }
 

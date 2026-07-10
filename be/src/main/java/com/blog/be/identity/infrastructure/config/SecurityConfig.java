@@ -20,6 +20,9 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
 import org.springframework.security.web.SecurityFilterChain;
 
+import com.blog.be.identity.infrastructure.oauth2.CustomOAuth2UserService;
+import com.blog.be.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -27,6 +30,9 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
     private final UserRepository userRepository;
     private final Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
@@ -35,16 +41,22 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/login/**", "/oauth2/**").permitAll()
                         .anyRequest().authenticated()
-
-                ).oauth2ResourceServer(oauth2 -> oauth2
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService)
+                        )
+                        .successHandler(oAuth2AuthenticationSuccessHandler)
+                )
+                .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter)
                         )
                 )
                 .build();
     }
-
 
     @Bean
     public UserDetailsService userDetailsService() {
