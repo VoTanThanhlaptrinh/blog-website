@@ -33,14 +33,14 @@ public final class StorageUtils {
         return new AwsTimeInfo(amzDate, dateStamp, expiration);
     }
 
-    public static String generateObjectKey(String folder, String fileName) {
+    public static String generateObjectKey(String folder, String fileName, String tempFolderPrefix) {
         String safeFolder = (folder != null && !folder.isBlank()) ? folder.toLowerCase() : "others";
         String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "_");
 
-        return String.format("%s%s/%s-%s", StorageConstants.TEMP_FOLDER_PREFIX, safeFolder, UUID.randomUUID(), safeFileName);
+        return String.format("%s%s/%s-%s", tempFolderPrefix, safeFolder, UUID.randomUUID(), safeFileName);
     }
 
-    public static String buildPolicyJson(String expiration, String objectKey, String contentType, String credential, String amzDate, String bucketName) {
+    public static String buildPolicyJson(String expiration, String objectKey, String contentType, String credential, String amzDate, String bucketName, long maxFileSizeBytes, String algorithm) {
         return String.format(
                 "{\n" +
                         "  \"expiration\": \"%s\",\n" +
@@ -54,7 +54,7 @@ public final class StorageUtils {
                         "    {\"x-amz-date\": \"%s\"}\n" +
                         "  ]\n" +
                         "}",
-                expiration, bucketName, objectKey, contentType, StorageConstants.MAX_FILE_SIZE_BYTES, credential, StorageConstants.ALGORITHM, amzDate
+                expiration, bucketName, objectKey, contentType, maxFileSizeBytes, credential, algorithm, amzDate
         );
     }
 

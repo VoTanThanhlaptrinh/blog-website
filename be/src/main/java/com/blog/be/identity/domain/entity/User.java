@@ -1,6 +1,6 @@
 package com.blog.be.identity.domain.entity;
 
-import com.blog.be.notification.domain.entity.Image;
+import com.blog.be.storage.domain.entity.Image;
 import com.blog.be.content.domain.entity.Blog;
 import com.blog.be.interaction.domain.entity.Bookmark;
 import jakarta.persistence.*;

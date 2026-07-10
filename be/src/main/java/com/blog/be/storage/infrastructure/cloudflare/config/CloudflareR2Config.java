@@ -11,7 +11,12 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 
 import java.net.URI;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.scheduling.annotation.EnableAsync;
+
 @Configuration
+@EnableAsync
+@EnableConfigurationProperties(CloudflareR2Properties.class)
 @RequiredArgsConstructor
 public class CloudflareR2Config {
 

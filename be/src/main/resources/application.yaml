@@ -50,3 +50,20 @@ cloudflare:
     secret-key: ${CLOUDFLARE_R2_SECRET_KEY}
     bucket: ${CLOUDFLARE_R2_BUCKET}
     public-url: ${CLOUDFLARE_R2_PUBLIC_URL}
+
+app:
+  storage:
+    identity:
+      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
+      temp-folder-prefix: "identity/temp/"
+      region: "auto"
+      service: "s3"
+      algorithm: "AWS4-HMAC-SHA256"
+      max-file-size-bytes: 5242880
+    blog:
+      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
+      temp-folder-prefix: "blog/temp/"
+      region: "auto"
+      service: "s3"
+      algorithm: "AWS4-HMAC-SHA256"
+      max-file-size-bytes: 5242880

@@ -9,4 +9,5 @@ import java.io.InputStream;
 public interface StorageService {
     UploadPostResponse generatePresignedUrl(UploadUrlRequest request) throws Exception;
     String confirmAndActivateFile(String tempKey);
+    String confirmAndActivateFile(String tempKey, String prefix);
 }

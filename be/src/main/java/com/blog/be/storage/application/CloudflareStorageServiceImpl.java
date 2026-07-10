@@ -31,13 +31,17 @@ public class CloudflareStorageServiceImpl implements StorageService {
      * @return Đường dẫn URL công khai hoàn chỉnh (ví dụ: "https://cdn.domain.com/avatar/uuid-filename.png")
      */
     public String confirmAndActivateFile(String tempKey) {
+        return confirmAndActivateFile(tempKey, StorageConstants.TEMP_FOLDER_PREFIX);
+    }
+
+    public String confirmAndActivateFile(String tempKey, String prefix) {
         // 1. Kiểm tra tính hợp lệ của key đầu vào
-        if (tempKey == null || !tempKey.startsWith(StorageConstants.TEMP_FOLDER_PREFIX)) {
+        if (tempKey == null || !tempKey.startsWith(prefix)) {
             throw new IllegalArgumentException("Đường dẫn file tạm không hợp lệ hoặc không thuộc vùng xử lý");
         }
 
-        // 2. Sử dụng Regex ^temp/ để chỉ xóa chữ "temp/" ở đầu chuỗi
-        String permanentKey = tempKey.replaceFirst("^" + StorageConstants.TEMP_FOLDER_PREFIX, "");
+        // 2. Sử dụng Regex ^prefix để chỉ xóa chữ prefix ở đầu chuỗi
+        String permanentKey = tempKey.replaceFirst("^" + prefix, "");
         String bucketName = properties.getBucket();
 
         try {
@@ -79,7 +83,7 @@ public class CloudflareStorageServiceImpl implements StorageService {
         StorageUtils.AwsTimeInfo timeInfo = StorageUtils.prepareAwsTimeFormat();
 
         // Định nghĩa Object Key
-        String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName());
+        String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(), StorageConstants.TEMP_FOLDER_PREFIX);
 
         // Lấy Access Key từ đối tượng properties
         String accessKey = properties.getAccessKey();
@@ -91,7 +95,7 @@ public class CloudflareStorageServiceImpl implements StorageService {
         // Xây dựng Policy JSON
         String policyJson = StorageUtils.buildPolicyJson(
                 timeInfo.expiration(), objectKey, request.getContentType(), credential, timeInfo.amzDate()
-                , properties.getBucket()
+                , properties.getBucket(), StorageConstants.MAX_FILE_SIZE_BYTES, StorageConstants.ALGORITHM
         );
 
         // Encode Policy bằng Base64
