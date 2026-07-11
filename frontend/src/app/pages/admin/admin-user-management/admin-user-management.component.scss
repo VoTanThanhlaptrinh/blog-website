@@ -1,0 +1,17 @@
+.material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #fbf9f1;
+            color: #1C1917;
+            font-family: 'Hanken Grotesk', sans-serif;
+        }
+        .editorial-border {
+            border-bottom: 1px solid rgba(28, 25, 23, 0.05);
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .table-row-hover:hover {
+            background-color: rgba(189, 95, 67, 0.03);
+        }

@@ -1,0 +1,28 @@
+body {
+            background-color: #fbf9f1;
+            color: #1C1917;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .switch-checkbox:checked + .switch-label {
+            background-color: #BD5F43;
+        }
+        
+        .switch-checkbox:checked + .switch-label .switch-dot {
+            transform: translateX(1.25rem);
+        }
+
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(189, 95, 67, 0.2);
+            border-radius: 10px;
+        }

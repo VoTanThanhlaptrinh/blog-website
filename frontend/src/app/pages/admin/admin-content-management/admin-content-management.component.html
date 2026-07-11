@@ -1,0 +1,311 @@
+<!-- TopAppBar -->
+<header class="fixed top-0 right-0 left-0 z-50 flex justify-between items-center px-margin-desktop h-16 bg-pure-white border-b border-on-surface/5"><div class="flex items-center gap-4">
+<span class="font-headline-md text-headline-md font-bold text-text-ink">BBlogHub</span>
+<div class="relative w-80 ml-8">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-base" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md" placeholder="Search..." type="text">
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex gap-6 h-full items-center">
+<a class="text-accent-rust font-bold border-b-2 border-accent-rust pb-1 font-label-md" href="#">Content</a>
+<a class="text-secondary hover:text-accent-rust transition-colors duration-200 font-label-md" href="#">Dashboard</a>
+<a class="text-secondary hover:text-accent-rust transition-colors duration-200 font-label-md" href="#">Users</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-secondary hover:text-accent-rust transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-secondary hover:text-accent-rust transition-colors">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div></header>
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 bottom-0 w-64 flex flex-col p-base border-r border-on-surface/5 z-40 pt-20 bg-surface-container-low"><div class="px-4 mb-8">
+<h1 class="font-headline-md text-headline-md font-bold text-accent-rust">BBlogHub</h1>
+<p class="text-secondary font-label-md text-caption">Admin Console</p>
+</div>
+<nav class="flex-1 space-y-1 px-2">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-accent-rust font-bold border-r-2 border-accent-rust bg-surface-container-low rounded-lg font-label-md text-label-md bg-accent-rust/10" href="#">
+<span class="material-symbols-outlined" data-icon="article">article</span>
+<span class="">Content</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="group">group</span>
+<span class="">Users</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="analytics">analytics</span>
+<span class="">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="">Settings</span>
+</a>
+</nav>
+<div class="px-2 mt-4">
+<button class="w-full mt-2 py-3 bg-surface-container-high border border-outline text-secondary font-bold rounded-lg flex items-center justify-center gap-2 hover:bg-surface-container transition-all shadow-sm active:scale-95"><span class="material-symbols-outlined" data-icon="download">download</span>Export</button>
+</div>
+<div class="mt-auto border-t border-on-surface/5 pt-4 px-2 space-y-1">
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="">Support</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-secondary hover:text-accent-rust hover:bg-surface-container-low transition-all rounded-lg font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="">Sign Out</span>
+</a>
+</div></aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-16 min-h-screen bg-surface">
+<div class="max-w-[1100px] mx-auto px-margin-desktop py-stack-lg">
+<!-- Header Section -->
+<div class="mb-stack-lg">
+<h2 class="font-headline-lg text-headline-lg text-text-ink mb-1">Content Management</h2>
+<p class="text-text-muted font-body-md">Manage, review, and moderate all community articles.</p>
+</div>
+<!-- Toolbar: Filters & Search -->
+<div class="bg-pure-white rounded-xl border border-on-surface/5 mb-stack-md">
+<div class="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
+<!-- Filters -->
+<div class="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+<button class="px-4 py-2 text-pure-white font-bold bg-accent-rust rounded-full font-label-md text-label-md whitespace-nowrap">All Posts</button>
+<button class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Published</button>
+<button class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Drafts</button>
+<button class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Pending Review</button>
+<button class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Flagged</button>
+</div>
+<!-- Search Bar -->
+<div class="relative w-full md:w-80">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-base" data-icon="search">search</span>
+<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md" placeholder="Search by title or author..." type="text">
+</div>
+</div>
+</div>
+<!-- Data Table Container -->
+<div class="bg-pure-white rounded-xl border border-on-surface/5 overflow-hidden shadow-sm">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container border-b border-outline-variant">
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Article Title</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Author</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Category</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Status</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Created</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Stats</th>
+<th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-on-surface/5">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex-shrink-0 overflow-hidden border border-on-surface/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A sophisticated editorial-style thumbnail representing a technical blog post. The image features clean, minimalist abstract architecture in warm rust and cool charcoal tones, mirroring the brand's 'Editorial Modernist' aesthetic with high-key lighting and sharp geometric lines." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiDj_zTrWHbH6-7B8h6C7rsdRLgljg1s3HDxijEx2ct8XMcWAEqWSpRAxP7evw68ICKrF5C-DyYIr-9OlsJRU8azaVe86H771U7XLt_OeavRrLgkX4aT7T3WAWR_Pz8aEnPvB3i3-wITntNQ8OVfHheXZp6r0j066EjPPqDCMXRW7MutbaxXzrN1Qho_b8eN9dhyganuCAAKFeKYN5ZyxRSvdWtxYFiWMEonC23DplwHlCGRd2b-aXzd02cVbf7ladu7TJxq4PKlo">
+</div>
+<span class="text-body-md text-text-ink leading-tight line-clamp-2">Mastering CSS Grid: The Editorial Layout Guide</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0">
+<img class="w-full h-full rounded-full object-cover" data-alt="A small circular avatar of a developer, with a minimalist and professional look. The style is consistent with high-end tech publications, featuring soft lighting, a neutral studio background, and a color palette that includes subtle rust accents to match the UI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJfE4xVNzN7AagId5qJSQFQ8tzsiAvNiLCWUdIhez5qYgqO9crZqql4iUleEqxY2DkTCrKaP4VcU5iIwqXyybMdpa7Ig7Ni8u_2HDiMUCHxVv0nchwPZS3vP8ORZ-ULzq3YuH8S7QisXxq7cpxNgcp2WLbri11x7_sGG8aubvu3G64b25gRnwMGe360zZbT0D1efxc96wBqKqcw72i4B4EtOOJ3j8fwyK5Id8q12AFCbxRTJ-ba71e4G34JM2dY51RWxx-NKjS11A">
+</div>
+<span class="text-label-md text-text-ink">Alex Rivera</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-accent-rust/10 text-accent-rust text-[10px] font-bold uppercase rounded tracking-wider">Design</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-tertiary">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span class="text-label-md font-semibold">Published</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-muted text-label-md">Oct 24, 2023</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-0.5 text-caption text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span> 1.2k</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="chat_bubble">chat_bubble</span> 42</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span class="material-symbols-outlined text-xl" data-icon="edit">edit</span></button>
+<button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span class="material-symbols-outlined text-xl" data-icon="visibility">visibility</span></button>
+<button class="p-1.5 text-secondary hover:text-error transition-colors"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 2 (Pending Review) -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex-shrink-0 overflow-hidden border border-on-surface/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A minimalist technical illustration showing stylized server components in a three-dimensional grid. The artwork uses a sophisticated palette of rust, gray, and cream, maintaining a professional and high-legibility look consistent with technical developer documentation." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwPYMancgIXYW_ZKyWaBWXGOrA2OHLb8B1pdyKTrU3RDtnaRfT5C15dqZW6AwriQbvqr4x2hFuEwLvgUVPvIDxxhl8ldfvElSQP84oiaRQ1ljB-aLJ3p4RtQOR2DdBKb9VJt7fwNHo1CZx00adlAQ7ymKF47BfYEQrzLGWB0fIs6w1XBMCBUif54R8i4Rby5bDyS2Oh7gvDAmyIRc8HHkbP27GCM8nvnCtLCCq9p6GPAeIYhvsnIRS0nciri-YfbUKgQbVzx0kuvU">
+</div>
+<span class="text-body-md text-text-ink leading-tight line-clamp-2">Scaling Node.js Microservices at Peak Load</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional headshot avatar of a female software engineer. Minimalist style with soft lighting, a warm paper-tone background, and a focus on clarity and professionalism in an editorial tech context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjjJd_JI5q_96Q9TakV1Sm_x-JvUXK0fhXQ7PygwBe7IU6Vr9sOGADK-O9qapT-IjaqQGDr39ft_okUfEaBn9lm90JN6ULDk1fdDt-KS4j_9XVp7UQezlxpVDfKsNTWONurevI19SKHSJhErX8F7tC7V7ZTArXnQf5QrKMFzcAsaiSkoJxR-O8ffwzQ394x-mxsl-UFv9kVagea7m07b5cL2xdcuizHOKKO5yXRTSB-xMcbeh9CoRT32nVn0B4h69TklohSuOwL8w">
+</div>
+<span class="text-label-md text-text-ink">Sarah Chen</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold uppercase rounded tracking-wider">Backend</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-on-secondary-container">
+<span class="w-1.5 h-1.5 rounded-full bg-on-secondary-container"></span>
+<span class="text-label-md font-semibold">Review</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-muted text-label-md">Oct 26, 2023</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-0.5 text-caption text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="visibility">visibility</span> 0</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="chat_bubble">chat_bubble</span> 0</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-3 py-1 bg-tertiary text-pure-white text-[12px] font-bold rounded hover:opacity-90 transition-all">Approve</button>
+<button class="px-3 py-1 border border-outline text-secondary text-[12px] font-bold rounded hover:bg-surface-container transition-all">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 (Draft) -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex-shrink-0 overflow-hidden border border-on-surface/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="A clean, minimalist digital artwork of a stylized laptop with code snippets floating around it. The lighting is bright and high-key, with a color palette of rust-orange and warm grays, adhering to the brand's editorial aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwQm2BSocV7WTw4rOWY47ByLpagXbpdfmoMKYvyADauQbaYzsYNlNMry9r_ZxiVW5DlO2O3rcSkiqqcO8mECNx6VIUHznIv21zLiX8kMNzS64vVmuCDkP59c_yax4fgbr8avOwy4WMvIccENEy66ue9WAKIIh83fnr_0wOHWjy_SoUUorNhCJ7fcLc__dveo-4IbQuaOVvO61Hvaaf_XmveZJgGK9Xihm8pmNigH-qtdlcHcMzfzqX0HpdrFCq5O163M8qhcF7fGo">
+</div>
+<span class="text-body-md text-text-ink leading-tight line-clamp-2">Understanding the New TypeScript 5.2 Features</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0 overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A minimalist professional avatar headshot for a content writer, featuring soft, even lighting and a clean, light-mode background that matches the site's warm-toned palette." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJK1Xx5MUXH711jfT1WDuuB5it3qkYEcTpVaz-ZR-bt-0whqSM6xuQiUnrVzQ0pz8JGyduqRHfPhgJ-izu37XTWhA5y78Z9eZvyLOhoR1aUjWII-0U-RGGdP2s5BRjlwZwrIN0GOHl_Y3Fra6Yq0itM3D4YkWR_F8FFiy-qbfZaR_Lp5d9XEq85rgXaifvUBlODwEeB40k2sA_Mu_K5HjOB_g2TN7Ww2fe3kVLXPPW_P1uxrDJ7zrExBwmKvShhs61ugVmI3g7uck">
+</div>
+<span class="text-label-md text-text-ink">Marcus Vane</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-accent-rust/10 text-accent-rust text-[10px] font-bold uppercase rounded tracking-wider">Frontend</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span class="text-label-md font-semibold">Draft</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-muted text-label-md">Oct 27, 2023</td>
+<td class="px-6 py-4 text-secondary text-caption italic">No stats yet</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span class="material-symbols-outlined text-xl" data-icon="edit">edit</span></button>
+<button class="p-1.5 text-secondary hover:text-error transition-colors"><span class="material-symbols-outlined text-xl" data-icon="delete">delete</span></button>
+</div>
+</td>
+</tr>
+<!-- Row 4 (Flagged) -->
+<tr class="hover:bg-surface-bright transition-colors group">
+<td class="px-6 py-4">
+<div class="flex items-center gap-3">
+<div class="w-12 h-12 rounded bg-surface-container flex-shrink-0 overflow-hidden border border-on-surface/5">
+<img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" data-alt="An abstract, architectural photo of a modern building with complex patterns. The image is styled with a warm rust filter, emphasizing high-quality editorial photography for a professional blog header." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3tvtqw1BQ1uMiwASPhSacouE0kIFUJTYP2YGwfN5hDggy_qihiXVfinx2jIb9D-niql-rya_U8jYG8SWmc1oUTW-7d2n9wWmK6eT7pO0fYnw1x9VHvy3r-sTVBuSCzr_rIFAD97LxTluvVyIVfyFYgGZUJldl6PMQalOy_gIGyQv7qxpuSHqTb3FVQZo71FDtQ8c4Pilu3dMwcxYpjMPav5cTzoU9Xl5ORJXB2iyfDfnPT2NLbQWkdCYEAu1n5odfxB9O1YibRDI">
+</div>
+<span class="text-body-md text-text-ink leading-tight line-clamp-2">Why Web3 is Still relevant in 2024</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0"></div>
+<span class="text-label-md text-text-ink">James Wilson</span>
+</div>
+</td>
+<td class="px-6 py-4">
+<span class="px-2 py-1 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold uppercase rounded tracking-wider">Blockchain</span>
+</td>
+<td class="px-6 py-4">
+<div class="flex items-center gap-1.5 text-error">
+<span class="w-1.5 h-1.5 rounded-full bg-error"></span>
+<span class="text-label-md font-semibold">Flagged</span>
+</div>
+</td>
+<td class="px-6 py-4 text-text-muted text-label-md">Oct 20, 2023</td>
+<td class="px-6 py-4">
+<div class="flex flex-col gap-0.5 text-caption text-secondary">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span> 12 Reports</span>
+</div>
+</td>
+<td class="px-6 py-4 text-right">
+<div class="flex items-center justify-end gap-2">
+<button class="px-3 py-1 bg-error text-pure-white text-[12px] font-bold rounded hover:opacity-90 transition-all">Review Reports</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-6 py-4 border-t border-on-surface/5 flex items-center justify-between bg-surface-container-low">
+<span class="text-caption text-secondary">Showing <span class="font-bold">1-10</span> of <span class="font-bold">248</span> results</span>
+<div class="flex items-center gap-2">
+<button class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30" disabled="">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded bg-accent-rust text-pure-white font-bold text-caption rounded-full">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-secondary font-bold text-caption transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-secondary font-bold text-caption transition-colors">3</button>
+<span class="text-secondary text-caption">...</span>
+<button class="w-8 h-8 flex items-center justify-center rounded hover:bg-surface-container text-secondary font-bold text-caption transition-colors">25</button>
+<button class="p-1 text-secondary hover:text-accent-rust">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Contextual FAB (Only for Home/Dashboard/Listings) -->
+<button class="fixed bottom-8 right-8 w-14 h-14 bg-accent-rust text-pure-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50 group">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+<span class="absolute right-full mr-4 px-3 py-1 bg-inverse-surface text-pure-white text-caption rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Create New Article</span>
+</button>
+</div>
+</main>
+<script>
+        // Micro-interaction for table rows
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', (e) => {
+                // If the user clicked a button inside the row, don't trigger row selection
+                if (e.target.closest('button')) return;
+                
+                // Toggle active state visualization
+                document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('bg-surface-bright'));
+                row.classList.add('bg-surface-bright');
+            });
+        });
+
+        // Search Bar Focus Effect
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('focus', () => {
+            searchInput.parentElement.classList.add('scale-[1.02]');
+        });
+        searchInput.addEventListener('blur', () => {
+            searchInput.parentElement.classList.remove('scale-[1.02]');
+        });
+    </script>

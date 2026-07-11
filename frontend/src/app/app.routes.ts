@@ -18,4 +18,28 @@ export const routes: Routes = [
         (m) => m.RegisterComponent,
       ),
   },
+  {
+    path: 'admin',
+    loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
+  },
+  {
+    path: 'profile',
+    loadChildren: () => import('./pages/profile/profile.routes').then(m => m.PROFILE_ROUTES)
+  },
+  {
+    path: 'auth',
+    loadChildren: () => import('./pages/auth/auth.routes').then(m => m.AUTH_ROUTES)
+  },
+  {
+    path: 'blog',
+    loadChildren: () => import('./pages/blog/blog.routes').then(m => m.BLOG_ROUTES)
+  },
+  {
+    path: 'search',
+    loadChildren: () => import('./pages/search/search.routes').then(m => m.SEARCH_ROUTES)
+  },
+  {
+    path: 'settings',
+    loadChildren: () => import('./pages/settings/settings.routes').then(m => m.SETTINGS_ROUTES)
+  }
 ];

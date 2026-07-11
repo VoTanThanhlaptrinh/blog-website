@@ -1,0 +1,386 @@
+<!-- TopNavBar -->
+<header
+    class="fixed top-0 right-0 w-[calc(100%-256px)] h-16 bg-pure-white flex justify-between items-center px-margin-desktop z-40 border-b border-on-surface/5">
+    <div class="flex items-center gap-stack-md">
+        <span class="font-headline-md text-headline-md font-bold text-accent-rust font-headline-lg">BBlogHub</span>
+        <div
+            class="hidden md:flex items-center ml-stack-lg bg-surface-container-low px-4 py-1.5 rounded-lg border border-text-ink/5">
+            <span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
+            <input
+                class="bg-transparent border-none focus:ring-0 font-body-md text-sm w-64 placeholder:text-secondary-fixed-dim"
+                placeholder="Global search..." type="text">
+        </div>
+    </div>
+    <nav class="flex items-center gap-stack-lg">
+        <div class="flex gap-stack-md">
+            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            </button>
+            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
+                <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
+            </button>
+            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
+                <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+            </button>
+        </div>
+    </nav>
+</header>
+<!-- SideNavBar -->
+<aside
+    class="h-screen w-64 fixed left-0 top-0 bg-surface flex flex-col py-base border-r border-on-surface/5 overflow-y-auto hide-scrollbar">
+    <div class="flex items-center gap-3 px-2 mb-4">
+        <div class="w-10 h-10 rounded-lg bg-accent-rust flex items-center justify-center text-pure-white font-bold">A
+        </div>
+        <div>
+            <p class="font-label-md text-label-md text-text-ink font-bold">Admin Panel</p>
+            <p class="text-[10px] uppercase tracking-widest text-secondary">Managing BBlogHub</p>
+        </div>
+    </div>
+    <nav class="flex flex-col gap-1">
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+            <span class="">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="article">article</span>
+            <span class="">Content</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-accent-rust font-bold bg-pure-white/50 rounded-lg"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="group">group</span>
+            <span class="">Users</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="assessment">assessment</span>
+            <span class="">Reports</span>
+        </a>
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            <span class="">Settings</span>
+        </a>
+    </nav>
+    <div class="mt-auto border-t border-text-ink/5 pt-4">
+        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
+            href="#">
+            <span class="material-symbols-outlined" data-icon="logout">logout</span>
+            <span class="">Logout</span>
+        </a>
+    </div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 pt-24 pb-16 px-margin-desktop min-h-screen bg-surface">
+    <div class="max-w-[1100px] mx-auto">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
+            <div class="space-y-2">
+                <h1 class="font-headline-lg text-display-lg text-text-ink">User Management</h1>
+                <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
+                    Manage community members, roles, and account permissions. Oversee the pulse of the BBlogHub
+                    ecosystem.
+                </p>
+            </div>
+            <div>
+                <button
+                    class="bg-accent-rust text-pure-white font-label-md text-label-md px-6 py-2.5 rounded flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all">
+                    <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+                    Add User
+                </button>
+            </div>
+        </div>
+        <!-- Filters and Search -->
+        <div class="flex flex-col gap-gutter mb-stack-lg">
+            <div class="flex items-center border-b border-text-ink/10 overflow-x-auto hide-scrollbar">
+                <button
+                    class="px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap">All
+                    Users</button>
+                <button
+                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Authors</button>
+                <button
+                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Moderators</button>
+                <button
+                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap flex items-center gap-2">
+                    Pending Approval <span
+                        class="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px]">4</span>
+                </button>
+                <button
+                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Suspended</button>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full sm:w-96">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary"
+                        data-icon="search">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust outline-none transition-all"
+                        placeholder="Search by name, email or role..." type="text">
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto">
+                    <button
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
+                        <span class="font-label-md text-label-md">Filter</span>
+                    </button>
+                    <button
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-surface-container transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                        <span class="font-label-md text-label-md">Export</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Table Card -->
+        <div class="bg-pure-white border border-text-ink/5 rounded-xl overflow-hidden shadow-sm">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-surface-container-low border-b border-text-ink/5">
+                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">User
+                        </th>
+                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Role
+                        </th>
+                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Status
+                        </th>
+                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Joined
+                        </th>
+                        <th
+                            class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-center">
+                            Engagement</th>
+                        <th
+                            class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-text-ink/5">
+                    <!-- Entry 1 -->
+                    <tr class="table-row-hover transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
+                                    <img class="w-full h-full object-cover"
+                                        data-alt="Close-up portrait of a professional Vietnamese man with a friendly expression, wearing a minimalist modern polo shirt, set against a warm, soft-focus office background with natural lighting."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQmRz7rM9uPVx-2KqQWpnjU_2yaJIKomlipzqA4_mIcctnYe_vZXtYVJPgshzisgOPRNB60p0pMTDpSwyqqMrB4gAD50h86vMmkcrIaNAmp0LmfRDSdAsaJ2iP_fyyLXU0GRo0sjlF0ki-iSVNT_9Z7tNdSd0XFOjxHVEBR-o3ly7m6Bv7RD77-srdbiBoEc_rpwLvdoC3cGiwwoV1VEgfal40pwiafxeolKA51_VQcHDx5qWfXnBojJ4XwblWlaFyTak04mIgiZA">
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-label-md text-text-ink">Nguyen Van A</p>
+                                    <p class="font-caption text-caption text-secondary">vana.n&#64;bbloghub.com</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">Author</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="font-body-md text-body-md text-on-surface">Active</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jul 12, 2024</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex flex-col">
+                                <span class="font-label-md text-label-md text-text-ink">12 Posts</span>
+                                <span class="font-caption text-caption text-secondary">1.2k Views</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
+                        </td>
+                    </tr>
+                    <!-- Entry 2 -->
+                    <tr class="table-row-hover transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
+                                    <img class="w-full h-full object-cover"
+                                        data-alt="Headshot of a sophisticated Vietnamese woman with glasses, looking thoughtful, minimalist studio setting with editorial soft lighting, warm beige tones consistent with a luxury magazine aesthetic."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQczC2Y6dzRLyxizIxJetB51ycwnAw9nUjHMPLQ8GSmFu1Zkwkakbs5yOIFiB7SiCie1xzvKS2fChlBUT7GzRvkBRe3hnSV34Gu8eS9nxQblNPSWbkiUoUJaSSyEc3VKqRgfZOhFesZiWBHq_8dusvNZBcwgQFO6NMcxxurcovjy6aswVHEf3osiAHffBBTizLZxMnFMzluBJEMmmv7xZHmQNRFWoeznrjum42QL_DbvUwIbdSJY7VTbKPgn_wf1Us8lPTZOg2V3s">
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-label-md text-text-ink">Tran Thi B</p>
+                                    <p class="font-caption text-caption text-secondary">thib.tran&#64;bbloghub.com</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">Author</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="font-body-md text-body-md text-on-surface">Active</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jun 08, 2024</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex flex-col">
+                                <span class="font-label-md text-label-md text-text-ink">8 Posts</span>
+                                <span class="font-caption text-caption text-secondary">840 Views</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
+                        </td>
+                    </tr>
+                    <!-- Entry 3 -->
+                    <tr class="table-row-hover transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
+                                    <img class="w-full h-full object-cover"
+                                        data-alt="Portrait of a confident man with a short beard, wearing a charcoal turtleneck, professional studio lighting, minimalist editorial style, clean and focused background."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHrjDWATotCYvAQPK4lroZ6D5t4qDZz02nbKUjnfjiVWgQaPHeyFT5k1Rno9zfEOcxOSBOT1AfKz2qI3-ySMgs_3vs0mNXwln6x93AGx0DLt_zwCpVFv4MIMpsIeO7ADrRFobpeRlVd-PrZ5ZwykaPZOx8L2lR_i12tn2LXe2CgO-c3bLWuoU37OlM4BrchXEU6R4JNa4o5oivLmkX3NjE-sZm-UoV4Fg9XS2_N6KOdrTTbaO9lXqSLEFPGpsB1I-gtlghjtdVdoA">
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-label-md text-text-ink">Marcus Vane</p>
+                                    <p class="font-caption text-caption text-secondary">mvane.mod&#64;bbloghub.com</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">Moderator</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                <span class="font-body-md text-body-md text-on-surface">Active</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jan 22, 2024</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex flex-col">
+                                <span class="font-label-md text-label-md text-text-ink">0 Posts</span>
+                                <span class="font-caption text-caption text-secondary">42 Reviews</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
+                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
+                        </td>
+                    </tr>
+                    <!-- Entry 4 -->
+                    <tr class="table-row-hover transition-colors">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
+                                    <img class="w-full h-full object-cover"
+                                        data-alt="Minimalist professional portrait of a woman with a sleek bob haircut, wearing a cream blazer, high-key lighting, soft shadows, editorial magazine feel with high clarity."
+                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa80LDQbQERQHKMWITlyNtOdYcPQAY88xUpfi5w7Qm8LVZ6gw4R-qsFdN_ZMQeuJ1Jz1HGFe6surq5mCoum0nIUOwXKqMAOl2DZ_JUHfZnnPc8INI9D7QNAbVKH6KDMKPN9QdALwJlaJaRc-fc1faZJY1LmqvW2aPiFDdOWYpiuGzXWhvo5I3OjxXhPmkQfpnar-oZ6iqZaa9exblZ3ipbEfLzEx6wOLag4k7eHPZwU-weEBFB15bmGMOJBEBp5TfBS8wRf76DdnM">
+                                </div>
+                                <div>
+                                    <p class="font-label-md text-label-md text-text-ink">Sarah Chen</p>
+                                    <p class="font-caption text-caption text-secondary">schen.dev&#64;gmail.com</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span
+                                class="bg-surface-paper text-secondary px-3 py-1 rounded-full text-[12px] font-bold">User</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                                <span class="font-body-md text-body-md text-on-surface">Pending</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Oct 05, 2024</td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex flex-col">
+                                <span class="font-label-md text-label-md text-text-ink">0 Posts</span>
+                                <span class="font-caption text-caption text-secondary">New Member</span>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <div class="flex items-center justify-end gap-1">
+                                <button
+                                    class="bg-primary text-pure-white text-[10px] uppercase tracking-wider font-bold px-3 py-1.5 rounded hover:opacity-90">Approve</button>
+                                <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
+                                        class="material-symbols-outlined"
+                                        data-icon="more_vert">more_vert</span></button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- Pagination -->
+            <div class="px-6 py-4 bg-surface-container/20 flex items-center justify-between border-t border-text-ink/5">
+                <p class="font-body-md text-caption text-secondary">Showing 4 of 248 members</p>
+                <div class="flex gap-2">
+                    <button
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white hover:text-accent-rust transition-all">
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                    </button>
+                    <button
+                        class="bg-accent-rust text-pure-white font-label-md text-label-md w-8 h-8 flex items-center justify-center rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">1</button>
+                    <button
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white transition-all text-xs">2</button>
+                    <button
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white transition-all text-xs">3</button>
+                    <button
+                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white hover:text-accent-rust transition-all">
+                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Dashboard Insight Cards (Bento Style) -->
+        <div class="mt-section-gap grid grid-cols-1 md:grid-cols-3 gap-gutter">
+            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+                <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="trending_up">trending_up</span>
+                <h3 class="font-headline-md text-headline-md text-text-ink">Growth</h3>
+                <p class="font-body-md text-body-md text-text-muted mt-2">12% increase in new authors this month.</p>
+            </div>
+            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+                <span class="material-symbols-outlined text-accent-rust mb-4"
+                    data-icon="shield_person">shield_person</span>
+                <h3 class="font-headline-md text-headline-md text-text-ink">Safety</h3>
+                <p class="font-body-md text-body-md text-text-muted mt-2">3 flagged accounts pending review by mods.</p>
+            </div>
+            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+                <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="stars">stars</span>
+                <h3 class="font-headline-md text-headline-md text-text-ink">Elite</h3>
+                <p class="font-body-md text-body-md text-text-muted mt-2">15 authors reached "Pro" status last week.</p>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- Micro-interaction Scripts -->
+<script>
+    // Simple scale and interaction visual feedback
+    document.querySelectorAll('button').forEach(button => {
+        button.addEventListener('mousedown', () => {
+            button.classList.add('scale-95');
+        });
+        button.addEventListener('mouseup', () => {
+            button.classList.remove('scale-95');
+        });
+        button.addEventListener('mouseleave', () => {
+            button.classList.remove('scale-95');
+        });
+    });
+
+    // Tab Switch logic (Simulation)
+    const tabs = document.querySelectorAll('.filter-tab');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => {
+                t.classList.remove('text-accent-rust', 'border-accent-rust', 'border-b-2');
+                t.classList.add('text-on-secondary-container');
+            });
+            tab.classList.remove('text-on-secondary-container');
+            tab.classList.add('text-accent-rust', 'border-accent-rust', 'border-b-2');
+        });
+    });
+</script>

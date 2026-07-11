@@ -1,0 +1,210 @@
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 bg-pure-white dark:bg-surface-container border-b border-outline-variant">
+    <div class="flex justify-between items-center h-16 px-margin-mobile md:px-margin-desktop max-w-[1100px] mx-auto">
+        <div class="flex items-center gap-4">
+            <button class="active:scale-95 transition-transform hover:bg-surface-container-low p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary dark:text-primary-fixed">arrow_back</span>
+            </button>
+            <h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">Settings</h1>
+        </div>
+        <button
+            class="font-label-md text-label-md text-accent-rust font-bold hover:bg-surface-container-low px-4 py-2 rounded transition-colors active:scale-95 transition-transform">
+            Save
+        </button>
+    </div>
+</header>
+<main class="pt-24 max-w-[720px] mx-auto px-margin-mobile">
+    <!-- Avatar Management -->
+    <section class="flex flex-col items-center mb-section-gap">
+        <div class="relative group">
+            <div
+                class="w-32 h-32 md:w-40 md:h-40 rounded-full border border-outline-variant overflow-hidden bg-surface-container-low editorial-shadow">
+                <img class="w-full h-full object-cover"
+                    data-alt="A professional close-up studio portrait of a sophisticated person with a warm, intellectual gaze. The lighting is soft and directional, typical of a high-end editorial magazine shoot. The background is a muted, creamy parchment color that matches a minimalist modernist aesthetic. The person wears a simple, dark designer garment, emphasizing their face and eyes for a focused authorial brand."
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuBdfAVxrXRKTFr6a5umJa0ZTP5tntjTmqbDvPSP2v2J_f7z4Mz9ig5spax__R-Cbs7NdXjua4UVZ8Hhw1paSJ2G_J26r9f9lQF00aNXjPq42j88h_gF0XLKLqkoTpGis1JAOzft00ZPr6UOUzlUOrOx41b1nZQIYKBu40-AvpzQE3CCl8VeEB32BOSt76x9EBb_9ZBt0FRn1u7sK1_atHtnchynaCyiAugmfrLYzo7IwhWgXBcApiG56HhseZRtYVvHxOPt22SrCpw">
+            </div>
+            <button
+                class="absolute bottom-1 right-1 bg-accent-rust text-pure-white p-3 rounded-full border-2 border-pure-white shadow-lg active:scale-95 transition-transform hover:bg-primary-container">
+                <span class="material-symbols-outlined text-sm">edit</span>
+            </button>
+        </div>
+        <p class="mt-stack-md font-label-md text-label-md text-text-muted uppercase tracking-wider">Profile Picture</p>
+    </section>
+    <form class="space-y-section-gap">
+        <!-- Personal Information -->
+        <fieldset class="space-y-stack-lg">
+            <legend
+                class="font-headline-md text-headline-md text-text-ink border-b border-outline-variant w-full pb-stack-sm mb-stack-lg">
+                Personal Information</legend>
+            <div class="grid grid-cols-1 gap-stack-md">
+                <div class="flex flex-col gap-base">
+                    <label class="font-label-md text-label-md text-text-muted" for="full-name">Full Name</label>
+                    <input
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink focus:border-accent-rust transition-all"
+                        id="full-name" type="text" value="Julian Thorne">
+                </div>
+                <div class="flex flex-col gap-base">
+                    <label class="font-label-md text-label-md text-text-muted" for="username">Username</label>
+                    <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted">&#64;</span>
+                        <input
+                            class="w-full bg-pure-white border border-outline-variant rounded pl-8 pr-4 py-3 font-body-md text-text-ink transition-all"
+                            id="username" type="text" value="jthorne_writes">
+                    </div>
+                </div>
+                <div class="flex flex-col gap-base">
+                    <label class="font-label-md text-label-md text-text-muted" for="bio">Bio (About Me)</label>
+                    <textarea
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink transition-all resize-none"
+                        id="bio"
+                        rows="4">Architect of digital narratives and compiler of late-night thoughts. I explore the intersection of functional programming and minimalist design through the lens of a weary but optimistic engineer.</textarea>
+                </div>
+            </div>
+        </fieldset>
+        <!-- Professional Details -->
+        <fieldset class="space-y-stack-lg">
+            <legend
+                class="font-headline-md text-headline-md text-text-ink border-b border-outline-variant w-full pb-stack-sm mb-stack-lg">
+                Professional Details</legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-stack-md">
+                <div class="flex flex-col gap-base">
+                    <label class="font-label-md text-label-md text-text-muted" for="job-title">Job Title</label>
+                    <input
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink transition-all"
+                        id="job-title" placeholder="e.g. Senior Software Engineer" type="text">
+                </div>
+                <div class="flex flex-col gap-base">
+                    <label class="font-label-md text-label-md text-text-muted"
+                        for="company">Company/Organization</label>
+                    <input
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink transition-all"
+                        id="company" placeholder="e.g. TechFlow Systems" type="text">
+                </div>
+            </div>
+            <div class="flex flex-col gap-base">
+                <label class="font-label-md text-label-md text-text-muted" for="website">Personal Website URL</label>
+                <input
+                    class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink transition-all"
+                    id="website" placeholder="https://yourwebsite.com" type="url">
+            </div>
+        </fieldset>
+        <!-- Social Links -->
+        <fieldset class="space-y-stack-lg">
+            <legend
+                class="font-headline-md text-headline-md text-text-ink border-b border-outline-variant w-full pb-stack-sm mb-stack-lg">
+                Social Links</legend>
+            <div class="space-y-stack-md">
+                <div
+                    class="flex items-center gap-gutter bg-surface-container-low p-4 rounded border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-text-muted">alternate_email</span>
+                    <div class="flex-1 flex flex-col">
+                        <span class="font-label-md text-xs text-text-muted uppercase">Twitter / X</span>
+                        <input class="bg-transparent border-none p-0 focus:ring-0 text-text-ink font-body-md"
+                            placeholder="@username" type="text">
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-gutter bg-surface-container-low p-4 rounded border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-text-muted">link</span>
+                    <div class="flex-1 flex flex-col">
+                        <span class="font-label-md text-xs text-text-muted uppercase">LinkedIn</span>
+                        <input class="bg-transparent border-none p-0 focus:ring-0 text-text-ink font-body-md"
+                            placeholder="Profile URL" type="text">
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-gutter bg-surface-container-low p-4 rounded border border-outline-variant/30">
+                    <span class="material-symbols-outlined text-text-muted">terminal</span>
+                    <div class="flex-1 flex flex-col">
+                        <span class="font-label-md text-xs text-text-muted uppercase">GitHub</span>
+                        <input class="bg-transparent border-none p-0 focus:ring-0 text-text-ink font-body-md"
+                            placeholder="Username" type="text">
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <!-- Account Settings Links -->
+        <div class="flex flex-col md:flex-row justify-between gap-stack-md pt-stack-lg border-t border-outline-variant">
+            <button
+                class="text-left font-label-md text-label-md text-text-muted hover:text-accent-rust transition-colors flex items-center gap-2"
+                type="button">
+                <span class="material-symbols-outlined text-[18px]">lock_reset</span>
+                Change Password
+            </button>
+            <button
+                class="text-left font-label-md text-label-md text-text-muted hover:text-accent-rust transition-colors flex items-center gap-2"
+                type="button">
+                <span class="material-symbols-outlined text-[18px]">notifications</span>
+                Notification Settings
+            </button>
+            <button
+                class="text-left font-label-md text-label-md text-error hover:opacity-80 transition-opacity flex items-center gap-2"
+                type="button">
+                <span class="material-symbols-outlined text-[18px]">delete_forever</span>
+                Deactivate Account
+            </button>
+        </div>
+    </form>
+    <!-- Spacer for FAB/Action Area -->
+    <div class="h-24"></div>
+</main>
+<!-- Primary Action (Floating / Bottom Fixed) -->
+<div class="fixed bottom-20 left-0 w-full px-margin-mobile pointer-events-none md:bottom-24">
+    <div class="max-w-[720px] mx-auto flex justify-end">
+        <button
+            class="pointer-events-auto bg-accent-rust text-pure-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 transition-all hover:bg-primary-container hover:shadow-xl flex items-center gap-3">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            Save Changes
+        </button>
+    </div>
+</div>
+<!-- BottomNavBar -->
+<nav
+    class="fixed bottom-0 w-full z-50 backdrop-blur-sm bg-pure-white/80 dark:bg-surface-container/80 border-t border-outline-variant">
+    <div class="flex justify-around items-center h-16 pb-safe w-full max-w-[1100px] mx-auto">
+        <a class="flex flex-col items-center justify-center text-text-muted hover:text-accent-rust transition-colors active:scale-95 transition-all"
+            href="#">
+            <span class="material-symbols-outlined">newspaper</span>
+            <span class="font-label-md text-label-md">Feed</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-text-muted hover:text-accent-rust transition-colors active:scale-95 transition-all"
+            href="#">
+            <span class="material-symbols-outlined">search</span>
+            <span class="font-label-md text-label-md">Explore</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-text-muted hover:text-accent-rust transition-colors active:scale-95 transition-all"
+            href="#">
+            <span class="material-symbols-outlined">edit_note</span>
+            <span class="font-label-md text-label-md">Write</span>
+        </a>
+        <!-- Active State for Profile/Settings -->
+        <a class="flex flex-col items-center justify-center text-accent-rust font-bold active:scale-95 transition-all"
+            href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+            <span class="font-label-md text-label-md">Profile</span>
+        </a>
+    </div>
+</nav>
+<script>
+    // Micro-interaction for feedback on save
+    document.querySelector('button:contains("Save Changes")')?.addEventListener('click', function () {
+        this.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+        setTimeout(() => {
+            this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Saved';
+            this.classList.add('bg-tertiary-container');
+            setTimeout(() => {
+                this.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">check_circle</span> Save Changes';
+                this.classList.remove('bg-tertiary-container');
+            }, 2000);
+        }, 1200);
+    });
+
+    // Simple helper for button detection in this demo environment
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (btn.textContent.includes('Save')) {
+                console.log('Saving profile...');
+            }
+        });
+    });
+</script>
