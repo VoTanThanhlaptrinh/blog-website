@@ -1,81 +1,9 @@
 <!-- TopNavBar -->
-<header
-    class="fixed top-0 right-0 w-[calc(100%-256px)] h-16 bg-pure-white flex justify-between items-center px-margin-desktop z-40 border-b border-on-surface/5">
-    <div class="flex items-center gap-stack-md">
-        <span class="font-headline-md text-headline-md font-bold text-accent-rust font-headline-lg">BBlogHub</span>
-        <div
-            class="hidden md:flex items-center ml-stack-lg bg-surface-container-low px-4 py-1.5 rounded-lg border border-text-ink/5">
-            <span class="material-symbols-outlined text-secondary text-sm" data-icon="search">search</span>
-            <input
-                class="bg-transparent border-none focus:ring-0 font-body-md text-sm w-64 placeholder:text-secondary-fixed-dim"
-                placeholder="Global search..." type="text">
-        </div>
-    </div>
-    <nav class="flex items-center gap-stack-lg">
-        <div class="flex gap-stack-md">
-            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
-                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-            </button>
-            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
-                <span class="material-symbols-outlined" data-icon="help_outline">help_outline</span>
-            </button>
-            <button class="p-2 text-on-secondary-container hover:text-accent-rust transition-colors duration-200">
-                <span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
-            </button>
-        </div>
-    </nav>
-</header>
-<!-- SideNavBar -->
-<aside
-    class="h-screen w-64 fixed left-0 top-0 bg-surface flex flex-col py-base border-r border-on-surface/5 overflow-y-auto hide-scrollbar">
-    <div class="flex items-center gap-3 px-2 mb-4">
-        <div class="w-10 h-10 rounded-lg bg-accent-rust flex items-center justify-center text-pure-white font-bold">A
-        </div>
-        <div>
-            <p class="font-label-md text-label-md text-text-ink font-bold">Admin Panel</p>
-            <p class="text-[10px] uppercase tracking-widest text-secondary">Managing BBlogHub</p>
-        </div>
-    </div>
-    <nav class="flex flex-col gap-1">
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
-            <span class="">Dashboard</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="article">article</span>
-            <span class="">Content</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-accent-rust font-bold bg-pure-white/50 rounded-lg"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="group">group</span>
-            <span class="">Users</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="assessment">assessment</span>
-            <span class="">Reports</span>
-        </a>
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="settings">settings</span>
-            <span class="">Settings</span>
-        </a>
-    </nav>
-    <div class="mt-auto border-t border-text-ink/5 pt-4">
-        <a class="flex items-center gap-3 px-3 py-2.5 font-label-md text-label-md text-on-secondary-container hover:bg-surface-variant transition-all rounded-lg group"
-            href="#">
-            <span class="material-symbols-outlined" data-icon="logout">logout</span>
-            <span class="">Logout</span>
-        </a>
-    </div>
-</aside>
 <!-- Main Content Canvas -->
-<main class="ml-64 pt-24 pb-16 px-margin-desktop min-h-screen bg-surface">
+<main class=" pt-24 pb-16 px-10  ">
     <div class="max-w-[1100px] mx-auto">
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-stack-md mb-stack-lg">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div class="space-y-2">
                 <h1 class="font-headline-lg text-display-lg text-text-ink">User Management</h1>
                 <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
@@ -92,7 +20,7 @@
             </div>
         </div>
         <!-- Filters and Search -->
-        <div class="flex flex-col gap-gutter mb-stack-lg">
+        <div class="flex flex-col gap-4 mb-8">
             <div class="flex items-center border-b border-text-ink/10 overflow-x-auto hide-scrollbar">
                 <button
                     class="px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap">All
@@ -119,12 +47,12 @@
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
                     <button
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-surface-container transition-colors">
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:-container transition-colors">
                         <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
                         <span class="font-label-md text-label-md">Filter</span>
                     </button>
                     <button
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-surface-container transition-colors">
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:-container transition-colors">
                         <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
                         <span class="font-label-md text-label-md">Export</span>
                     </button>
@@ -135,7 +63,7 @@
         <div class="bg-pure-white border border-text-ink/5 rounded-xl overflow-hidden shadow-sm">
             <table class="w-full text-left border-collapse">
                 <thead>
-                    <tr class="bg-surface-container-low border-b border-text-ink/5">
+                    <tr class="-container-low border-b border-text-ink/5">
                         <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">User
                         </th>
                         <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Role
@@ -287,7 +215,7 @@
                         </td>
                         <td class="px-6 py-4">
                             <span
-                                class="bg-surface-paper text-secondary px-3 py-1 rounded-full text-[12px] font-bold">User</span>
+                                class="-paper text-secondary px-3 py-1 rounded-full text-[12px] font-bold">User</span>
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
@@ -315,7 +243,7 @@
                 </tbody>
             </table>
             <!-- Pagination -->
-            <div class="px-6 py-4 bg-surface-container/20 flex items-center justify-between border-t border-text-ink/5">
+            <div class="px-6 py-4 -container/20 flex items-center justify-between border-t border-text-ink/5">
                 <p class="font-body-md text-caption text-secondary">Showing 4 of 248 members</p>
                 <div class="flex gap-2">
                     <button
@@ -336,19 +264,19 @@
             </div>
         </div>
         <!-- Dashboard Insight Cards (Bento Style) -->
-        <div class="mt-section-gap grid grid-cols-1 md:grid-cols-3 gap-gutter">
-            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="-paper p-6 rounded-xl border border-text-ink/5">
                 <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="trending_up">trending_up</span>
                 <h3 class="font-headline-md text-headline-md text-text-ink">Growth</h3>
                 <p class="font-body-md text-body-md text-text-muted mt-2">12% increase in new authors this month.</p>
             </div>
-            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+            <div class="-paper p-6 rounded-xl border border-text-ink/5">
                 <span class="material-symbols-outlined text-accent-rust mb-4"
                     data-icon="shield_person">shield_person</span>
                 <h3 class="font-headline-md text-headline-md text-text-ink">Safety</h3>
                 <p class="font-body-md text-body-md text-text-muted mt-2">3 flagged accounts pending review by mods.</p>
             </div>
-            <div class="bg-surface-paper p-6 rounded-xl border border-text-ink/5">
+            <div class="-paper p-6 rounded-xl border border-text-ink/5">
                 <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="stars">stars</span>
                 <h3 class="font-headline-md text-headline-md text-text-ink">Elite</h3>
                 <p class="font-body-md text-body-md text-text-muted mt-2">15 authors reached "Pro" status last week.</p>
@@ -357,30 +285,3 @@
     </div>
 </main>
 <!-- Micro-interaction Scripts -->
-<script>
-    // Simple scale and interaction visual feedback
-    document.querySelectorAll('button').forEach(button => {
-        button.addEventListener('mousedown', () => {
-            button.classList.add('scale-95');
-        });
-        button.addEventListener('mouseup', () => {
-            button.classList.remove('scale-95');
-        });
-        button.addEventListener('mouseleave', () => {
-            button.classList.remove('scale-95');
-        });
-    });
-
-    // Tab Switch logic (Simulation)
-    const tabs = document.querySelectorAll('.filter-tab');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => {
-                t.classList.remove('text-accent-rust', 'border-accent-rust', 'border-b-2');
-                t.classList.add('text-on-secondary-container');
-            });
-            tab.classList.remove('text-on-secondary-container');
-            tab.classList.add('text-accent-rust', 'border-accent-rust', 'border-b-2');
-        });
-    });
-</script>

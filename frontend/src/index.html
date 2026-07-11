@@ -1,13 +1,123 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>Frontend</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Literata:opsz,wght@7..72,400;600;700&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block"
+    rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Literata:ital,wght@0,400..900;1,400..900&amp;family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+    rel="stylesheet">
+  <script id="tailwind-config">try {
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+              "inverse-surface": "#30312c",
+              "on-surface": "#1b1c17",
+              "primary-fixed-dim": "#ffb59f",
+              "on-secondary": "#ffffff",
+              "tertiary-fixed-dim": "#70d7cf",
+              "surface-dim": "#dcdad2",
+              "secondary": "#625e59",
+              "pure-white": "#FFFFFF",
+              "on-secondary-container": "#68635f",
+              "surface-tint": "#9a452b",
+              "secondary-fixed": "#e9e1db",
+              "on-primary-fixed-variant": "#7b2e16",
+              "on-surface-variant": "#55423d",
+              "surface-container-highest": "#e4e2db",
+              "on-error-container": "#93000a",
+              "primary": "#974229",
+              "on-tertiary-fixed": "#00201e",
+              "outline-variant": "#dbc1ba",
+              "on-error": "#ffffff",
+              "surface-container-high": "#eae8e0",
+              "outline": "#88726c",
+              "error-container": "#ffdad6",
+              "tertiary-fixed": "#8df4eb",
+              "surface": "#fbf9f1",
+              "on-tertiary-fixed-variant": "#00504c",
+              "tertiary": "#006762",
+              "on-secondary-fixed-variant": "#4a4642",
+              "surface-container-low": "#f6f4ec",
+              "accent-rust": "#BD5F43",
+              "on-primary-fixed": "#3b0a00",
+              "secondary-fixed-dim": "#ccc5c0",
+              "inverse-primary": "#ffb59f",
+              "primary-fixed": "#ffdbd1",
+              "surface-bright": "#fbf9f1",
+              "on-background": "#1b1c17",
+              "surface-container": "#f0eee6",
+              "inverse-on-surface": "#f3f1e9",
+              "background": "#fbf9f1",
+              "on-primary": "#ffffff",
+              "tertiary-container": "#00837c",
+              "on-tertiary": "#ffffff",
+              "on-tertiary-container": "#f3fffd",
+              "text-ink": "#1C1917",
+              "surface-variant": "#e4e2db",
+              "on-primary-container": "#fffbff",
+              "error": "#ba1a1a",
+              "surface-paper": "#F0EEE6",
+              "on-secondary-fixed": "#1e1b18",
+              "primary-container": "#b65a3e",
+              "surface-container-lowest": "#ffffff",
+              "text-muted": "#44403C",
+              "secondary-container": "#e9e1db"
+            },
+            "borderRadius": {
+              "DEFAULT": "0.125rem",
+              "lg": "0.25rem",
+              "xl": "0.5rem",
+              "full": "0.75rem"
+            },
+            "fontFamily": {
+              "headline-lg-mobile": ["Literata"],
+              "caption": ["Hanken Grotesk"],
+              "body-lg": ["Hanken Grotesk"],
+              "label-md": ["Hanken Grotesk"],
+              "headline-lg": ["Literata"],
+              "body-md": ["Hanken Grotesk"],
+              "display-lg": ["Literata"],
+              "headline-md": ["Literata"]
+            },
+            "fontSize": {
+              "headline-lg-mobile": ["28px", { "lineHeight": "36px", "fontWeight": "700" }],
+              "caption": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+              "body-lg": ["18px", { "lineHeight": "30px", "fontWeight": "400" }],
+              "label-md": ["14px", { "lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+              "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+              "body-md": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+              "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+              "headline-md": ["24px", { "lineHeight": "32px", "fontWeight": "600" }]
+            }
+          },
+        },
+      }
+    } catch (_e) { }</script>
 </head>
-<body>
+
+<body class="font-body-md text-body-md font-headline-md">
   <app-root></app-root>
 </body>
+
 </html>

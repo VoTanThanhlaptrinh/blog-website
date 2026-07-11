@@ -1,12 +1,12 @@
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-pure-white flex justify-between items-center px-margin-mobile md:px-margin-desktop h-16 w-full border-b border-text-ink/10">
-<div class="flex items-center gap-gutter">
+<header class="fixed top-0 w-full z-50 bg-pure-white flex justify-between items-center px-5 md:px-10 h-16 w-full border-b border-text-ink/10">
+<div class="flex items-center gap-4">
 <span class="font-headline-md text-headline-md font-bold text-accent-rust">BBlogHub</span>
 <div class="hidden md:flex items-center gap-4 ml-8 text-text-muted">
 <span class="text-caption font-label-md">Đang lưu tự động...</span>
 </div>
 </div>
-<div class="flex items-center gap-stack-md">
+<div class="flex items-center gap-4">
 <button class="px-4 py-2 font-label-md text-label-md text-text-muted hover:text-accent-rust hover:bg-surface-container-low transition-colors duration-150 ease-in-out active:scale-95">
                 Lưu nháp
             </button>
@@ -20,7 +20,7 @@
 <!-- Left Column: Editor -->
 <section class="flex-1 flex flex-col border-r border-text-ink/5 bg-pure-white">
 <!-- Toolbar -->
-<div class="px-margin-desktop py-stack-sm border-b border-text-ink/5 flex items-center justify-between bg-surface-container-lowest">
+<div class="px-10 py-2 border-b border-text-ink/5 flex items-center justify-between bg-surface-container-lowest">
 <div class="flex items-center gap-1">
 <button class="p-2 hover:bg-surface-container rounded transition-colors text-text-muted" title="Heading">
 <span class="material-symbols-outlined">format_h1</span>
@@ -54,11 +54,11 @@
                 </div>
 </div>
 <!-- Content Area -->
-<div class="flex-1 overflow-y-auto editor-container px-margin-desktop py-stack-lg max-w-[800px] mx-auto w-full">
+<div class="flex-1 overflow-y-auto editor-container px-10 py-8 max-w-[800px] mx-auto w-full">
 <!-- Title Input -->
 <textarea class="w-full bg-transparent border-none focus:ring-0 font-headline-lg text-headline-lg p-0 placeholder-text-ink/20 resize-none overflow-hidden" id="editor-title" oninput="this.style.height = ''; this.style.height = this.scrollHeight + 'px'; syncPreview();" placeholder="Tiêu đề bài viết..." rows="1"></textarea>
 <!-- Category Tags -->
-<div class="flex flex-wrap gap-stack-sm my-stack-lg">
+<div class="flex flex-wrap gap-2 my-8">
 <span class="px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full flex items-center gap-1 cursor-default">
                         # Công nghệ
                         <span class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
@@ -77,13 +77,13 @@
 </section>
 <!-- Right Column: Preview -->
 <section class="flex-1 bg-surface overflow-hidden hidden lg:flex flex-col">
-<div class="px-margin-desktop py-stack-sm border-b border-text-ink/5 bg-surface-container-low flex items-center">
+<div class="px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center">
 <span class="font-label-md text-label-md text-text-muted uppercase tracking-widest">Xem trước</span>
 </div>
-<div class="flex-1 overflow-y-auto editor-container p-margin-desktop">
+<div class="flex-1 overflow-y-auto editor-container p-10">
 <div class="max-w-[720px] mx-auto bg-pure-white p-12 custom-shadow border border-text-ink/5">
 <!-- Preview Author -->
-<div class="flex items-center gap-stack-md mb-stack-lg">
+<div class="flex items-center gap-4 mb-8">
 <div class="w-10 h-10 rounded-full bg-surface-container" data-alt="A professional headshot of a young Vietnamese writer in a minimalist office setting with soft, natural lighting coming from a nearby window. The photographer used a shallow depth of field to create a blurred, neutral background that emphasizes the author's thoughtful expression. The overall aesthetic is clean and modern, following the Editorial Modernist style of the BBlogHub platform." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuArdH379Kuv3R8j9EA1YTjfFugXS_nrhN7tuNy7JZWiWnz-AynBmtzrps-tddjeOUDGXPV-XezIU8smlsfCij0Ib7mbmPtXR-Vs7fX_elPlQKAA3rUyHB-plkSeRcMFERArw-oFGgLmSalF-nZAWKENdu8I7-RG3tJfGaW-xqO8G2Ys-DTEkBLBzEIZWwg9kMGaWRSOF-03GBQvZ8eSknoGRA6RzDwEMLu_OYFxfQYE_xiLm6LAqBak-prJqoQBPVb5nwKLJk5F2VM')"></div>
 <div>
 <p class="font-label-md text-label-md text-on-background">Nguyễn Văn A</p>
@@ -92,12 +92,12 @@
 </div>
 <!-- Preview Content -->
 <article class="prose prose-stone prose-lg max-w-none">
-<h1 class="font-headline-lg text-headline-lg text-text-ink mb-stack-lg leading-tight" id="preview-title">
+<h1 class="font-headline-lg text-headline-lg text-text-ink mb-8 leading-tight" id="preview-title">
                             Phát triển phần mềm trong kỷ nguyên AI
                         </h1>
 <div class="font-body-lg text-body-lg text-text-muted space-y-6" id="preview-body">
 <p>Đây là giao diện xem trước cho bài viết của bạn. Khi bạn nhập nội dung ở cột bên trái, các định dạng sẽ được áp dụng trực tiếp tại đây theo phong cách "Editorial Modernist".</p>
-<div class="w-full h-80 my-stack-lg bg-surface-container" data-alt="A high-end, artistic representation of neural networks blending with traditional newspaper typography. The scene is illuminated in warm, paper-like tones with rust-colored accents, symbolizing the bridge between old-world editorial excellence and future technology. The lighting is soft and cinematic, evoking a sense of deep focus and intellectual exploration. Minimalist architectural lines frame the composition." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBod8XSiTClyzfNUVqpupEhoME4dhDLFd2ovhlnWM-Gzzw4g6VrP5-4aGGNJEfkLLxTtQBrsWqLuVN7pNn8-RdlAzVtNw8nphmS7mUAzgVY57GP1W6sOg1h6HBx3HHZplIGXT9tYrNFMopeEdzYfInO925WmKt2TSDtqIyQgfqGZRY7KnWKy58ZNvPMNTma9JxKR4mapLYZL5cYXK2Lb03M9KmMb_zKmvJGn29gZ-ilvBW9uNj0fhTUO2yEqJlBN6DfjD3FuIkoYt4')"></div>
+<div class="w-full h-80 my-8 bg-surface-container" data-alt="A high-end, artistic representation of neural networks blending with traditional newspaper typography. The scene is illuminated in warm, paper-like tones with rust-colored accents, symbolizing the bridge between old-world editorial excellence and future technology. The lighting is soft and cinematic, evoking a sense of deep focus and intellectual exploration. Minimalist architectural lines frame the composition." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBod8XSiTClyzfNUVqpupEhoME4dhDLFd2ovhlnWM-Gzzw4g6VrP5-4aGGNJEfkLLxTtQBrsWqLuVN7pNn8-RdlAzVtNw8nphmS7mUAzgVY57GP1W6sOg1h6HBx3HHZplIGXT9tYrNFMopeEdzYfInO925WmKt2TSDtqIyQgfqGZRY7KnWKy58ZNvPMNTma9JxKR4mapLYZL5cYXK2Lb03M9KmMb_zKmvJGn29gZ-ilvBW9uNj0fhTUO2yEqJlBN6DfjD3FuIkoYt4')"></div>
 <p>Sự cân bằng giữa khoảng trắng (white-space) và kiểu chữ (typography) là ưu tiên hàng đầu của BBlogHub. Chúng tôi sử dụng font Literata cho tiêu đề và Hanken Grotesk cho nội dung để đảm bảo trải nghiệm đọc tối ưu.</p>
 <blockquote class="border-l-4 border-accent-rust pl-6 py-2 italic font-headline-md text-text-ink">
                                 "Thiết kế tốt không chỉ là những gì mắt thấy, mà là cách người đọc cảm nhận sự rõ ràng trong tư duy của người viết."
@@ -111,9 +111,9 @@
 </main>
 <!-- Footer -->
 <footer class="bg-surface-container h-10 border-t border-text-ink/5 z-50">
-<div class="max-w-[1100px] mx-auto h-full px-margin-mobile flex justify-between items-center">
+<div class="max-w-[1100px] mx-auto h-full px-5 flex justify-between items-center">
 <span class="text-caption text-text-muted">© 2024 BBlogHub. Editorial Modernist System.</span>
-<div class="flex gap-stack-md">
+<div class="flex gap-4">
 <a class="text-caption text-text-muted hover:text-accent-rust transition-colors" href="#">Trợ giúp</a>
 <a class="text-caption text-text-muted hover:text-accent-rust transition-colors" href="#">Phím tắt</a>
 </div>

@@ -1,0 +1,94 @@
+<!-- SideNavBar (Shared Component) -->
+<aside class="h-screen w-64 fixed left-0 top-0 bg-surface-container dark:bg-surface-container-low border-r border-outline-variant/30 flex-col p-4 z-50 hidden md:flex">
+    <div class="flex items-center gap-3 mb-8">
+        <div class="w-10 h-10 bg-primary flex items-center justify-center rounded-lg">
+            <span class="material-symbols-outlined text-pure-white" data-icon="terminal">terminal</span>
+        </div>
+        <div>
+            <h2 class="font-headline-md text-headline-md font-bold text-primary">BBlogHub</h2>
+            <p class="font-label-md text-xs text-on-surface-variant opacity-70">Admin Console</p>
+        </div>
+    </div>
+    <nav class="flex-1 space-y-1">
+        <a class="flex items-center gap-2 px-2 py-3 text-accent-rust font-bold bg-primary-container/10 rounded-lg group transition-all" href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+            <span class="font-label-md text-label-md">Dashboard</span>
+        </a>
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">article</span>
+            <span class="font-label-md text-label-md">Content</span>
+        </a>
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">group</span>
+            <span class="font-label-md text-label-md">Users</span>
+        </a>
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">analytics</span>
+            <span class="font-label-md text-label-md">Reports</span>
+        </a>
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
+            <span class="material-symbols-outlined">settings</span>
+            <span class="font-label-md text-label-md">Settings</span>
+        </a>
+    </nav>
+    <div class="mt-auto space-y-1 pt-8">
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust transition-all" href="#">
+            <span class="material-symbols-outlined">help</span>
+            <span class="font-label-md text-label-md">Support</span>
+        </a>
+        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust transition-all" href="#">
+            <span class="material-symbols-outlined">logout</span>
+            <span class="font-label-md text-label-md">Sign Out</span>
+        </a>
+    </div>
+</aside>
+
+<!-- Main Wrapper -->
+<main class="md:ml-64 min-h-screen flex flex-col bg-surface">
+    <!-- TopNavBar (Shared Component) -->
+    <header class="w-full h-16 sticky top-0 z-40 bg-surface dark:bg-surface-dim border-b border-outline-variant/30 flex justify-between items-center px-6 md:px-10">
+        <div class="flex items-center gap-4">
+            <button class="md:hidden">
+                <span class="material-symbols-outlined" data-icon="menu">menu</span>
+            </button>
+            <div class="hidden md:flex items-center bg-surface-container-low px-1.5 rounded-full border border-outline-variant/30 w-64">
+                <span class="material-symbols-outlined text-on-surface-variant text-sm mr-2" data-icon="search">search</span>
+                <input class="bg-transparent border-none focus:ring-0 text-sm w-full font-body-md" placeholder="Search..." type="text">
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+            </button>
+            <button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+                <span class="material-symbols-outlined" data-icon="settings">settings</span>
+            </button>
+            <div class="h-8 w-8 rounded-full overflow-hidden border border-outline-variant/30">
+                <img class="w-full h-full object-cover" data-alt="Admin avatar" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBKqyv55nFOVN5AqaSu5FZRHl8Wu7Yov-0JGsZw3OUBFzMITAgRp_BkPLkAMvHMpeK6EgpDdVPrZA86lL-tLgkhjSlxPDMfR6VUF5cUwCwk1XE9Rt3W9vA5I0EnjOnD3JfxWWn6-j1NSLohpC2TH-tw04hnP7-VQybbDpwoNRY9ec1ornrxLta7ee0SfgUOBqYhrRuzqSEhhHE7GdGHaoPle6r6GfQRDu2_py_ObkD0_3e6GbXwklxaCPHfSvw35c1H5nlJ8bqTDQw">
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Content -->
+    <router-outlet></router-outlet>
+</main>
+
+<!-- Mobile Bottom Navigation (Shared Component Responsive Logic) -->
+<nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-pure-white/80 backdrop-blur-md border-t border-outline-variant/30 flex items-center justify-around z-50">
+    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
+        <span class="material-symbols-outlined text-2xl" data-icon="dashboard">dashboard</span>
+        <span class="text-[10px] font-bold">Dashboard</span>
+    </button>
+    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
+        <span class="material-symbols-outlined text-2xl" data-icon="article">article</span>
+        <span class="text-[10px] font-bold">Content</span>
+    </button>
+    <button class="flex flex-col items-center justify-center gap-1 text-primary">
+        <span class="material-symbols-outlined text-2xl" data-icon="analytics">analytics</span>
+        <span class="text-[10px] font-bold">Reports</span>
+    </button>
+    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
+        <span class="material-symbols-outlined text-2xl" data-icon="group">group</span>
+        <span class="text-[10px] font-bold">Users</span>
+    </button>
+</nav>

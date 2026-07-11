@@ -1,7 +1,9 @@
 <div class="flex min-h-screen flex-col bg-cream">
+  @if (!isAdminRoute) {
   <app-header />
-  <main class="flex-1">
-    <router-outlet />
-  </main>
+  }
+  <router-outlet />
+  @if (!isAdminRoute) {
   <app-footer />
+  }
 </div>

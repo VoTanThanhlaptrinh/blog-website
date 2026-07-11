@@ -4,12 +4,19 @@ import { AdminContentManagementComponent } from './admin-content-management/admi
 import { AdminReportsComponent } from './admin-reports/admin-reports.component';
 import { AdminSystemSettingsComponent } from './admin-system-settings/admin-system-settings.component';
 import { AdminUserManagementComponent } from './admin-user-management/admin-user-management.component';
+import { AdminLayoutComponent } from '../../layout/admin-layout/admin-layout.component';
 
 export const ADMIN_ROUTES: Routes = [
-  { path: 'analytics', component: AdminAnalyticsComponent },
-  { path: 'content-management', component: AdminContentManagementComponent },
-  { path: 'reports', component: AdminReportsComponent },
-  { path: 'system-settings', component: AdminSystemSettingsComponent },
-  { path: 'user-management', component: AdminUserManagementComponent },
-  { path: '', redirectTo: 'analytics', pathMatch: 'full' }
+  {
+    path: '',
+    component: AdminLayoutComponent,
+    children: [
+      { path: 'analytics', component: AdminAnalyticsComponent },
+      { path: 'content-management', component: AdminContentManagementComponent },
+      { path: 'reports', component: AdminReportsComponent },
+      { path: 'system-settings', component: AdminSystemSettingsComponent },
+      { path: 'user-management', component: AdminUserManagementComponent },
+      { path: '', redirectTo: 'analytics', pathMatch: 'full' }
+    ]
+  }
 ];

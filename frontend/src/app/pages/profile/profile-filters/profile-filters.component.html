@@ -1,203 +1,245 @@
 <!-- Top App Bar -->
-<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile h-16 bg-surface/95 backdrop-blur-sm border-b border-on-surface/5">
-<button class="w-10 h-10 flex items-center justify-center text-accent-rust hover:scale-95 active:duration-100 transition-transform">
-<span class="material-symbols-outlined" data-icon="menu">menu</span>
-</button>
-<h1 class="font-headline-md text-headline-md italic text-accent-rust">Literary Signal</h1>
-<button class="w-10 h-10 flex items-center justify-center text-accent-rust hover:scale-95 active:duration-100 transition-transform">
-<span class="material-symbols-outlined" data-icon="search">search</span>
-</button>
-</header>
-<main class="pt-16 pb-24 max-w-[720px] mx-auto min-h-screen">
-<!-- Profile Header Section -->
-<section class="px-margin-mobile py-stack-lg">
-<div class="flex flex-col items-center text-center">
-<!-- Avatar with decorative ring -->
-<div class="relative mb-stack-md">
-<div class="w-32 h-32 rounded-full border-4 border-accent-rust/10 p-1 bg-surface-paper">
-<img class="w-full h-full rounded-full object-cover" data-alt="A professional close-up portrait of a Southeast Asian software engineer with a friendly and focused expression. The lighting is soft and editorial, characteristic of high-end tech magazine photography. The background is a blurred minimalist office with warm wooden textures and neutral tones, aligning with an editorial modernist aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO_lX2SV7O2-j5hKZgV2UfmtFpeuIwqcVptAXS5_GmV4U1mOW_dtnrVmoDSlSPvF2RKaMAKoZgZp95aJDvuLdf2n6fA7PzhdYqfuxLgkwvTdT0hb6k8S9Cp3eS8v0MZ0lLwW4cgPvegoDDewk3qnIOMBzehrhLDXHuXxBzwsxfcqtuS3qIMX9g-4YmnKB2c9TkjLbjS6BxYZL0wl_YA55-PnbIxOk-WT_Ti2HwcFnDi3feKKB6JgcvdSAzHJ0rfGt1id2A8MjbUsU">
-</div>
-<button class="absolute bottom-0 right-0 bg-accent-rust text-pure-white w-10 h-10 rounded-full flex items-center justify-center border-4 border-surface shadow-sm active:scale-90 transition-transform">
-<span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
-</button>
-</div>
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-text-ink mb-1">Nguyễn Văn A</h2>
-<p class="text-text-muted font-label-md text-label-md mb-stack-md">Software Engineer &amp; Technical Blogger</p>
-<div class="flex gap-stack-lg mb-stack-lg">
-<div class="flex flex-col">
-<span class="font-headline-md text-text-ink">124</span>
-<span class="text-caption font-caption text-text-muted uppercase tracking-wider">Posts</span>
-</div>
-<div class="w-[1px] h-10 bg-on-surface/10"></div>
-<div class="flex flex-col">
-<span class="font-headline-md text-text-ink">5.2k</span>
-<span class="text-caption font-caption text-text-muted uppercase tracking-wider">Followers</span>
-</div>
-<div class="w-[1px] h-10 bg-on-surface/10"></div>
-<div class="flex flex-col">
-<span class="font-headline-md text-text-ink">840</span>
-<span class="text-caption font-caption text-text-muted uppercase tracking-wider">Following</span>
-</div>
-</div>
-<div class="flex w-full gap-stack-sm">
-<button class="flex-1 bg-accent-rust text-pure-white py-3 font-label-md text-label-md rounded-lg active:scale-[0.98] transition-transform">Follow</button>
-<button class="flex-1 border border-accent-rust text-accent-rust py-3 font-label-md text-label-md rounded-lg active:scale-[0.98] transition-transform">Message</button>
-</div>
-</div>
-</section>
-<!-- Tab Bar -->
-<!-- Posts List -->
-<section class="px-margin-mobile pb-stack-md border-b border-on-surface/5 bg-surface sticky top-16 z-40">
-<div class="flex flex-col gap-4">
-<!-- Search Input -->
-<div class="relative group">
-<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent-rust transition-colors">search</span>
-<input class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg font-body-md text-body-md focus:ring-1 focus:ring-accent-rust placeholder:text-text-muted/50 transition-all" placeholder="Tìm kiếm bài viết..." type="text">
-</div>
-<!-- Filter & Sort Controls -->
-<div class="flex items-center justify-between gap-2">
-<div class="flex gap-2">
-<button class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink">
-<span class="material-symbols-outlined text-[18px]">filter_list</span>
-          Lọc
-        </button>
-<div class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink cursor-pointer">
-<span class="material-symbols-outlined text-[18px]">category</span>
-<select class="bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
-<option>Chủ đề</option>
-<option>Development</option>
-<option>Design</option>
-<option>Architecture</option>
-</select>
-</div>
-</div>
-<div class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink cursor-pointer">
-<span class="material-symbols-outlined text-[18px]">sort</span>
-<select class="bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
-<option>Mới nhất</option>
-<option>Yêu thích nhất</option>
-<option>Cũ nhất</option>
-</select>
-</div>
-</div>
-</div>
-</section><section class="px-margin-mobile py-stack-lg flex flex-col gap-gutter">
-<!-- Editorial Post Card 1 -->
-<article class="bg-pure-white border border-on-surface/5 rounded-xl p-stack-md editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
-<div class="flex justify-between items-start mb-2">
-<span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Development</span>
-<span class="text-caption font-caption text-text-muted">Mar 12 • 8 min read</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-text-ink mb-stack-sm group-hover:text-accent-rust transition-colors">Tối ưu hóa Performance trong React với Server Components</h3>
-<p class="text-text-muted line-clamp-2 mb-stack-md font-body-md text-body-md">Tìm hiểu cách React Server Components thay đổi cách chúng ta xây dựng ứng dụng web hiện đại và cách tối ưu hóa TTFB...</p>
-<div class="flex items-center gap-4 text-text-muted">
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 1.2k
-                    </span>
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 48
-                    </span>
-</div>
-</article>
-<!-- Editorial Post Card 2 -->
-<article class="bg-pure-white border border-on-surface/5 rounded-xl p-stack-md editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
-<div class="flex justify-between items-start mb-2">
-<span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Design</span>
-<span class="text-caption font-caption text-text-muted">Feb 28 • 5 min read</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-text-ink mb-stack-sm group-hover:text-accent-rust transition-colors">Ngôn ngữ thiết kế: Sự trỗi dậy của Minimalist Editorial</h3>
-<p class="text-text-muted line-clamp-2 mb-stack-md font-body-md text-body-md">Khám phá xu hướng thiết kế kết hợp giữa vẻ đẹp cổ điển của báo giấy và sự tiện dụng của công nghệ số...</p>
-<div class="flex items-center gap-4 text-text-muted">
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 850
-                    </span>
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 24
-                    </span>
-</div>
-</article>
-<!-- Editorial Post Card 3 -->
-<article class="bg-pure-white border border-on-surface/5 rounded-xl p-stack-md editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
-<div class="flex justify-between items-start mb-2">
-<span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Architecture</span>
-<span class="text-caption font-caption text-text-muted">Feb 15 • 12 min read</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-text-ink mb-stack-sm group-hover:text-accent-rust transition-colors">Microservices vs Monolith: Lựa chọn nào cho Startup?</h3>
-<p class="text-text-muted line-clamp-2 mb-stack-md font-body-md text-body-md">Phân tích chuyên sâu về kiến trúc hệ thống, những sai lầm thường gặp khi chia nhỏ dịch vụ quá sớm...</p>
-<div class="flex items-center gap-4 text-text-muted">
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 2.4k
-                    </span>
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 102
-                    </span>
-</div>
-</article>
-<!-- Editorial Post Card 4 -->
-<article class="bg-pure-white border border-on-surface/5 rounded-xl p-stack-md editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
-<div class="flex justify-between items-start mb-2">
-<span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Dev Life</span>
-<span class="text-caption font-caption text-text-muted">Jan 30 • 6 min read</span>
-</div>
-<h3 class="font-headline-md text-headline-md text-text-ink mb-stack-sm group-hover:text-accent-rust transition-colors">Kỹ năng viết lách dành cho Software Engineer</h3>
-<p class="text-text-muted line-clamp-2 mb-stack-md font-body-md text-body-md">Tại sao viết blog giúp bạn trở thành một lập trình viên giỏi hơn và cách bắt đầu hành trình viết lách của mình...</p>
-<div class="flex items-center gap-4 text-text-muted">
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 560
-                    </span>
-<span class="flex items-center gap-1 font-caption text-caption">
-<span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 15
-                    </span>
-</div>
-</article>
-</section>
+<!-- <header
+    class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 h-16 bg-surface/95 backdrop-blur-sm border-b border-on-surface/5">
+    <button
+        class="w-10 h-10 flex items-center justify-center text-accent-rust hover:scale-95 active:duration-100 transition-transform">
+        <span class="material-symbols-outlined" data-icon="menu">menu</span>
+    </button>
+    <h1 class="font-headline-md text-headline-md italic text-accent-rust">Literary Signal</h1>
+    <button
+        class="w-10 h-10 flex items-center justify-center text-accent-rust hover:scale-95 active:duration-100 transition-transform">
+        <span class="material-symbols-outlined" data-icon="search">search</span>
+    </button>
+</header> -->
+<main class="pt-16 pb-20 max-w-180 mx-auto min-h-screen">
+    <!-- Profile Header Section -->
+    <section class="px-5 py-8">
+        <div class="flex flex-col items-center text-center">
+            <!-- Avatar with decorative ring -->
+            <div class="relative mb-4">
+                <div class="w-32 h-32 rounded-full border-4 border-accent-rust/10 p-1 bg-surface-paper">
+                    <img class="w-full h-full rounded-full object-cover"
+                        data-alt="A professional close-up portrait of a Southeast Asian software engineer with a friendly and focused expression. The lighting is soft and editorial, characteristic of high-end tech magazine photography. The background is a blurred minimalist office with warm wooden textures and neutral tones, aligning with an editorial modernist aesthetic."
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCO_lX2SV7O2-j5hKZgV2UfmtFpeuIwqcVptAXS5_GmV4U1mOW_dtnrVmoDSlSPvF2RKaMAKoZgZp95aJDvuLdf2n6fA7PzhdYqfuxLgkwvTdT0hb6k8S9Cp3eS8v0MZ0lLwW4cgPvegoDDewk3qnIOMBzehrhLDXHuXxBzwsxfcqtuS3qIMX9g-4YmnKB2c9TkjLbjS6BxYZL0wl_YA55-PnbIxOk-WT_Ti2HwcFnDi3feKKB6JgcvdSAzHJ0rfGt1id2A8MjbUsU">
+                </div>
+                <button
+                    class="absolute bottom-0 right-0 bg-accent-rust text-pure-white w-10 h-10 rounded-full flex items-center justify-center border-4 border-surface shadow-sm active:scale-90 transition-transform">
+                    <span class="material-symbols-outlined text-[20px]" data-icon="edit">edit</span>
+                </button>
+            </div>
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile text-text-ink mb-1">Nguyễn Văn A</h2>
+            <p class="text-text-muted font-label-md text-label-md mb-4">Software Engineer &amp; Technical Blogger
+            </p>
+            <div class="flex gap-8 mb-8">
+                <div class="flex flex-col">
+                    <span class="font-headline-md text-text-ink">124</span>
+                    <span class="text-caption font-caption text-text-muted uppercase tracking-wider">Posts</span>
+                </div>
+                <div class="w-[1px] h-10 bg-on-surface/10"></div>
+                <div class="flex flex-col">
+                    <span class="font-headline-md text-text-ink">5.2k</span>
+                    <span class="text-caption font-caption text-text-muted uppercase tracking-wider">Followers</span>
+                </div>
+                <div class="w-[1px] h-10 bg-on-surface/10"></div>
+                <div class="flex flex-col">
+                    <span class="font-headline-md text-text-ink">840</span>
+                    <span class="text-caption font-caption text-text-muted uppercase tracking-wider">Following</span>
+                </div>
+            </div>
+            <div class="flex w-full gap-2">
+                <button
+                    class="flex-1 bg-accent-rust text-pure-white py-3 font-label-md text-label-md rounded-lg active:scale-[0.98] transition-transform">Follow</button>
+                <button
+                    class="flex-1 border border-accent-rust text-accent-rust py-3 font-label-md text-label-md rounded-lg active:scale-[0.98] transition-transform">Message</button>
+            </div>
+        </div>
+    </section>
+    <!-- Tab Bar -->
+    <!-- Posts List -->
+    <section class="px-5 pb-4 border-b border-on-surface/5 bg-surface shadow-md rounded-lg">
+        <div class="flex flex-col gap-4">
+            <!-- Search Input -->
+            <div class="relative group px-1 py-3 ">
+                <span
+                    class="material-symbols-outlined absolute left-3 top-11 -translate-y-1/2 text-text-muted group-focus-within:text-accent-rust transition-colors">search</span>
+                <input
+                    class="w-full pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-lg font-body-md text-body-md focus:ring-1 focus:ring-accent-rust placeholder:text-text-muted/50 transition-all"
+                    placeholder="Tìm kiếm bài viết..." type="text">
+            </div>
+            <!-- Filter & Sort Controls -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex gap-2">
+                    <button
+                        class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink">
+                        <span class="material-symbols-outlined text-[18px]">filter_list</span>
+                        Lọc
+                    </button>
+                    <div
+                        class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">category</span>
+                        <select class="bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+                            <option>Chủ đề</option>
+                            <option>Development</option>
+                            <option>Design</option>
+                            <option>Architecture</option>
+                        </select>
+                    </div>
+                </div>
+                <div
+                    class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-on-surface/10 hover:bg-surface-container-high transition-colors text-label-md font-label-md text-text-ink cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">sort</span>
+                    <select class="bg-transparent border-none p-0 focus:ring-0 cursor-pointer">
+                        <option>Mới nhất</option>
+                        <option>Yêu thích nhất</option>
+                        <option>Cũ nhất</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="px-5 py-8 flex flex-col gap-4">
+        <!-- Editorial Post Card 1 -->
+        <article
+            class="bg-pure-white border border-on-surface/5 rounded-xl p-4 editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
+            <div class="flex justify-between items-start mb-2">
+                <span
+                    class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Development</span>
+                <span class="text-caption font-caption text-text-muted">Mar 12 • 8 min read</span>
+            </div>
+            <h3
+                class="font-headline-md text-headline-md text-text-ink mb-2 group-hover:text-accent-rust transition-colors">
+                Tối ưu hóa Performance trong React với Server Components</h3>
+            <p class="text-text-muted line-clamp-2 mb-4 font-body-md text-body-md">Tìm hiểu cách React Server
+                Components thay đổi cách chúng ta xây dựng ứng dụng web hiện đại và cách tối ưu hóa TTFB...</p>
+            <div class="flex items-center gap-4 text-text-muted">
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 1.2k
+                </span>
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 48
+                </span>
+            </div>
+        </article>
+        <!-- Editorial Post Card 2 -->
+        <article
+            class="bg-pure-white border border-on-surface/5 rounded-xl p-4 editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
+            <div class="flex justify-between items-start mb-2">
+                <span
+                    class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Design</span>
+                <span class="text-caption font-caption text-text-muted">Feb 28 • 5 min read</span>
+            </div>
+            <h3
+                class="font-headline-md text-headline-md text-text-ink mb-2 group-hover:text-accent-rust transition-colors">
+                Ngôn ngữ thiết kế: Sự trỗi dậy của Minimalist Editorial</h3>
+            <p class="text-text-muted line-clamp-2 mb-4 font-body-md text-body-md">Khám phá xu hướng thiết kế kết
+                hợp giữa vẻ đẹp cổ điển của báo giấy và sự tiện dụng của công nghệ số...</p>
+            <div class="flex items-center gap-4 text-text-muted">
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 850
+                </span>
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 24
+                </span>
+            </div>
+        </article>
+        <!-- Editorial Post Card 3 -->
+        <article
+            class="bg-pure-white border border-on-surface/5 rounded-xl p-4 editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
+            <div class="flex justify-between items-start mb-2">
+                <span
+                    class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Architecture</span>
+                <span class="text-caption font-caption text-text-muted">Feb 15 • 12 min read</span>
+            </div>
+            <h3
+                class="font-headline-md text-headline-md text-text-ink mb-2 group-hover:text-accent-rust transition-colors">
+                Microservices vs Monolith: Lựa chọn nào cho Startup?</h3>
+            <p class="text-text-muted line-clamp-2 mb-4 font-body-md text-body-md">Phân tích chuyên sâu về kiến
+                trúc hệ thống, những sai lầm thường gặp khi chia nhỏ dịch vụ quá sớm...</p>
+            <div class="flex items-center gap-4 text-text-muted">
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 2.4k
+                </span>
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 102
+                </span>
+            </div>
+        </article>
+        <!-- Editorial Post Card 4 -->
+        <article
+            class="bg-pure-white border border-on-surface/5 rounded-xl p-4 editorial-shadow group cursor-pointer active:scale-[0.99] transition-transform">
+            <div class="flex justify-between items-start mb-2">
+                <span
+                    class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full font-label-md text-[12px] uppercase tracking-wide">Dev
+                    Life</span>
+                <span class="text-caption font-caption text-text-muted">Jan 30 • 6 min read</span>
+            </div>
+            <h3
+                class="font-headline-md text-headline-md text-text-ink mb-2 group-hover:text-accent-rust transition-colors">
+                Kỹ năng viết lách dành cho Software Engineer</h3>
+            <p class="text-text-muted line-clamp-2 mb-4 font-body-md text-body-md">Tại sao viết blog giúp bạn trở
+                thành một lập trình viên giỏi hơn và cách bắt đầu hành trình viết lách của mình...</p>
+            <div class="flex items-center gap-4 text-text-muted">
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="favorite">favorite</span> 560
+                </span>
+                <span class="flex items-center gap-1 font-caption text-caption">
+                    <span class="material-symbols-outlined text-[18px]" data-icon="chat_bubble">chat_bubble</span> 15
+                </span>
+            </div>
+        </article>
+    </section>
 </main>
 <!-- Bottom Navigation Bar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile pb-safe pt-2 bg-surface/90 dark:bg-surface-dim/90 border-t border-on-surface/5 backdrop-blur-sm h-20">
-<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
-<span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
-<span class="font-label-md text-[10px] md:text-label-md mt-1">Feed</span>
-</button>
-<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
-<span class="material-symbols-outlined" data-icon="bookmarks">bookmarks</span>
-<span class="font-label-md text-[10px] md:text-label-md mt-1">Library</span>
-</button>
-<button class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
-<span class="material-symbols-outlined" data-icon="edit_square">edit_square</span>
-<span class="font-label-md text-[10px] md:text-label-md mt-1">Write</span>
-</button>
-<button class="flex flex-col items-center justify-center text-accent-rust bg-primary-fixed/20 rounded-xl px-4 py-1">
-<span class="material-symbols-outlined" data-icon="person" style="font-variation-settings: 'FILL' 1;">person</span>
-<span class="font-label-md text-[10px] md:text-label-md mt-1">Profile</span>
-</button>
-</nav>
+<!-- <nav
+    class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-5 pb-safe pt-2 bg-surface/90 dark:bg-surface-dim/90 border-t border-on-surface/5 backdrop-blur-sm h-20">
+    <button
+        class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
+        <span class="material-symbols-outlined" data-icon="auto_stories">auto_stories</span>
+        <span class="font-label-md text-[10px] md:text-label-md mt-1">Feed</span>
+    </button>
+    <button
+        class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
+        <span class="material-symbols-outlined" data-icon="bookmarks">bookmarks</span>
+        <span class="font-label-md text-[10px] md:text-label-md mt-1">Library</span>
+    </button>
+    <button
+        class="flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low transition-all p-2 rounded-xl">
+        <span class="material-symbols-outlined" data-icon="edit_square">edit_square</span>
+        <span class="font-label-md text-[10px] md:text-label-md mt-1">Write</span>
+    </button>
+    <button class="flex flex-col items-center justify-center text-accent-rust bg-primary-fixed/20 rounded-xl px-4 py-1">
+        <span class="material-symbols-outlined" data-icon="person"
+            style="font-variation-settings: 'FILL' 1;">person</span>
+        <span class="font-label-md text-[10px] md:text-label-md mt-1">Profile</span>
+    </button>
+</nav> -->
 <!-- Floating Action Button - Only on appropriate screens (e.g., creating a post) -->
 <!-- Hidden here as we are on the Profile screen which is secondary context -->
 <script>
-        // Simple Interaction logic for Tab Switching
-        const tabs = document.querySelectorAll('nav.sticky button');
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => {
-                    t.classList.remove('text-accent-rust', 'tab-active');
-                    t.classList.add('text-secondary');
-                });
-                tab.classList.add('text-accent-rust', 'tab-active');
-                tab.classList.remove('text-secondary');
+    // Simple Interaction logic for Tab Switching
+    const tabs = document.querySelectorAll('nav.sticky button');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            tabs.forEach(t => {
+                t.classList.remove('text-accent-rust', 'tab-active');
+                t.classList.add('text-secondary');
             });
+            tab.classList.add('text-accent-rust', 'tab-active');
+            tab.classList.remove('text-secondary');
         });
+    });
 
-        // Micro-interaction for post cards
-        const cards = document.querySelectorAll('article');
-        cards.forEach(card => {
-            card.addEventListener('mousedown', () => {
-                card.style.transform = 'scale(0.98)';
-            });
-            card.addEventListener('mouseup', () => {
-                card.style.transform = 'scale(1)';
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'scale(1)';
-            });
+    // Micro-interaction for post cards
+    const cards = document.querySelectorAll('article');
+    cards.forEach(card => {
+        card.addEventListener('mousedown', () => {
+            card.style.transform = 'scale(0.98)';
         });
-    </script>
+        card.addEventListener('mouseup', () => {
+            card.style.transform = 'scale(1)';
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'scale(1)';
+        });
+    });
+</script>

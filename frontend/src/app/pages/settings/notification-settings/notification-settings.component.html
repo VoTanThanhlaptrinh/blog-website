@@ -1,7 +1,7 @@
 <!-- TopAppBar -->
 <header class="bg-pure-white dark:bg-surface-container fixed top-0 w-full z-50 border-b border-text-ink/5">
-    <div class="flex justify-between items-center h-16 px-margin-mobile md:px-margin-desktop max-w-[1100px] mx-auto">
-        <div class="flex items-center gap-stack-md">
+    <div class="flex justify-between items-center h-16 px-5 md:px-10 max-w-[1100px] mx-auto">
+        <div class="flex items-center gap-4">
             <button
                 class="material-symbols-outlined text-accent-rust dark:text-primary-fixed-dim hover:bg-surface-container-low p-2 rounded-full transition-all">
                 menu
@@ -9,7 +9,7 @@
             <h1 class="font-headline-md text-headline-md font-bold text-accent-rust dark:text-primary-fixed-dim">
                 BBlogHub</h1>
         </div>
-        <div class="flex items-center gap-stack-md">
+        <div class="flex items-center gap-4">
             <span class="font-label-md text-label-md hidden md:block text-text-muted">Editorial Contributor</span>
             <div class="w-8 h-8 rounded-full bg-surface-container overflow-hidden border border-text-ink/5">
                 <img class="w-full h-full object-cover"
@@ -19,30 +19,30 @@
         </div>
     </div>
 </header>
-<main class="pt-24 pb-32 px-margin-mobile md:px-margin-desktop max-w-[1100px] mx-auto min-h-screen">
+<main class="pt-24 pb-32 px-5 md:px-10 max-w-[1100px] mx-auto min-h-screen">
     <!-- Header Section -->
-    <div class="mb-stack-lg animate-in fade-in slide-in-from-bottom-4 duration-700">
+    <div class="mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
         <div class="flex items-center gap-2 text-accent-rust mb-2">
             <span class="material-symbols-outlined text-[20px]">notifications_active</span>
             <span class="font-label-md text-label-md uppercase tracking-widest">Cài đặt</span>
         </div>
         <h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-text-ink leading-tight">Thông báo
         </h2>
-        <p class="text-text-muted mt-stack-sm max-w-[600px]">Quản lý cách bạn nhận thông tin về hoạt động bài viết và
+        <p class="text-text-muted mt-2 max-w-[600px]">Quản lý cách bạn nhận thông tin về hoạt động bài viết và
             cập nhật từ BBlogHub.</p>
     </div>
-    <div class="grid grid-cols-1 md:grid-cols-12 gap-stack-lg">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
         <!-- Settings Canvas -->
-        <div class="md:col-span-8 space-y-stack-lg">
+        <div class="md:col-span-8 space-y-8">
             <!-- Category: Activity -->
             <section class="bg-pure-white rounded-lg border border-text-ink/5 overflow-hidden shadow-sm">
-                <div class="p-stack-md border-b border-text-ink/5 bg-surface-container-low/30">
+                <div class="p-4 border-b border-text-ink/5 bg-surface-container-low/30">
                     <h3 class="font-headline-md text-headline-md text-text-ink">Hoạt động</h3>
                 </div>
                 <div class="divide-y divide-text-ink/5">
                     <!-- Setting Item -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div>
                             <p class="font-label-md text-text-ink">Người theo dõi mới</p>
                             <p class="text-caption text-text-muted">Nhận thông báo khi có độc giả mới theo dõi bạn.</p>
@@ -59,7 +59,7 @@
                     </div>
                     <!-- Setting Item -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div>
                             <p class="font-label-md text-text-ink">Bình luận mới</p>
                             <p class="text-caption text-text-muted">Thông báo khi có thảo luận trên bài viết của bạn.
@@ -77,7 +77,7 @@
                     </div>
                     <!-- Setting Item -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div>
                             <p class="font-label-md text-text-ink">Lượt thích mới</p>
                             <p class="text-caption text-text-muted">Tóm tắt các lượt tương tác với nội dung của bạn.</p>
@@ -94,7 +94,7 @@
                     </div>
                     <!-- Setting Item: Mentions (Hierarchical Mock) -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div>
                             <p class="font-label-md text-text-ink">Nhắc đến</p>
                             <p class="text-caption text-text-muted">Khi ai đó tag bạn trong một bài viết hoặc bình luận.
@@ -114,13 +114,13 @@
             </section>
             <!-- Category: System Updates -->
             <section class="bg-pure-white rounded-lg border border-text-ink/5 overflow-hidden shadow-sm">
-                <div class="p-stack-md border-b border-text-ink/5 bg-surface-container-low/30">
+                <div class="p-4 border-b border-text-ink/5 bg-surface-container-low/30">
                     <h3 class="font-headline-md text-headline-md text-text-ink">Cập nhật từ hệ thống</h3>
                 </div>
                 <div class="divide-y divide-text-ink/5">
                     <!-- Setting Item -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-accent-rust/60">mail</span>
                             <div>
@@ -141,7 +141,7 @@
                     </div>
                     <!-- Setting Item -->
                     <div
-                        class="p-stack-md flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
+                        class="p-4 flex items-center justify-between hover:bg-surface-container-lowest transition-colors group">
                         <div class="flex items-center gap-3">
                             <span class="material-symbols-outlined text-accent-rust/60">rocket_launch</span>
                             <div>
@@ -163,19 +163,19 @@
                 </div>
             </section>
             <!-- Footer Action -->
-            <div class="flex justify-end pt-stack-md">
+            <div class="flex justify-end pt-4">
                 <button
-                    class="bg-accent-rust text-pure-white px-stack-lg py-2 rounded-lg font-label-md transition-all active:scale-95 hover:brightness-110 shadow-sm">
+                    class="bg-accent-rust text-pure-white px-8 py-2 rounded-lg font-label-md transition-all active:scale-95 hover:brightness-110 shadow-sm">
                     Lưu thay đổi
                 </button>
             </div>
         </div>
         <!-- Sidebar Info (Desktop Only) -->
         <aside class="hidden md:block md:col-span-4">
-            <div class="sticky top-24 space-y-stack-md">
-                <div class="bg-surface-container-low p-stack-md rounded-lg border border-text-ink/5">
+            <div class="sticky top-24 space-y-4">
+                <div class="bg-surface-container-low p-4 rounded-lg border border-text-ink/5">
                     <h4 class="font-headline-md text-text-ink mb-2">Trung tâm trợ giúp</h4>
-                    <p class="text-caption text-text-muted mb-stack-md">Bạn đang gặp vấn đề với việc nhận thông báo? Hãy
+                    <p class="text-caption text-text-muted mb-4">Bạn đang gặp vấn đề với việc nhận thông báo? Hãy
                         kiểm tra thư mục Spam hoặc cài đặt hệ thống của trình duyệt.</p>
                     <a class="text-accent-rust font-label-md hover:underline flex items-center gap-1" href="#">
                         Xem tài liệu hướng dẫn
@@ -187,7 +187,7 @@
                         data-alt="A minimalist, top-down photograph of an organized desk featuring a high-quality notebook, a premium fountain pen, and a sleek modern smartphone displaying a clean notification list. The lighting is bright and airy, with soft shadows and a warm 'paper' aesthetic that matches the BBlogHub editorial design system."
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCmKwFbukr-xAhS-PDYYF6490M_4pCR_5d_U3PBKjTnqsuIIZepXdg2A0LkNmu2g4KaldNlPtg5gO7CTDVUubPt5ZbWdiZXATOWNWHv20lWRVETGEyLI1_-QZn92Q7TLo2FO-9KcLqKusONYOD-d8a2AZm1_-uhudfsL4nb6vVFW_ngUmogNmYqS4L80g3RbN_d5-x5-09PR0TVORT9h7SiD1eOGeVy5lq6eOMRrZZpv2xOf875hWKcaZ6NIj5kZ3irlo51gEhGusU">
                     <div
-                        class="absolute inset-0 bg-gradient-to-t from-text-ink/60 to-transparent flex flex-col justify-end p-stack-md">
+                        class="absolute inset-0 bg-gradient-to-t from-text-ink/60 to-transparent flex flex-col justify-end p-4">
                         <span class="text-pure-white font-label-md">Tối ưu trải nghiệm</span>
                         <p class="text-pure-white/80 text-caption">Thiết lập thông báo giúp bạn không bỏ lỡ các thảo
                             luận chuyên sâu.</p>
