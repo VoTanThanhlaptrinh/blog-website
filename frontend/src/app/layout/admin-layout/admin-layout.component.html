@@ -10,24 +10,24 @@
         </div>
     </div>
     <nav class="flex-1 space-y-1">
-        <a class="flex items-center gap-2 px-2 py-3 text-accent-rust font-bold bg-primary-container/10 rounded-lg group transition-all" href="#">
-            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/analytics" routerLinkActive="active">
+            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">dashboard</span>
             <span class="font-label-md text-label-md">Dashboard</span>
         </a>
-        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span class="material-symbols-outlined">article</span>
+        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/content-management" routerLinkActive="active">
+            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">article</span>
             <span class="font-label-md text-label-md">Content</span>
         </a>
-        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span class="material-symbols-outlined">group</span>
+        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/user-management" routerLinkActive="active">
+            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">group</span>
             <span class="font-label-md text-label-md">Users</span>
         </a>
-        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span class="material-symbols-outlined">analytics</span>
+        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/reports" routerLinkActive="active">
+            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">analytics</span>
             <span class="font-label-md text-label-md">Reports</span>
         </a>
-        <a class="flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg" href="#">
-            <span class="material-symbols-outlined">settings</span>
+        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/system-settings" routerLinkActive="active">
+            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">settings</span>
             <span class="font-label-md text-label-md">Settings</span>
         </a>
     </nav>
@@ -75,20 +75,20 @@
 
 <!-- Mobile Bottom Navigation (Shared Component Responsive Logic) -->
 <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-pure-white/80 backdrop-blur-md border-t border-outline-variant/30 flex items-center justify-around z-50">
-    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
-        <span class="material-symbols-outlined text-2xl" data-icon="dashboard">dashboard</span>
+    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/analytics" routerLinkActive="active">
+        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="dashboard">dashboard</span>
         <span class="text-[10px] font-bold">Dashboard</span>
-    </button>
-    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
-        <span class="material-symbols-outlined text-2xl" data-icon="article">article</span>
+    </a>
+    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/content-management" routerLinkActive="active">
+        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="article">article</span>
         <span class="text-[10px] font-bold">Content</span>
-    </button>
-    <button class="flex flex-col items-center justify-center gap-1 text-primary">
-        <span class="material-symbols-outlined text-2xl" data-icon="analytics">analytics</span>
+    </a>
+    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/reports" routerLinkActive="active">
+        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="analytics">analytics</span>
         <span class="text-[10px] font-bold">Reports</span>
-    </button>
-    <button class="flex flex-col items-center justify-center gap-1 text-on-surface-variant">
-        <span class="material-symbols-outlined text-2xl" data-icon="group">group</span>
+    </a>
+    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/user-management" routerLinkActive="active">
+        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="group">group</span>
         <span class="text-[10px] font-bold">Users</span>
-    </button>
+    </a>
 </nav>

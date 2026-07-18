@@ -1,17 +1,23 @@
-<div class="grid min-h-[calc(100vh-4rem)] w-full lg:grid-cols-2">
+<div class="grid min-h-[calc(100vh-4rem)] w-full lg:grid-cols-2 lg:mt-12">
   <!-- Brand panel (desktop) -->
   <div class="relative hidden overflow-hidden bg-stone-950 lg:block">
     <!-- Layered background -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(204,120,92,0.35),transparent_50%)]"></div>
-    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(234,124,72,0.2),transparent_50%)]"></div>
-    <div class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[44px_44px] mask-[radial-gradient(ellipse_at_center,black,transparent_75%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(234,124,72,0.2),transparent_50%)]">
+    </div>
+    <div
+      class="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-size-[44px_44px] mask-[radial-gradient(ellipse_at_center,black,transparent_75%)]">
+    </div>
     <div class="animate-blob absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-clay-600/30 blur-3xl"></div>
-    <div class="animate-blob animation-delay-2000 absolute -right-20 bottom-16 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl"></div>
+    <div
+      class="animate-blob animation-delay-2000 absolute -right-20 bottom-16 h-72 w-72 rounded-full bg-orange-500/20 blur-3xl">
+    </div>
 
     <div class="relative flex h-full flex-col justify-between p-12 xl:p-14">
       <!-- Logo -->
       <a routerLink="/" class="flex w-fit items-center gap-2">
-        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-clay-600 text-lg font-bold text-white shadow-lg shadow-clay-600/40">B</span>
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-lg bg-clay-600 text-lg font-bold text-white shadow-lg shadow-clay-600/40">B</span>
         <span class="text-xl font-bold tracking-tight text-white">BlogHub</span>
       </a>
 
@@ -19,7 +25,8 @@
       <div>
         <h2 class="max-w-md text-4xl font-bold leading-tight text-white">
           Tham gia cùng
-          <span class="bg-linear-to-r from-clay-400 to-orange-400 bg-clip-text text-transparent">hàng nghìn tác giả</span>
+          <span class="bg-linear-to-r from-clay-400 to-orange-400 bg-clip-text text-transparent">hàng nghìn tác
+            giả</span>
         </h2>
         <p class="mt-4 max-w-md text-stone-400">
           Tạo tài khoản miễn phí để bắt đầu chia sẻ kiến thức và xây dựng cộng đồng của riêng bạn.
@@ -27,14 +34,15 @@
 
         <ul class="mt-8 space-y-4">
           @for (item of benefits; track item) {
-            <li class="flex items-center gap-3 text-stone-200">
-              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-clay-500/20 text-clay-300 ring-1 ring-inset ring-clay-400/30">
-                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                </svg>
-              </span>
-              <span class="text-sm">{{ item }}</span>
-            </li>
+          <li class="flex items-center gap-3 text-stone-200">
+            <span
+              class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-clay-500/20 text-clay-300 ring-1 ring-inset ring-clay-400/30">
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+              </svg>
+            </span>
+            <span class="text-sm">{{ item }}</span>
+          </li>
           }
         </ul>
       </div>
@@ -42,10 +50,10 @@
       <!-- Footer stats -->
       <div class="flex items-center gap-8">
         @for (stat of brandStats; track stat.label) {
-          <div>
-            <p class="text-2xl font-bold text-white">{{ stat.value }}</p>
-            <p class="text-xs text-stone-400">{{ stat.label }}</p>
-          </div>
+        <div>
+          <p class="text-2xl font-bold text-white">{{ stat.value }}</p>
+          <p class="text-xs text-stone-400">{{ stat.label }}</p>
+        </div>
         }
       </div>
     </div>
@@ -56,7 +64,8 @@
     <div class="w-full max-w-sm">
       <!-- Mobile logo -->
       <a routerLink="/" class="mb-8 flex items-center justify-center gap-2 lg:hidden">
-        <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-clay-600 text-lg font-bold text-white">B</span>
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-lg bg-clay-600 text-lg font-bold text-white">B</span>
         <span class="text-xl font-bold tracking-tight text-stone-900">BlogHub</span>
       </a>
 
@@ -71,12 +80,14 @@
       </div>
 
       @if (errorMessage()) {
-        <div class="mb-6 flex items-start gap-2.5 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
-          <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
-          </svg>
-          <span>{{ errorMessage() }}</span>
-        </div>
+      <div
+        class="mb-6 flex items-start gap-2.5 rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <svg class="mt-0.5 h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z" />
+        </svg>
+        <span>{{ errorMessage() }}</span>
+      </div>
       }
 
       <form [formGroup]="form" (ngSubmit)="submit()" novalidate class="space-y-5">
@@ -86,28 +97,22 @@
           <div class="relative">
             <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
               </svg>
             </span>
-            <input
-              id="email"
-              type="email"
-              formControlName="email"
-              autocomplete="email"
-              placeholder="ban@example.com"
+            <input id="email" type="email" formControlName="email" autocomplete="email" placeholder="ban@example.com"
               class="w-full rounded-lg border bg-white py-2.5 pl-11 pr-4 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-clay-500 focus:ring-2 focus:ring-clay-500/20"
-              [class.border-stone-300]="!hasError('email')"
-              [class.border-rose-400]="hasError('email')"
-            />
+              [class.border-stone-300]="!hasError('email')" [class.border-rose-400]="hasError('email')" />
           </div>
           @if (hasError('email')) {
-            <p class="mt-1.5 text-xs text-rose-600">
-              @if (form.controls.email.errors?.['required']) {
-                Vui lòng nhập email.
-              } @else {
-                Email không hợp lệ.
-              }
-            </p>
+          <p class="mt-1.5 text-xs text-rose-600">
+            @if (form.controls.email.errors?.['required']) {
+            Vui lòng nhập email.
+            } @else {
+            Email không hợp lệ.
+            }
+          </p>
           }
         </div>
 
@@ -117,62 +122,53 @@
           <div class="relative">
             <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
               </svg>
             </span>
-            <input
-              id="password"
-              [type]="showPassword() ? 'text' : 'password'"
-              formControlName="password"
-              autocomplete="new-password"
-              placeholder="••••••••"
+            <input id="password" [type]="showPassword() ? 'text' : 'password'" formControlName="password"
+              autocomplete="new-password" placeholder="••••••••"
               class="w-full rounded-lg border bg-white py-2.5 pl-11 pr-11 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-clay-500 focus:ring-2 focus:ring-clay-500/20"
-              [class.border-stone-300]="!hasError('password')"
-              [class.border-rose-400]="hasError('password')"
-            />
-            <button
-              type="button"
-              (click)="togglePassword()"
+              [class.border-stone-300]="!hasError('password')" [class.border-rose-400]="hasError('password')" />
+            <button type="button" (click)="togglePassword()"
               class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 transition hover:text-stone-600"
-              [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
-            >
+              [attr.aria-label]="showPassword() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
               @if (showPassword()) {
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                </svg>
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+              </svg>
               } @else {
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
               }
             </button>
           </div>
           @if (passwordValue()) {
-            <div class="mt-2 flex items-center gap-2">
-              <div class="flex flex-1 gap-1">
-                @for (bar of [0, 1, 2, 3]; track bar) {
-                  <span
-                    class="h-1 flex-1 rounded-full transition-colors"
-                    [class.bg-stone-200]="strength() <= bar"
-                    [class.bg-rose-400]="strength() > bar && strength() <= 1"
-                    [class.bg-amber-400]="strength() > bar && strength() === 2"
-                    [class.bg-lime-500]="strength() > bar && strength() === 3"
-                    [class.bg-emerald-500]="strength() > bar && strength() >= 4"
-                  ></span>
-                }
-              </div>
-              <span class="w-16 text-right text-xs font-medium text-stone-500">{{ strengthLabel() }}</span>
+          <div class="mt-2 flex items-center gap-2">
+            <div class="flex flex-1 gap-1">
+              @for (bar of [0, 1, 2, 3]; track bar) {
+              <span class="h-1 flex-1 rounded-full transition-colors" [class.bg-stone-200]="strength() <= bar"
+                [class.bg-rose-400]="strength() > bar && strength() <= 1"
+                [class.bg-amber-400]="strength() > bar && strength() === 2"
+                [class.bg-lime-500]="strength() > bar && strength() === 3"
+                [class.bg-emerald-500]="strength() > bar && strength() >= 4"></span>
+              }
             </div>
+            <span class="w-16 text-right text-xs font-medium text-stone-500">{{ strengthLabel() }}</span>
+          </div>
           }
           @if (hasError('password')) {
-            <p class="mt-1.5 text-xs text-rose-600">
-              @if (form.controls.password.errors?.['required']) {
-                Vui lòng nhập mật khẩu.
-              } @else {
-                Mật khẩu tối thiểu 6 ký tự.
-              }
-            </p>
+          <p class="mt-1.5 text-xs text-rose-600">
+            @if (form.controls.password.errors?.['required']) {
+            Vui lòng nhập mật khẩu.
+            } @else {
+            Mật khẩu tối thiểu 6 ký tự.
+            }
+          </p>
           }
         </div>
 
@@ -182,51 +178,43 @@
           <div class="relative">
             <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-stone-400">
               <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
               </svg>
             </span>
-            <input
-              id="confirmPassword"
-              [type]="showConfirm() ? 'text' : 'password'"
-              formControlName="confirmPassword"
-              autocomplete="new-password"
-              placeholder="••••••••"
+            <input id="confirmPassword" [type]="showConfirm() ? 'text' : 'password'" formControlName="confirmPassword"
+              autocomplete="new-password" placeholder="••••••••"
               class="w-full rounded-lg border bg-white py-2.5 pl-11 pr-11 text-sm text-stone-900 outline-none transition placeholder:text-stone-400 focus:border-clay-500 focus:ring-2 focus:ring-clay-500/20"
               [class.border-stone-300]="!hasError('confirmPassword') && !confirmMismatch"
-              [class.border-rose-400]="hasError('confirmPassword') || confirmMismatch"
-            />
-            <button
-              type="button"
-              (click)="toggleConfirm()"
+              [class.border-rose-400]="hasError('confirmPassword') || confirmMismatch" />
+            <button type="button" (click)="toggleConfirm()"
               class="absolute inset-y-0 right-0 flex items-center pr-3.5 text-stone-400 transition hover:text-stone-600"
-              [attr.aria-label]="showConfirm() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
-            >
+              [attr.aria-label]="showConfirm() ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'">
               @if (showConfirm()) {
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
-                </svg>
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+              </svg>
               } @else {
-                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                </svg>
+              <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+              </svg>
               }
             </button>
           </div>
           @if (hasError('confirmPassword') && form.controls.confirmPassword.errors?.['required']) {
-            <p class="mt-1.5 text-xs text-rose-600">Vui lòng xác nhận mật khẩu.</p>
+          <p class="mt-1.5 text-xs text-rose-600">Vui lòng xác nhận mật khẩu.</p>
           } @else if (confirmMismatch) {
-            <p class="mt-1.5 text-xs text-rose-600">Mật khẩu xác nhận không khớp.</p>
+          <p class="mt-1.5 text-xs text-rose-600">Mật khẩu xác nhận không khớp.</p>
           }
         </div>
 
         <!-- Agree terms -->
         <label class="flex items-start gap-2.5 text-sm text-stone-600">
-          <input
-            type="checkbox"
-            formControlName="agree"
-            class="mt-0.5 h-4 w-4 shrink-0 rounded border-stone-300 text-clay-600 focus:ring-clay-500/30"
-          />
+          <input type="checkbox" formControlName="agree"
+            class="mt-0.5 h-4 w-4 shrink-0 rounded border-stone-300 text-clay-600 focus:ring-clay-500/30" />
           <span>
             Tôi đồng ý với
             <a routerLink="/terms" class="font-medium text-clay-600 hover:text-clay-700">Điều khoản</a>
@@ -236,21 +224,21 @@
         </label>
 
         <!-- Submit -->
-        <button
-          type="submit"
-          [disabled]="submitting()"
-          class="flex w-full items-center justify-center gap-2 rounded-lg bg-clay-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-clay-600/30 transition hover:bg-clay-500 hover:shadow-clay-500/40 focus:outline-none focus:ring-2 focus:ring-clay-500/40 disabled:cursor-not-allowed disabled:opacity-60"
-        >
-          @if (submitting()) {
+        <div class="flex w-full items-center justify-center rounded-lg bg-clay-600 shadow-lg shadow-clay-600/30 transition hover:bg-clay-500 hover:shadow-clay-500/40 focus-within:ring-2 focus-within:ring-clay-500/40"
+          [class.opacity-60]="submitting()" [class.pointer-events-none]="submitting()">
+          <button type="submit" [disabled]="submitting()"
+            class="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white focus:outline-none disabled:cursor-not-allowed cursor-pointer">
+            @if (submitting()) {
             <svg class="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
               <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
               <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 0 1 8-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
             Đang tạo tài khoản...
-          } @else {
+            } @else {
             Tạo tài khoản
-          }
-        </button>
+            }
+          </button>
+        </div>
       </form>
 
       <!-- Divider -->
@@ -262,27 +250,32 @@
 
       <!-- Social -->
       <div class="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          class="flex items-center justify-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-50"
-        >
-          <svg class="h-5 w-5" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-          </svg>
-          Google
-        </button>
-        <button
-          type="button"
-          class="flex items-center justify-center gap-2 rounded-lg border border-stone-300 bg-white px-4 py-2.5 text-sm font-medium text-stone-700 transition hover:border-stone-400 hover:bg-stone-50"
-        >
-          <svg class="h-5 w-5" fill="#1877F2" viewBox="0 0 24 24">
-            <path d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" />
-          </svg>
-          Facebook
-        </button>
+        <div class="flex items-center justify-center rounded-lg border border-stone-300 bg-white transition hover:border-stone-400 hover:bg-stone-50 shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
+          <button type="button"
+            class="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-stone-700 focus:outline-none cursor-pointer">
+            <svg class="h-5 w-5" viewBox="0 0 24 24">
+              <path fill="#4285F4"
+                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+              <path fill="#34A853"
+                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+              <path fill="#FBBC05"
+                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" />
+              <path fill="#EA4335"
+                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
+            </svg>
+            Google
+          </button>
+        </div>
+        <div class="flex items-center justify-center rounded-lg border border-stone-300 bg-white transition hover:border-stone-400 hover:bg-stone-50 shadow-sm focus-within:ring-2 focus-within:ring-stone-200">
+          <button type="button"
+            class="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm font-medium text-stone-700 focus:outline-none cursor-pointer">
+            <svg class="h-5 w-5" fill="#1877F2" viewBox="0 0 24 24">
+              <path
+                d="M24 12.07C24 5.4 18.63 0 12 0S0 5.4 0 12.07C0 18.1 4.39 23.1 10.13 24v-8.44H7.08v-3.49h3.05V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.25h3.33l-.53 3.49h-2.8V24C19.61 23.1 24 18.1 24 12.07z" />
+            </svg>
+            Facebook
+          </button>
+        </div>
       </div>
     </div>
   </div>
