@@ -10,24 +10,24 @@
         </div>
     </div>
     <nav class="flex-1 space-y-1">
-        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/analytics" routerLinkActive="active">
-            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">dashboard</span>
+        <a [class]="'group flex items-center gap-2 px-2 py-3 transition-all rounded-lg hover:text-accent-rust hover:bg-surface-container-high ' + (rlaDashboard.isActive ? 'text-accent-rust font-bold bg-primary-container/10' : 'text-secondary')" routerLink="/admin/analytics" routerLinkActive #rlaDashboard="routerLinkActive">
+            <span class="material-symbols-outlined" [class.fill-icon]="rlaDashboard.isActive">dashboard</span>
             <span class="font-label-md text-label-md">Dashboard</span>
         </a>
-        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/content-management" routerLinkActive="active">
-            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">article</span>
+        <a [class]="'group flex items-center gap-2 px-2 py-3 transition-all rounded-lg hover:text-accent-rust hover:bg-surface-container-high ' + (rlaContent.isActive ? 'text-accent-rust font-bold bg-primary-container/10' : 'text-secondary')" routerLink="/admin/content-management" routerLinkActive #rlaContent="routerLinkActive">
+            <span class="material-symbols-outlined" [class.fill-icon]="rlaContent.isActive">article</span>
             <span class="font-label-md text-label-md">Content</span>
         </a>
-        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/user-management" routerLinkActive="active">
-            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">group</span>
+        <a [class]="'group flex items-center gap-2 px-2 py-3 transition-all rounded-lg hover:text-accent-rust hover:bg-surface-container-high ' + (rlaUsers.isActive ? 'text-accent-rust font-bold bg-primary-container/10' : 'text-secondary')" routerLink="/admin/user-management" routerLinkActive #rlaUsers="routerLinkActive">
+            <span class="material-symbols-outlined" [class.fill-icon]="rlaUsers.isActive">group</span>
             <span class="font-label-md text-label-md">Users</span>
         </a>
-        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/reports" routerLinkActive="active">
-            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">analytics</span>
+        <a [class]="'group flex items-center gap-2 px-2 py-3 transition-all rounded-lg hover:text-accent-rust hover:bg-surface-container-high ' + (rlaReports.isActive ? 'text-accent-rust font-bold bg-primary-container/10' : 'text-secondary')" routerLink="/admin/reports" routerLinkActive #rlaReports="routerLinkActive">
+            <span class="material-symbols-outlined" [class.fill-icon]="rlaReports.isActive">analytics</span>
             <span class="font-label-md text-label-md">Reports</span>
         </a>
-        <a class="group flex items-center gap-2 px-2 py-3 text-secondary hover:text-accent-rust hover:bg-surface-container-high transition-all rounded-lg [&.active]:text-accent-rust [&.active]:font-bold [&.active]:bg-primary-container/10 [&.active]:hover:bg-primary-container/10" routerLink="/admin/system-settings" routerLinkActive="active">
-            <span class="material-symbols-outlined group-[.active]:[font-variation-settings:'FILL'_1]">settings</span>
+        <a [class]="'group flex items-center gap-2 px-2 py-3 transition-all rounded-lg hover:text-accent-rust hover:bg-surface-container-high ' + (rlaSettings.isActive ? 'text-accent-rust font-bold bg-primary-container/10' : 'text-secondary')" routerLink="/admin/system-settings" routerLinkActive #rlaSettings="routerLinkActive">
+            <span class="material-symbols-outlined" [class.fill-icon]="rlaSettings.isActive">settings</span>
             <span class="font-label-md text-label-md">Settings</span>
         </a>
     </nav>
@@ -75,20 +75,20 @@
 
 <!-- Mobile Bottom Navigation (Shared Component Responsive Logic) -->
 <nav class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-pure-white/80 backdrop-blur-md border-t border-outline-variant/30 flex items-center justify-around z-50">
-    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/analytics" routerLinkActive="active">
-        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="dashboard">dashboard</span>
+    <a class="group flex flex-col items-center justify-center gap-1" routerLink="/admin/analytics" routerLinkActive #rlaMobDashboard="routerLinkActive" [class.text-primary]="rlaMobDashboard.isActive" [class.text-on-surface-variant]="!rlaMobDashboard.isActive">
+        <span class="material-symbols-outlined text-2xl" [class.fill-icon]="rlaMobDashboard.isActive" data-icon="dashboard">dashboard</span>
         <span class="text-[10px] font-bold">Dashboard</span>
     </a>
-    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/content-management" routerLinkActive="active">
-        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="article">article</span>
+    <a class="group flex flex-col items-center justify-center gap-1" routerLink="/admin/content-management" routerLinkActive #rlaMobContent="routerLinkActive" [class.text-primary]="rlaMobContent.isActive" [class.text-on-surface-variant]="!rlaMobContent.isActive">
+        <span class="material-symbols-outlined text-2xl" [class.fill-icon]="rlaMobContent.isActive" data-icon="article">article</span>
         <span class="text-[10px] font-bold">Content</span>
     </a>
-    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/reports" routerLinkActive="active">
-        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="analytics">analytics</span>
+    <a class="group flex flex-col items-center justify-center gap-1" routerLink="/admin/reports" routerLinkActive #rlaMobReports="routerLinkActive" [class.text-primary]="rlaMobReports.isActive" [class.text-on-surface-variant]="!rlaMobReports.isActive">
+        <span class="material-symbols-outlined text-2xl" [class.fill-icon]="rlaMobReports.isActive" data-icon="analytics">analytics</span>
         <span class="text-[10px] font-bold">Reports</span>
     </a>
-    <a class="group flex flex-col items-center justify-center gap-1 text-on-surface-variant [&.active]:text-primary" routerLink="/admin/user-management" routerLinkActive="active">
-        <span class="material-symbols-outlined text-2xl group-[.active]:[font-variation-settings:'FILL'_1]" data-icon="group">group</span>
+    <a class="group flex flex-col items-center justify-center gap-1" routerLink="/admin/user-management" routerLinkActive #rlaMobUsers="routerLinkActive" [class.text-primary]="rlaMobUsers.isActive" [class.text-on-surface-variant]="!rlaMobUsers.isActive">
+        <span class="material-symbols-outlined text-2xl" [class.fill-icon]="rlaMobUsers.isActive" data-icon="group">group</span>
         <span class="text-[10px] font-bold">Users</span>
     </a>
 </nav>

@@ -171,3 +171,11 @@
     animation: none;
   }
 }
+
+/* ===== Utility for Material Icon Fill ===== */
+.fill-icon {
+  font-variation-settings: 'FILL' 1;
+}
+
+
+
