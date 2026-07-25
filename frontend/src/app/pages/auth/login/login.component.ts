@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -9,6 +10,9 @@ import { RouterLink } from '@angular/router';
 })
 export class LoginComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   readonly year = new Date().getFullYear();
   readonly highlights = [
@@ -55,9 +59,19 @@ export class LoginComponent {
       return;
     }
     this.submitting.set(true);
-    // TODO: gọi AuthService.login() tới POST /api/v1/auth/login
-    setTimeout(() => {
-      this.submitting.set(false);
-    }, 800);
+
+    const formValue = this.form.getRawValue();
+    this.authService.login(formValue).subscribe({
+      next: (res) => {
+        this.submitting.set(false);
+        const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        this.router.navigateByUrl(returnUrl);
+      },
+      error: (err) => {
+        this.submitting.set(false);
+        const msg = err?.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!';
+        this.errorMessage.set(msg);
+      },
+    });
   }
 }

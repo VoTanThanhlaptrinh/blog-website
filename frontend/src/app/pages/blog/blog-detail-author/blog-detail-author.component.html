@@ -1,276 +1,466 @@
 <!-- TopAppBar -->
-<header class="fixed top-0 w-full z-50 bg-pure-white border-b border-text-ink/5 flex justify-between items-center px-5 h-[56px]">
-<div class="flex items-center gap-3">
-<button class="active:scale-95 transition-transform">
-<span class="material-symbols-outlined text-text-muted">menu</span>
-</button>
-<h1 class="font-headline-md text-headline-md-mobile font-bold text-text-ink absolute left-1/2 -translate-x-1/2">BBlogHub</h1>
-</div>
-<div class="flex items-center gap-4">
-<button class="active:scale-95 transition-transform">
-<span class="material-symbols-outlined text-text-muted">share</span>
-</button>
-</div>
+<header
+  class="fixed top-0 w-full z-50 bg-pure-white border-b border-text-ink/5 flex justify-between items-center px-5 h-[56px]"
+>
+  <div class="flex items-center gap-3">
+    <button class="active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-text-muted">menu</span>
+    </button>
+    <h1
+      class="font-headline-md text-headline-md-mobile font-bold text-text-ink absolute left-1/2 -translate-x-1/2"
+    >
+      BBlogHub
+    </h1>
+  </div>
+  <div class="flex items-center gap-4">
+    <button class="active:scale-95 transition-transform">
+      <span class="material-symbols-outlined text-text-muted">share</span>
+    </button>
+  </div>
 </header>
 <main class="mt-14 max-w-[1100px] mx-auto overflow-hidden flex relative">
-<!-- Left Sticky Sidebar (Table of Contents) -->
-<aside class="hidden md:block w-64 pt-8 sticky top-14 h-[calc(100vh-112px)] overflow-y-auto px-5 border-r border-text-ink/5">
-<nav class="space-y-4">
-<h4 class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4">Nội dung bài viết</h4>
-<ul class="space-y-4 font-body-md text-body-md text-text-ink"><li class="">
-<a class="hover:text-accent-rust transition-colors flex items-center gap-2 group" href="#signals">
-<span class="material-symbols-outlined text-[18px] text-accent-rust">list</span>
-                        Tại sao là Signals?
-                    </a>
-</li>
-<li class="">
-<a class="hover:text-accent-rust transition-colors flex items-center gap-2 group" href="#optimize">
-<span class="material-symbols-outlined text-[18px] text-accent-rust">subdirectory_arrow_right</span>
-                        Tối ưu hóa Render
-                    </a>
-</li>
-<li class="">
-<a class="hover:text-accent-rust transition-colors flex items-center gap-2 group" href="#discussion">
-<span class="material-symbols-outlined text-[18px] text-accent-rust">subdirectory_arrow_right</span>
-                        Thảo luận
-                    </a>
-</li></ul>
-</nav>
-</aside>
-<!-- Mobile Sticky Side Rail -->
-<aside class="md:hidden sticky top-14 left-0 h-[calc(100vh-112px)] w-12 border-r border-text-ink/5 flex flex-col items-center py-8 gap-8 z-40 bg-surface-paper/50 backdrop-blur-sm">
-<a class="text-text-muted hover:text-accent-rust transition-colors" href="#signals" title="Tại sao là Signals?">
-<span class="material-symbols-outlined text-[20px]">bolt</span>
-</a>
-<a class="text-text-muted hover:text-accent-rust transition-colors" href="#optimize" title="Tối ưu hóa Render">
-<span class="material-symbols-outlined text-[20px]">speed</span>
-</a>
-<a class="text-text-muted hover:text-accent-rust transition-colors" href="#discussion" title="Thảo luận">
-<span class="material-symbols-outlined text-[20px]">forum</span>
-</a>
-</aside>
-<!-- Main Article Content Area -->
-<div class="flex-1 max-w-[720px] mx-auto md:mx-0">
-<article class="pt-8">
-<div class="px-5">
-<span class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-2">Angular</span>
-<h2 class="font-headline-lg-mobile text-headline-lg-mobile leading-tight mb-4 text-text-ink">Bắt đầu với Angular 19 và Signals: Kiến trúc phản ứng hiện đại</h2>
-<!-- Author Info -->
-</div>
-<!-- Hero Image -->
-<div class="w-full aspect-video mb-8 px-0 md:px-5">
-<div class="w-full h-full overflow-hidden rounded-none md:rounded-xl shadow-sm border border-text-ink/5">
-<img class="w-full h-full object-cover" data-alt="High-tech digital abstract background" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJUQgCWh5Lw0GMgK2JnB-Va0k3aOaq_ueoKp8CQsVN6hD_IgoTJoQG4uDM1zSkPCfLVl09fvGr6LsgOgKwmDRIvQjjfeAxs0cfU0jT6mh7Jp-T-QdsNYtq1ovU036VZd2iDi_9lvndmuh3o3wSu9hhfAOU-hKTnHxhAOgrO-j5vVkKd8gvcfYuxfLHtuN35DD-oGXSARVME3vlQMcWPJWiaf8r3F2B07ZzTeuv6SO73Kegv70Th8-_XffRRpVulEId8IkcF2J6yeE">
-</div>
-</div>
-<!-- Content Area -->
-<div class="px-5 prose">
-<p class="">Angular 19 đã chính thức ra mắt, mang theo những cải tiến vượt bậc trong việc quản lý trạng thái và tối ưu hóa hiệu năng. Trọng tâm của phiên bản này chính là <strong>Signals</strong> — một khái niệm thay đổi hoàn toàn cách chúng ta suy nghĩ về tính phản ứng (reactivity) trong Angular.</p>
-<h2 class="" id="signals">Tại sao lại là Signals?</h2>
-<p class="">Trong nhiều năm qua, Angular dựa vào <code>zone.js</code> để phát hiện thay đổi. Mặc dù hiệu quả, nó thường gây ra tình trạng render thừa (over-rendering) và khiến việc tối ưu hiệu năng trở nên khó khăn. Signals cho phép Angular biết chính xác <em>chỗ nào</em> dữ liệu thay đổi, từ đó chỉ cập nhật đúng phần UI đó.</p>
-<pre class="bg-surface-container p-4 rounded-lg overflow-x-auto text-[14px]"><code>// Định nghĩa một Signal đơn giản
-const count = signal(0);
-
-// Đọc giá trị
-console.log(count());
-
-// Cập nhật giá trị
-count.set(count() + 1);</code></pre>
-<p class="">Việc chuyển đổi sang kiến trúc dựa trên Signals không chỉ giúp ứng dụng chạy nhanh hơn mà còn làm cho code trở nên dễ đọc và dễ bảo trì hơn đáng kể. Các ứng dụng <em>standalone</em> giờ đây có thể loại bỏ hoàn toàn <code>zone.js</code>, giúp giảm kích thước bundle và tăng tốc độ tải trang đầu tiên.</p>
-<blockquote class="border-l-4 border-accent-rust pl-4 italic text-text-muted my-6">
-                    "Signals không chỉ là một tính năng mới, đó là tương lai của Angular."
-                </blockquote>
-<h2 class="" id="optimize">Tối ưu hóa Render</h2>
-<p class="">Với Angular 19, bạn có thể tận dụng <code>computed</code> signals để tạo ra các giá trị phụ thuộc một cách hiệu quả. Angular sẽ tự động theo dõi các phụ thuộc và chỉ tính toán lại khi thực sự cần thiết.</p>
-<ul class="list-disc pl-5 mb-8 text-text-muted font-body-md space-y-2">
-<li class="">Hỗ trợ kiến trúc Standalone mặc định.</li>
-<li class="">Loại bỏ sự phụ thuộc vào Zone.js cho hiệu năng cực cao.</li>
-<li class="">Hệ thống template mới tối ưu cho Signals.</li>
-<li class="">Cải thiện SEO và Server-Side Rendering (SSR).</li>
-</ul>
-</div>
-</article>
-<!-- Social Share Bar -->
-<section class="px-5 mt-16">
-<div class="flex items-center justify-between py-4 border-y border-text-ink/10">
-<div class="flex gap-4">
-<button class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors">
-<span class="material-symbols-outlined">thumb_up</span>
-<span class="font-label-md text-label-md">189</span>
-</button>
-<button class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors">
-<span class="material-symbols-outlined">chat_bubble</span>
-<span class="font-label-md text-label-md">12</span>
-</button>
-</div>
-<div class="flex gap-3">
-<button class="w-8 h-8 flex items-center justify-center rounded-full border border-text-ink/10 text-text-muted active:scale-90 transition-transform">
-<i class="material-symbols-outlined text-[18px]">share</i>
-</button>
-<button class="px-3 py-1 text-pure-white font-label-md text-[12px] active:scale-95 transition-transform bg-accent-rust rounded-lg">
-                        Lưu bài viết
-                    </button>
-</div>
-</div>
-</section>
-<!-- Related Posts -->
-<section class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5">
-<h3 class="font-headline-md text-headline-md text-text-ink mb-4">Bài viết liên quan</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<!-- Related Card 1 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">CSS</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">Tailwind CSS: Utility-first trong thực tế</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Lê Văn C</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">6 phút</span>
-</div>
-</div>
-<!-- Related Card 2 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">Database</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">PostgreSQL: Tối ưu truy vấn</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Phạm Thị D</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">10 phút</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Comments Section -->
-<!-- Footer -->
-<section class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5">
-<h3 class="font-headline-md text-headline-md text-text-ink mb-4">Cùng tác giả</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4"><!-- Card 1 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">Angular</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">Làm chủ RxJS trong Angular 19</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Nguyễn Văn A</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">12 phút</span>
-</div>
-</div>
-<!-- Card 2 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">Web Dev</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">Tối ưu Core Web Vitals cho Single Page App</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Nguyễn Văn A</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">15 phút</span>
-</div>
-</div></div>
-</section><section class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5">
-<h3 class="font-headline-md text-headline-md text-text-ink mb-4">Gợi ý cho bạn</h3>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-<!-- Card 1 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">UI/UX</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">Nguyên lý thiết kế cho lập trình viên</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Hoàng Minh T</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">8 phút</span>
-</div>
-</div>
-<!-- Card 2 -->
-<div class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer">
-<span class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider">DevOps</span>
-<h4 class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors">Dockerize ứng dụng Node.js trong 5 phút</h4>
-<div class="flex items-center gap-2 text-text-muted font-caption text-caption">
-<span class="">Trần Quốc K</span>
-<span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-<span class="">5 phút</span>
-</div>
-</div>
-</div>
-</section><footer class="w-full bg-surface-container py-8 px-5 text-center flex flex-col items-center gap-4 border-t border-text-ink/5 mt-8">
-<h2 class="font-headline-md text-headline-md font-bold text-text-ink">BBlogHub</h2>
-<p class="font-body-md text-body-md text-text-muted max-w-xs">Nơi chia sẻ kiến thức cộng đồng lập trình viên.</p>
-<nav class="flex flex-wrap justify-center gap-4">
-<a class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all" href="#">Chính sách</a>
-<a class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all" href="#">Điều khoản</a>
-<a class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all" href="#">Liên hệ</a>
-</nav>
-<p class="font-caption text-caption text-text-muted mt-4">© 2024 BBlogHub Editorial.</p>
-</footer>
-</div><aside class="hidden lg:block w-64 pt-8 sticky top-14 h-[calc(100vh-112px)] overflow-y-auto px-5 border-l border-text-ink/5">
-<div class="space-y-6">
-<h4 class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4">Tác giả</h4>
-<div class="flex flex-col items-center text-center gap-4 p-6 bg-surface-container/30 rounded-xl">
-<div class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1">
-<img class="w-full h-full object-cover rounded-full" data-alt="A professional studio portrait of a modern software engineer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPzIpWOoWdzpWTSFF5quxz-gyxUkyXWQMQ5q7lHy_aApvZYuxJTWQ-fyCg4oNBH-bV0QJ-Ke2iw7nNYdoovNvQboIITdkZ-Kl7YyazJWf4NKOUX0-3TaC9jBaqeCM23Jl8by7N6v0akTF3EHE-7Sywyni449XwV-h2lDPoMYhqxrGdQfB3W1KdUFItRF9lbwcEUehx4gCjXV71u0xpQJh2SngjnSHIkXL1I7RpK4gdprG_UJdFDFIPPWMdhx8Onjx7zq86lGcfxk">
-</div>
-<div class="flex flex-col">
-<span class="font-headline-md text-[18px] text-text-ink">Nguyễn Văn A</span>
-<span class="text-caption text-text-muted italic">Software Engineer</span>
-</div>
-<div class="w-full border-t border-text-ink/5 pt-4 flex flex-col gap-2">
-<div class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted">
-<span class="material-symbols-outlined text-[16px]">calendar_today</span>
-<span class="">01 Th7, 2026</span>
-</div>
-<div class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted">
-<span class="material-symbols-outlined text-[16px]">schedule</span>
-<span class="">8 phút đọc</span>
-</div>
-</div>
-<button class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-pure-white transition-all rounded-lg">
-        Theo dõi
-      </button>
-</div>
-<section class="pt-6 border-t border-text-ink/5" id="discussion">
-<h3 class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4">Thảo luận (12)</h3>
-<div class="mb-6">
-<textarea class="w-full p-3 bg-pure-white border border-text-ink/10 focus:ring-2 focus:ring-accent-rust/20 text-body-md font-body-md rounded-lg min-h-[100px] placeholder:text-text-muted/40 shadow-sm" placeholder="Viết bình luận..."></textarea>
-<div class="flex justify-end mt-2">
-<button class="bg-accent-rust text-pure-white px-4 py-1.5 font-label-md text-[12px] hover:opacity-90 active:scale-95 transition-all rounded-lg">Gửi</button>
-</div>
-</div>
-<div class="space-y-4">
-<div class="flex gap-3">
-<div class="w-8 h-8 rounded-full bg-secondary-container flex-shrink-0 flex items-center justify-center text-secondary font-bold text-[12px]">T</div>
-<div class="flex-1">
-<div class="flex flex-col mb-1">
-<span class="font-label-md text-[13px] text-text-ink">Trần Thị B</span>
-<span class="font-caption text-[10px] text-text-muted">2 giờ trước</span>
-</div>
-<p class="font-body-md text-[14px] text-text-muted leading-relaxed">Bài viết rất chi tiết! Hy vọng có bài viết sâu hơn về migration.</p>
-</div>
-</div>
-</div>
-</section></div>
-</aside>
+  <!-- Left Sticky Sidebar (Table of Contents) -->
+  <aside
+    class="hidden md:block w-64 pt-8 sticky top-14 h-[calc(100vh-112px)] overflow-y-auto px-5 border-r border-text-ink/5"
+  >
+    <nav class="space-y-4">
+      <h4
+        class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
+      >
+        Nội dung bài viết
+      </h4>
+      <ul class="space-y-4 font-body-md text-body-md text-text-ink">
+        @for (item of toc; track item.id) {
+          <li [style.padding-left.px]="(item.level - 1) * 12">
+            <a
+              class="hover:text-accent-rust transition-colors flex items-center gap-2 group cursor-pointer"
+              (click)="scrollTo(item.id)"
+            >
+              <span class="material-symbols-outlined text-[18px] text-accent-rust"
+                >{{ item.level === 1 ? 'list' : 'subdirectory_arrow_right' }}</span
+              >
+              {{ item.text }}
+            </a>
+          </li>
+        } @empty {
+          <li class="text-caption text-text-muted italic">Chưa có mục nào.</li>
+        }
+      </ul>
+    </nav>
+  </aside>
+  <!-- Mobile Sticky Side Rail -->
+  <aside
+    class="md:hidden sticky top-14 left-0 h-[calc(100vh-112px)] w-12 border-r border-text-ink/5 flex flex-col items-center py-8 gap-8 z-40 bg-surface-paper/50 backdrop-blur-sm"
+  >
+    @for (item of toc; track item.id) {
+      <a
+        class="text-text-muted hover:text-accent-rust transition-colors cursor-pointer"
+        (click)="scrollTo(item.id)"
+        [title]="item.text"
+      >
+        <span class="material-symbols-outlined text-[20px]">{{ item.level === 1 ? 'bolt' : 'subdirectory_arrow_right' }}</span>
+      </a>
+    }
+  </aside>
+  <!-- Main Article Content Area -->
+  <div class="flex-1 max-w-[720px] mx-auto md:mx-0">
+    <article class="pt-8">
+      <div class="px-5">
+        <span
+          class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-2"
+          >Angular</span
+        >
+        <h2
+          class="font-headline-lg-mobile text-headline-lg-mobile leading-tight mb-4 text-text-ink"
+        >
+          Bắt đầu với Angular 19 và Signals: Kiến trúc phản ứng hiện đại
+        </h2>
+        <!-- Author Info -->
+      </div>
+      <!-- Hero Image -->
+      <div class="w-full aspect-video mb-8 px-0 md:px-5">
+        <div
+          class="w-full h-full overflow-hidden rounded-none md:rounded-xl shadow-sm border border-text-ink/5"
+        >
+          <img title="images"
+            class="w-full h-full object-cover"
+            data-alt="High-tech digital abstract background"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJUQgCWh5Lw0GMgK2JnB-Va0k3aOaq_ueoKp8CQsVN6hD_IgoTJoQG4uDM1zSkPCfLVl09fvGr6LsgOgKwmDRIvQjjfeAxs0cfU0jT6mh7Jp-T-QdsNYtq1ovU036VZd2iDi_9lvndmuh3o3wSu9hhfAOU-hKTnHxhAOgrO-j5vVkKd8gvcfYuxfLHtuN35DD-oGXSARVME3vlQMcWPJWiaf8r3F2B07ZzTeuv6SO73Kegv70Th8-_XffRRpVulEId8IkcF2J6yeE"
+          />
+        </div>
+      </div>
+      <!-- Content Area -->
+      <markdown
+        #article
+        clipboard
+        [data]="content"
+        (ready)="onMarkdownReady()"
+        class="block px-5 prose prose-stone max-w-none"
+      ></markdown>
+    </article>
+    <!-- Social Share Bar -->
+    <section class="px-5 mt-16">
+      <div
+        class="flex items-center justify-between py-4 border-y border-text-ink/10"
+      >
+        <div class="flex gap-4">
+          <button
+            class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
+          >
+            <span class="material-symbols-outlined">thumb_up</span>
+            <span class="font-label-md text-label-md">189</span>
+          </button>
+          <button
+            class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
+          >
+            <span class="material-symbols-outlined">chat_bubble</span>
+            <span class="font-label-md text-label-md">12</span>
+          </button>
+        </div>
+        <div class="flex gap-3">
+          <button
+            class="w-8 h-8 flex items-center justify-center rounded-full border border-text-ink/10 text-text-muted active:scale-90 transition-transform"
+          >
+            <i class="material-symbols-outlined text-[18px]">share</i>
+          </button>
+          <button
+            class="px-3 py-1 text-pure-white font-label-md text-[12px] active:scale-95 transition-transform bg-accent-rust rounded-lg"
+          >
+            Lưu bài viết
+          </button>
+        </div>
+      </div>
+    </section>
+    <!-- Related Posts -->
+    <section
+      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
+    >
+      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
+        Bài viết liên quan
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Related Card 1 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >CSS</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            Tailwind CSS: Utility-first trong thực tế
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Lê Văn C</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">6 phút</span>
+          </div>
+        </div>
+        <!-- Related Card 2 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >Database</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            PostgreSQL: Tối ưu truy vấn
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Phạm Thị D</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">10 phút</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- Comments Section -->
+    <!-- Footer -->
+    <section
+      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
+    >
+      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
+        Cùng tác giả
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Card 1 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >Angular</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            Làm chủ RxJS trong Angular 19
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Nguyễn Văn A</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">12 phút</span>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >Web Dev</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            Tối ưu Core Web Vitals cho Single Page App
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Nguyễn Văn A</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">15 phút</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section
+      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
+    >
+      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
+        Gợi ý cho bạn
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Card 1 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >UI/UX</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            Nguyên lý thiết kế cho lập trình viên
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Hoàng Minh T</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">8 phút</span>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div
+          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
+        >
+          <span
+            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
+            >DevOps</span
+          >
+          <h4
+            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
+          >
+            Dockerize ứng dụng Node.js trong 5 phút
+          </h4>
+          <div
+            class="flex items-center gap-2 text-text-muted font-caption text-caption"
+          >
+            <span class="">Trần Quốc K</span>
+            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
+            <span class="">5 phút</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer
+      class="w-full bg-surface-container py-8 px-5 text-center flex flex-col items-center gap-4 border-t border-text-ink/5 mt-8"
+    >
+      <h2 class="font-headline-md text-headline-md font-bold text-text-ink">
+        BBlogHub
+      </h2>
+      <p class="font-body-md text-body-md text-text-muted max-w-xs">
+        Nơi chia sẻ kiến thức cộng đồng lập trình viên.
+      </p>
+      <nav class="flex flex-wrap justify-center gap-4">
+        <a
+          class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all"
+          href="#"
+          >Chính sách</a
+        >
+        <a
+          class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all"
+          href="#"
+          >Điều khoản</a
+        >
+        <a
+          class="font-body-md text-body-md text-text-muted hover:text-accent-rust underline transition-all"
+          href="#"
+          >Liên hệ</a
+        >
+      </nav>
+      <p class="font-caption text-caption text-text-muted mt-4">
+        © 2024 BBlogHub Editorial.
+      </p>
+    </footer>
+  </div>
+  <aside
+    class="hidden lg:block w-64 pt-8 sticky top-14 h-[calc(100vh-112px)] overflow-y-auto px-5 border-l border-text-ink/5"
+  >
+    <div class="space-y-6">
+      <h4
+        class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
+      >
+        Tác giả
+      </h4>
+      <div
+        class="flex flex-col items-center text-center gap-4 p-6 bg-surface-container/30 rounded-xl"
+      >
+        <div
+          class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1"
+        >
+          <img
+            title="images"
+            class="w-full h-full object-cover rounded-full"
+            data-alt="A professional studio portrait of a modern software engineer"
+            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPzIpWOoWdzpWTSFF5quxz-gyxUkyXWQMQ5q7lHy_aApvZYuxJTWQ-fyCg4oNBH-bV0QJ-Ke2iw7nNYdoovNvQboIITdkZ-Kl7YyazJWf4NKOUX0-3TaC9jBaqeCM23Jl8by7N6v0akTF3EHE-7Sywyni449XwV-h2lDPoMYhqxrGdQfB3W1KdUFItRF9lbwcEUehx4gCjXV71u0xpQJh2SngjnSHIkXL1I7RpK4gdprG_UJdFDFIPPWMdhx8Onjx7zq86lGcfxk"
+          />
+        </div>
+        <div class="flex flex-col">
+          <span class="font-headline-md text-[18px] text-text-ink"
+            >Nguyễn Văn A</span
+          >
+          <span class="text-caption text-text-muted italic"
+            >Software Engineer</span
+          >
+        </div>
+        <div class="w-full border-t border-text-ink/5 pt-4 flex flex-col gap-2">
+          <div
+            class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted"
+          >
+            <span class="material-symbols-outlined text-[16px]"
+              >calendar_today</span
+            >
+            <span class="">01 Th7, 2026</span>
+          </div>
+          <div
+            class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted"
+          >
+            <span class="material-symbols-outlined text-[16px]">schedule</span>
+            <span class="">8 phút đọc</span>
+          </div>
+        </div>
+        <button
+          class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-pure-white transition-all rounded-lg"
+        >
+          Theo dõi
+        </button>
+      </div>
+      <section class="pt-6 border-t border-text-ink/5" id="discussion">
+        <h3
+          class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
+        >
+          Thảo luận (12)
+        </h3>
+        <div class="mb-6">
+          <textarea
+            class="w-full p-3 bg-pure-white border border-text-ink/10 focus:ring-2 focus:ring-accent-rust/20 text-body-md font-body-md rounded-lg min-h-[100px] placeholder:text-text-muted/40 shadow-sm"
+            placeholder="Viết bình luận..."
+          ></textarea>
+          <div class="flex justify-end mt-2">
+            <button
+              class="bg-accent-rust text-pure-white px-4 py-1.5 font-label-md text-[12px] hover:opacity-90 active:scale-95 transition-all rounded-lg"
+            >
+              Gửi
+            </button>
+          </div>
+        </div>
+        <div class="space-y-4">
+          <div class="flex gap-3">
+            <div
+              class="w-8 h-8 rounded-full bg-secondary-container flex-shrink-0 flex items-center justify-center text-secondary font-bold text-[12px]"
+            >
+              T
+            </div>
+            <div class="flex-1">
+              <div class="flex flex-col mb-1">
+                <span class="font-label-md text-[13px] text-text-ink"
+                  >Trần Thị B</span
+                >
+                <span class="font-caption text-[10px] text-text-muted"
+                  >2 giờ trước</span
+                >
+              </div>
+              <p
+                class="font-body-md text-[14px] text-text-muted leading-relaxed"
+              >
+                Bài viết rất chi tiết! Hy vọng có bài viết sâu hơn về migration.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </aside>
 </main>
 <!-- BottomNavBar -->
-<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-paper/95 backdrop-blur-sm border-t border-text-ink/10">
-<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 active:scale-90 transition-transform">
-<span class="material-symbols-outlined">home</span>
-</button>
-<button class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform">
-<span class="material-symbols-outlined">search</span>
-</button>
-<button class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform">
-<span class="material-symbols-outlined">bookmark</span>
-</button>
-<button class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform">
-<span class="material-symbols-outlined">person</span>
-</button>
+<nav
+  class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface-paper/95 backdrop-blur-sm border-t border-text-ink/10"
+>
+  <button
+    class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full p-2 active:scale-90 transition-transform"
+  >
+    <span class="material-symbols-outlined">home</span>
+  </button>
+  <button
+    class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform"
+  >
+    <span class="material-symbols-outlined">search</span>
+  </button>
+  <button
+    class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform"
+  >
+    <span class="material-symbols-outlined">bookmark</span>
+  </button>
+  <button
+    class="flex flex-col items-center justify-center text-text-muted p-2 hover:text-accent-rust transition-colors active:scale-90 transition-transform"
+  >
+    <span class="material-symbols-outlined">person</span>
+  </button>
 </nav>
 <script>
-    // Micro-interaction: Reading Progress Bar
-    const progressBar = document.createElement('div');
-    progressBar.className = 'fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150';
-    progressBar.style.width = '0%';
-    document.body.appendChild(progressBar);
+  // Micro-interaction: Reading Progress Bar
+  const progressBar = document.createElement("div");
+  progressBar.className =
+    "fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150";
+  progressBar.style.width = "0%";
+  document.body.appendChild(progressBar);
 
-    window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        progressBar.style.width = scrolled + '%';
-    });
-</script><div class="fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150" style="width: 0%;"></div>
+  window.addEventListener("scroll", () => {
+    const winScroll =
+      document.body.scrollTop || document.documentElement.scrollTop;
+    const height =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
+    progressBar.style.width = scrolled + "%";
+  });
+</script>
+<div
+  class="fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150"
+  style="width: 0%"
+></div>
