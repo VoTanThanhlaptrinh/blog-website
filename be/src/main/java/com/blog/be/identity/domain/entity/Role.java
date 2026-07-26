@@ -17,6 +17,7 @@ import com.blog.be.identity.domain.enums.RoleStatus;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

@@ -130,10 +130,18 @@ public class CloudflareStorageServiceImpl implements StorageService {
         String endpointUrl = String.format("https://%s.r2.cloudflarestorage.com/%s",
                 properties.getAccountId(), properties.getBucket());
 
+        String baseUrl = properties.getPublicUrl();
+        if (baseUrl != null && baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        String publicUrl = String.format("%s/%s", baseUrl, objectKey);
+
         return UploadPostResponse.builder()
                 .uploadUrl(endpointUrl)
                 .objectKey(objectKey)
                 .formData(formData)
+                .publicUrl(publicUrl)
                 .build();
     }
 }
+

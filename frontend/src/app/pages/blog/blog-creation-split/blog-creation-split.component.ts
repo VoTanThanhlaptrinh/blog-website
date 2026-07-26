@@ -1,6 +1,14 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MarkdownComponent } from 'ngx-markdown';
+import { FileService } from '../../../core/services/file.service';
+
+interface HistoryState {
+
+  content: string;
+  selectionStart: number;
+  selectionEnd: number;
+}
 
 @Component({
   selector: 'app-blog-creation-split',
@@ -9,6 +17,8 @@ import { MarkdownComponent } from 'ngx-markdown';
   styleUrl: './blog-creation-split.component.scss'
 })
 export class BlogCreationSplitComponent {
+  private readonly fileService = inject(FileService);
+
   @ViewChild('bodyInput') bodyInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
 
@@ -22,8 +32,8 @@ export class BlogCreationSplitComponent {
   private images = new Map<string, string>();
   private imageCounter = 0;
 
-  /** History stack cho undo/redo — quản lý cả gõ tay lẫn thao tác toolbar. */
-  private history: string[] = [''];
+  /** History stack cho undo/redo — quản lý cả gõ tay lẫn thao tác toolbar, kèm vị trí con trỏ. */
+  private history: HistoryState[] = [{ content: '', selectionStart: 0, selectionEnd: 0 }];
   private historyIndex = 0;
   private readonly historyLimit = 100;
   private typingTimer: ReturnType<typeof setTimeout> | undefined;
@@ -50,7 +60,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
   }
 
   get canUndo(): boolean {
-    return this.historyIndex > 0;
+    return this.historyIndex > 0 || (this.history[this.historyIndex] && this.body !== this.history[this.historyIndex].content);
   }
 
   get canRedo(): boolean {
@@ -63,20 +73,30 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     el.style.height = `${el.scrollHeight}px`;
   }
 
+  private getCursor(): { start: number; end: number } {
+    const el = this.bodyInput?.nativeElement;
+    return el ? { start: el.selectionStart, end: el.selectionEnd } : { start: 0, end: 0 };
+  }
+
   /** Gõ tay: cập nhật body ngay, ghi lịch sử sau ~300ms để gộp cụm gõ liên tục. */
   onBodyChange(value: string): void {
     this.body = value;
     clearTimeout(this.typingTimer);
-    this.typingTimer = setTimeout(() => this.recordHistory(value), 300);
+    this.typingTimer = setTimeout(() => {
+      const { start, end } = this.getCursor();
+      this.recordHistory(value, start, end);
+    }, 300);
   }
 
   /** Đẩy một mốc mới vào history, cắt bỏ nhánh redo nếu đang ở giữa stack. */
-  private recordHistory(value: string): void {
-    if (value === this.history[this.historyIndex]) {
+  private recordHistory(value: string, start?: number, end?: number): void {
+    const current = this.history[this.historyIndex];
+    if (value === current?.content) {
       return;
     }
+    const cursor = start !== undefined && end !== undefined ? { start, end } : this.getCursor();
     this.history.splice(this.historyIndex + 1);
-    this.history.push(value);
+    this.history.push({ content: value, selectionStart: cursor.start, selectionEnd: cursor.end });
     if (this.history.length > this.historyLimit) {
       this.history.shift();
     }
@@ -88,8 +108,16 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     if (!this.canUndo) {
       return;
     }
+    const currentCheckpoint = this.history[this.historyIndex];
+    if (this.body !== currentCheckpoint.content) {
+      this.body = currentCheckpoint.content;
+      this.restoreSelection(currentCheckpoint.selectionStart, currentCheckpoint.selectionEnd);
+      return;
+    }
     this.historyIndex -= 1;
-    this.body = this.history[this.historyIndex];
+    const target = this.history[this.historyIndex];
+    this.body = target.content;
+    this.restoreSelection(target.selectionStart, target.selectionEnd);
   }
 
   redo(): void {
@@ -98,12 +126,19 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
       return;
     }
     this.historyIndex += 1;
-    this.body = this.history[this.historyIndex];
+    const target = this.history[this.historyIndex];
+    this.body = target.content;
+    this.restoreSelection(target.selectionStart, target.selectionEnd);
   }
 
+  @HostListener('window:keydown', ['$event'])
   onKeydown(event: KeyboardEvent): void {
     const ctrl = event.ctrlKey || event.metaKey;
     if (!ctrl) {
+      return;
+    }
+    const target = event.target as HTMLElement;
+    if (target && target !== this.bodyInput?.nativeElement && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) {
       return;
     }
     const key = event.key.toLowerCase();
@@ -126,10 +161,9 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     const after = this.body.slice(end);
 
     this.body = `${before}${prefix}${selected}${suffix}${after}`;
-    this.recordHistory(this.body);
-
     const cursorStart = start + prefix.length;
     const cursorEnd = cursorStart + selected.length;
+    this.recordHistory(this.body, cursorStart, cursorEnd);
     this.restoreSelection(cursorStart, cursorEnd);
   }
 
@@ -150,17 +184,19 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
       .join('\n');
 
     this.body = `${before}${transformed}${after}`;
-    this.recordHistory(this.body);
-
     const added = transformed.length - block.length;
-    this.restoreSelection(lineStart, end + added);
+    const cursorEnd = end + added;
+    this.recordHistory(this.body, lineStart, cursorEnd);
+    this.restoreSelection(lineStart, cursorEnd);
   }
 
   private restoreSelection(start: number, end: number): void {
     setTimeout(() => {
-      const el = this.bodyInput.nativeElement;
-      el.focus();
-      el.setSelectionRange(start, end);
+      const el = this.bodyInput?.nativeElement;
+      if (el) {
+        el.focus();
+        el.setSelectionRange(start, end);
+      }
     });
   }
 
@@ -206,16 +242,23 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     if (!file) {
       return;
     }
-    const reader = new FileReader();
-    reader.onload = () => {
-      const url = reader.result as string;
-      this.imageCounter += 1;
-      const key = `img-${this.imageCounter}`;
-      this.images.set(key, url);
-      this.body = `${this.body}\n![${file.name}](${key})\n`;
-      this.recordHistory(this.body);
-    };
-    reader.readAsDataURL(file);
+    const tempKey = `[Đang tải ảnh "${file.name}" lên...]`;
+    this.body = `${this.body}\n![${file.name}](${tempKey})\n`;
+    this.recordHistory(this.body);
+
+    this.fileService.uploadFileToR2(file, 'blog/temp').subscribe({
+      next: (publicUrl: string) => {
+        this.body = this.body.replace(`(${tempKey})`, `(${publicUrl})`);
+        this.recordHistory(this.body);
+      },
+      error: (err: unknown) => {
+        console.error('Lỗi upload ảnh lên Cloudflare R2:', err);
+        alert(`Không thể upload ảnh "${file.name}". Vui lòng thử lại.`);
+        this.body = this.body.replace(`\n![${file.name}](${tempKey})\n`, '');
+        this.recordHistory(this.body);
+      },
+    });
+
     input.value = '';
   }
 
@@ -232,3 +275,4 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     this.tags.splice(index, 1);
   }
 }
+

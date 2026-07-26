@@ -16,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -74,11 +75,19 @@ public class IdentityUploadEventListener {
             String endpointUrl = String.format("https://%s.r2.cloudflarestorage.com/%s",
                     cloudflareR2Properties.getAccountId(), cloudflareR2Properties.getBucket());
 
+            String baseUrl = cloudflareR2Properties.getPublicUrl();
+            if (baseUrl != null && baseUrl.endsWith("/")) {
+                baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+            }
+            String publicUrl = String.format("%s/%s", baseUrl, objectKey);
+
             UploadPostResponse response = UploadPostResponse.builder()
                     .uploadUrl(endpointUrl)
                     .objectKey(objectKey)
                     .formData(formData)
+                    .publicUrl(publicUrl)
                     .build();
+
 
             event.setResponse(response);
         } catch (Exception e) {
@@ -89,7 +98,7 @@ public class IdentityUploadEventListener {
 
     @Async
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void handleProfileImageConfirmEvent(ProfileImageConfirmEvent event) {
         String tempUrl = event.getTempUrl();
         if (tempUrl == null || tempUrl.isBlank() || event.getImageId() == null) {

@@ -15,7 +15,7 @@
         <div>
           <h3 class="text-sm font-semibold text-stone-900">{{ col.title }}</h3>
           <ul class="mt-4 space-y-2">
-            @for (link of col.links; track link.path) {
+            @for (link of col.links; track link.label) {
               <li>
                 <a
                   [routerLink]="link.path"

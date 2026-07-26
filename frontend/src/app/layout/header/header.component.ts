@@ -12,8 +12,8 @@ export class HeaderComponent {
 
   navLinks = [
     { label: 'Trang chủ', path: '/' },
-    { label: 'Khám phá', path: '/explore' },
-    { label: 'Viết bài', path: '/write' },
+    { label: 'Khám phá', path: '/search' },
+    { label: 'Viết bài', path: '/blog/creation' },
   ];
 
   toggleMobileMenu() {

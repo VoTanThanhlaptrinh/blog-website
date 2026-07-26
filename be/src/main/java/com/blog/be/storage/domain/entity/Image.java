@@ -15,6 +15,7 @@ import com.blog.be.storage.domain.enums.ImageStatus;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "images")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

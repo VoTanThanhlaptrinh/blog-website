@@ -15,6 +15,7 @@ import com.blog.be.interaction.domain.enums.BookmarkStatus;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "bookmarks")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

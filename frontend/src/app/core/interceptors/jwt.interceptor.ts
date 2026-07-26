@@ -27,10 +27,11 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
   const authService = inject(AuthService);
 
   const isAuthEndpoint = AUTH_ENDPOINTS.some((url) => req.url.includes(url));
+  const isExternalUrl = req.url.startsWith('http://') || req.url.startsWith('https://');
 
   let authReq = req;
   const token = tokenService.getToken();
-  if (!isAuthEndpoint && token) {
+  if (!isAuthEndpoint && !isExternalUrl && token) {
     authReq = req.clone({
       setHeaders: {
         Authorization: `Bearer ${token}`,
@@ -40,9 +41,10 @@ export const jwtInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error) => {
-      if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthEndpoint) {
+      if (error instanceof HttpErrorResponse && error.status === 401 && !isAuthEndpoint && !isExternalUrl) {
         return handle401Error(authReq, next, authService, tokenService);
       }
+
       return throwError(() => error);
     }),
   );

@@ -15,3 +15,29 @@ body {
             background-color: #BD5F43;
             color: #ffffff;
         }
+        .category-scrollbar::-webkit-scrollbar {
+            height: 4px;
+        }
+        .category-scrollbar::-webkit-scrollbar-button {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+        .category-scrollbar::-webkit-scrollbar-corner {
+            background: transparent !important;
+        }
+        .category-scrollbar::-webkit-scrollbar-track {
+            background: rgba(189, 95, 67, 0.08);
+            border-radius: 9999px;
+        }
+        .category-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(189, 95, 67, 0.4);
+            border-radius: 9999px;
+        }
+        .category-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: rgba(189, 95, 67, 0.7);
+        }
+        .category-scrollbar {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(189, 95, 67, 0.4) rgba(189, 95, 67, 0.08);
+        }

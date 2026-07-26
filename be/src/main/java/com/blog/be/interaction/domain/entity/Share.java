@@ -15,6 +15,7 @@ import com.blog.be.interaction.domain.enums.ShareStatus;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "shares")
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

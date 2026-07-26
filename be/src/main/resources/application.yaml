@@ -3,6 +3,8 @@ spring:
     name: be
   profiles:
     active: dev
+  config:
+    import: "optional:file:.env[.properties]"
   security:
     oauth2:
       client:

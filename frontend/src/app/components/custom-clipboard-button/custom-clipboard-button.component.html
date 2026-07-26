@@ -1,0 +1,11 @@
+<button
+  type="button"
+  class="markdown-clipboard-button flex items-center gap-1.5 transition-all duration-200 shadow-sm hover:scale-105 active:scale-95"
+  (click)="onCopyToClipboardClick()"
+  [title]="(copied$ | async) ? 'Đã sao chép!' : 'Sao chép mã'"
+>
+  <span class="material-symbols-outlined text-[14px]">
+    {{ (copied$ | async) ? 'check' : 'content_copy' }}
+  </span>
+  <span>{{ (copied$ | async) ? 'Đã chép!' : 'Sao chép' }}</span>
+</button>

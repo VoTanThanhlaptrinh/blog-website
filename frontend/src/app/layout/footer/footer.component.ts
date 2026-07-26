@@ -14,16 +14,16 @@ export class FooterComponent {
       title: 'Khám phá',
       links: [
         { label: 'Trang chủ', path: '/' },
-        { label: 'Bài viết', path: '/blogs' },
-        { label: 'Chủ đề', path: '/topics' },
+        { label: 'Bài viết', path: '/search' },
+        { label: 'Chủ đề', path: '/search' },
       ],
     },
     {
       title: 'Cộng đồng',
       links: [
-        { label: 'Viết bài', path: '/write' },
-        { label: 'Tác giả', path: '/authors' },
-        { label: 'Thảo luận', path: '/discussions' },
+        { label: 'Viết bài', path: '/blog/creation' },
+        { label: 'Tác giả', path: '/search' },
+        { label: 'Thảo luận', path: '/search' },
       ],
     },
     {
