@@ -1,5 +1,6 @@
-import { Component, ElementRef, HostListener, ViewChild, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { FileService } from '../../../core/services/file.service';
 
@@ -12,7 +13,7 @@ interface HistoryState {
 
 @Component({
   selector: 'app-blog-creation-split',
-  imports: [FormsModule, MarkdownComponent],
+  imports: [FormsModule, MarkdownComponent, RouterLink],
   templateUrl: './blog-creation-split.component.html',
   styleUrl: './blog-creation-split.component.scss'
 })
@@ -27,6 +28,11 @@ export class BlogCreationSplitComponent {
   tags: string[] = ['Công nghệ', 'Lập trình'];
   newTag = '';
   showTagInput = false;
+  mobilePreview = signal(false);
+
+  toggleMobilePreview() {
+    this.mobilePreview.set(!this.mobilePreview());
+  }
 
   /** Ảnh base64 lưu riêng theo key ngắn (img-N) để textarea không bị nhồi data URL. */
   private images = new Map<string, string>();
@@ -40,7 +46,7 @@ export class BlogCreationSplitComponent {
 
   defaultPreview = `Đây là giao diện xem trước cho bài viết của bạn. Khi bạn nhập nội dung ở cột bên trái, các định dạng sẽ được áp dụng trực tiếp tại đây theo phong cách "Editorial Modernist".
 
-Sự cân bằng giữa khoảng trắng (white-space) và kiểu chữ (typography) là ưu tiên hàng đầu của BBlogHub. Chúng tôi sử dụng font Literata cho tiêu đề và Hanken Grotesk cho nội dung để đảm bảo trải nghiệm đọc tối ưu.
+Sự cân bằng giữa khoảng trắng (white-space) và kiểu chữ (typography) là ưu tiên hàng đầu của BlogHub. Chúng tôi sử dụng font Literata cho tiêu đề và Hanken Grotesk cho nội dung để đảm bảo trải nghiệm đọc tối ưu.
 
 > "Thiết kế tốt không chỉ là những gì mắt thấy, mà là cách người đọc cảm nhận sự rõ ràng trong tư duy của người viết."
 

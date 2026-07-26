@@ -37,8 +37,9 @@ export interface ArticleCard {
 export class SearchCategoryGridComponent implements OnInit {
   filterOpen = signal(false);
   sortOpen = signal(false);
+  isDesktop = signal(false);
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
     this.checkResponsiveFilter();
@@ -51,7 +52,11 @@ export class SearchCategoryGridComponent implements OnInit {
 
   private checkResponsiveFilter() {
     if (isPlatformBrowser(this.platformId)) {
-      this.filterOpen.set(window.innerWidth >= 768);
+      const desktop = window.innerWidth >= 1024;
+      this.isDesktop.set(desktop);
+      if (desktop) {
+        this.filterOpen.set(true);
+      }
     }
   }
 
@@ -70,8 +75,7 @@ export class SearchCategoryGridComponent implements OnInit {
     'React', 'Vue.js', 'Node.js', 'Python', 'Golang', 'Java', 'Microservices', 'Docker',
     'Kubernetes', 'Cloud Computing', 'GraphQL', 'REST API', 'UI/UX Design', 'Machine Learning', 'AI'
   ];
-  categories: string[] = ['Tất cả', 'Angular', 'Spring Boot', 'CSS', 'Database', 'Security', 'DevOps', 'TypeScript'];
-  selectedCategory = signal('Tất cả');
+  selectedCategories = signal<string[]>([]);
 
   categorySearchQuery = signal('');
   isCategoryDropdownOpen = signal(false);
@@ -94,8 +98,50 @@ export class SearchCategoryGridComponent implements OnInit {
     this.isCategoryDropdownOpen.update(v => !v);
   }
 
+  isCategorySelected(cat: string): boolean {
+    const current = this.selectedCategories();
+    if (cat === 'Tất cả') {
+      return current.length === 0;
+    }
+    return current.includes(cat);
+  }
+
+  toggleCategorySelection(cat: string) {
+    if (cat === 'Tất cả') {
+      this.selectedCategories.set([]);
+      return;
+    }
+    this.selectedCategories.update(current => {
+      if (current.includes(cat)) {
+        return current.filter(c => c !== cat);
+      } else {
+        return [...current, cat];
+      }
+    });
+  }
+
+  removeCategory(cat: string, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.selectedCategories.update(current => current.filter(c => c !== cat));
+  }
+
+  clearCategories() {
+    this.selectedCategories.set([]);
+  }
+
   selectCategoryFromSearch(cat: string) {
-    this.selectedCategory.set(cat);
+    if (cat === 'Tất cả') {
+      this.selectedCategories.set([]);
+    } else {
+      this.selectedCategories.update(current => {
+        if (!current.includes(cat)) {
+          return [...current, cat];
+        }
+        return current;
+      });
+    }
     this.categorySearchQuery.set('');
     this.isCategoryDropdownOpen.set(false);
   }
@@ -108,52 +154,6 @@ export class SearchCategoryGridComponent implements OnInit {
     }
   }
 
-  isDragging = false;
-  didDrag = false;
-  startX = 0;
-  scrollLeft = 0;
-
-  onMouseDown(event: MouseEvent, container: HTMLElement) {
-    this.isDragging = true;
-    this.didDrag = false;
-    container.classList.add('cursor-grabbing');
-    container.classList.remove('scroll-smooth');
-    this.startX = event.pageX - container.offsetLeft;
-    this.scrollLeft = container.scrollLeft;
-  }
-
-  onMouseLeave(container: HTMLElement) {
-    if (!this.isDragging) return;
-    this.isDragging = false;
-    container.classList.remove('cursor-grabbing');
-    container.classList.add('scroll-smooth');
-  }
-
-  onMouseUp(container: HTMLElement) {
-    if (!this.isDragging) return;
-    this.isDragging = false;
-    container.classList.remove('cursor-grabbing');
-    container.classList.add('scroll-smooth');
-  }
-
-  onMouseMove(event: MouseEvent, container: HTMLElement) {
-    if (!this.isDragging) return;
-    event.preventDefault();
-    const x = event.pageX - container.offsetLeft;
-    const walk = (x - this.startX) * 1.5;
-    if (Math.abs(walk) > 5) {
-      this.didDrag = true;
-    }
-    container.scrollLeft = this.scrollLeft - walk;
-  }
-
-  selectCategory(cat: string) {
-    if (this.didDrag) {
-      this.didDrag = false;
-      return;
-    }
-    this.selectedCategory.set(cat);
-  }
 
   toggleFilter() {
     this.filterOpen.update(v => !v);
@@ -196,6 +196,7 @@ export class SearchCategoryGridComponent implements OnInit {
   }
 
   resetFilters() {
+    this.clearCategories();
     this.selectedTimeFilter.set('Tháng này');
     this.interactionFilters.set({
       'saved': false,

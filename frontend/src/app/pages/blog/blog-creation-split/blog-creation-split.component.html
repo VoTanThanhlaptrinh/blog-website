@@ -1,26 +1,24 @@
 <!-- TopAppBar -->
 <header
-  class="fixed top-0 w-full z-50 bg-pure-white flex justify-between items-center px-5 md:px-10 h-16 w-full border-b border-text-ink/10"
+  class="fixed top-0 w-full z-50 border-b border-stone-200 bg-white/90 backdrop-blur-md h-16"
 >
-  <div class="flex items-center gap-4">
-    <span class="font-headline-md text-headline-md font-bold text-accent-rust"
-      >BBlogHub</span
-    >
-    <div class="hidden md:flex items-center gap-4 ml-8 text-text-muted">
-      <span class="text-caption font-label-md">Đang lưu tự động...</span>
+  <div class="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3">
+      <a routerLink="/" class="flex items-center gap-2">
+        <span
+          class="flex h-9 w-9 items-center justify-center rounded-lg bg-clay-600 text-lg font-bold text-white shadow-lg shadow-clay-600/40">B</span>
+        <span class="text-xl font-bold tracking-tight text-stone-900">BlogHub</span>
+      </a>
+      <span class="h-4 w-px bg-stone-300 hidden sm:block"></span>
+      <span class="text-xs font-medium text-stone-500 hidden sm:block">Trình soạn thảo</span>
     </div>
-  </div>
-  <div class="flex items-center gap-4">
-    <button
-      class="px-4 py-2 font-label-md text-label-md text-text-muted hover:text-accent-rust hover:bg-surface-container-low transition-colors duration-150 ease-in-out active:scale-95"
-    >
-      Lưu nháp
-    </button>
-    <button
-      class="px-6 py-2 bg-accent-rust text-pure-white font-label-md text-label-md rounded shadow-sm hover:opacity-90 transition-all active:scale-95"
-    >
-      Xuất bản
-    </button>
+    <div class="flex items-center gap-3">
+      <a routerLink="/"
+        class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all">
+        <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+        <span>Thoát</span>
+      </a>
+    </div>
   </div>
 </header>
 <!-- Main Content Grid -->
@@ -28,6 +26,7 @@
   <!-- Left Column: Editor -->
   <section
     class="flex-1 flex flex-col border-r border-text-ink/5 bg-pure-white"
+    [class.hidden]="mobilePreview()"
   >
     <!-- Toolbar -->
     <div
@@ -196,7 +195,9 @@
 
   </section>
   <!-- Right Column: Preview -->
-  <section class="flex-1 bg-surface overflow-hidden hidden lg:flex flex-col">
+  <section class="flex-1 bg-surface overflow-hidden flex-col lg:flex"
+    [class.flex]="mobilePreview()"
+    [class.hidden]="!mobilePreview()">
     <div
       class="px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center"
     >
@@ -213,7 +214,7 @@
         <div class="flex items-center gap-4 mb-8">
           <div
             class="w-10 h-10 rounded-full bg-surface-container"
-            data-alt="A professional headshot of a young Vietnamese writer in a minimalist office setting with soft, natural lighting coming from a nearby window. The photographer used a shallow depth of field to create a blurred, neutral background that emphasizes the author's thoughtful expression. The overall aesthetic is clean and modern, following the Editorial Modernist style of the BBlogHub platform."
+            data-alt="A professional headshot of a young Vietnamese writer in a minimalist office setting with soft, natural lighting coming from a nearby window."
             style="
               background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuArdH379Kuv3R8j9EA1YTjfFugXS_nrhN7tuNy7JZWiWnz-AynBmtzrps-tddjeOUDGXPV-XezIU8smlsfCij0Ib7mbmPtXR-Vs7fX_elPlQKAA3rUyHB-plkSeRcMFERArw-oFGgLmSalF-nZAWKENdu8I7-RG3tJfGaW-xqO8G2Ys-DTEkBLBzEIZWwg9kMGaWRSOF-03GBQvZ8eSknoGRA6RzDwEMLu_OYFxfQYE_xiLm6LAqBak-prJqoQBPVb5nwKLJk5F2VM&quot;);
             "
@@ -244,13 +245,44 @@
     </div>
   </section>
 </main>
+
+<!-- Floating Action Dock (Bottom-Center Capsule Bar) -->
+<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 dark:bg-stone-900/90 backdrop-blur-xl border border-stone-200/80 dark:border-stone-800 shadow-[0_16px_36px_-6px_rgba(27,28,23,0.22)] transition-all">
+  <!-- Left: Auto-save Status & Word Count -->
+  <div class="flex items-center gap-2 px-1 text-xs font-medium text-stone-500">
+    <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+    <span class="hidden sm:inline">Đang lưu</span>
+    <span class="text-stone-300">|</span>
+    <span class="font-semibold text-stone-700 dark:text-stone-300">{{ wordCount }} từ</span>
+  </div>
+
+  <div class="h-4 w-px bg-stone-200 dark:bg-stone-700"></div>
+
+  <!-- Middle: Mobile/Tablet Preview Toggle Button (Hidden on Desktop lg:) -->
+  <button (click)="toggleMobilePreview()" type="button"
+    class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium text-stone-700 dark:text-stone-200 bg-stone-100 dark:bg-stone-800 hover:bg-stone-200 transition-all active:scale-95 lg:hidden">
+    <span class="material-symbols-outlined text-[16px] text-accent-rust">{{ mobilePreview() ? 'edit' : 'visibility' }}</span>
+    <span>{{ mobilePreview() ? 'Soạn thảo' : 'Xem trước' }}</span>
+  </button>
+
+  <!-- Right: Save Draft & Publish Buttons -->
+  <button type="button"
+    class="px-4 py-1.5 rounded-full text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all active:scale-95">
+    Lưu nháp
+  </button>
+  <button type="button"
+    class="px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95">
+    Xuất bản
+  </button>
+</div>
+
 <!-- Footer -->
-<footer class="bg-surface-container h-10 border-t border-text-ink/5 z-50">
+<footer class="bg-surface-container h-10 border-t border-text-ink/5 z-40">
   <div
     class="max-w-[1100px] mx-auto h-full px-5 flex justify-between items-center"
   >
     <span class="text-caption text-text-muted"
-      >© 2024 BBlogHub. Editorial Modernist System.</span
+      >© 2024 BlogHub. Editorial Modernist System.</span
     >
     <div class="flex gap-4">
       <a
