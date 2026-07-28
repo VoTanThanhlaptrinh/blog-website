@@ -1,305 +1,229 @@
 <!-- Main Content Canvas -->
-<main class="  ">
+<main class="">
     <div class="w-full md:w-[90%] lg:w-[80%] max-w-[1200px] mx-auto px-10 py-8">
         <!-- Header Section -->
         <div class="mb-8">
             <h2 class="font-headline-lg text-headline-lg text-text-ink mb-1">Content Management</h2>
             <p class="text-text-muted font-body-md">Manage, review, and moderate all community articles.</p>
         </div>
+
+        <!-- Error Banner -->
+        <div *ngIf="error$ | async as error" class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-md">
+            {{ error }}
+        </div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="loading$ | async" class="mb-4 text-sm text-secondary flex items-center gap-2">
+            <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
+            Đang tải dữ liệu bài viết...
+        </div>
+
         <!-- Toolbar: Filters & Search -->
         <div class="bg-pure-white rounded-xl border border-on-surface/5 mb-4">
             <div class="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
                 <!-- Filters -->
                 <div class="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
                     <button
-                        class="px-4 py-2 text-pure-white font-bold bg-accent-rust rounded-full font-label-md text-label-md whitespace-nowrap">All
-                        Posts</button>
+                        (click)="onFilterStatus('')"
+                        [class.bg-accent-rust]="selectedStatus === ''"
+                        [class.text-pure-white]="selectedStatus === ''"
+                        [class.text-secondary]="selectedStatus !== ''"
+                        class="px-4 py-2 font-bold rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Tất cả
+                    </button>
                     <button
-                        class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Published</button>
+                        (click)="onFilterStatus(BlogStatus.PENDING)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PENDING"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.PENDING"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.PENDING"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Chờ duyệt (Pending)
+                    </button>
                     <button
-                        class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Drafts</button>
+                        (click)="onFilterStatus(BlogStatus.PUBLISHED)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PUBLISHED"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.PUBLISHED"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.PUBLISHED"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Đã xuất bản (Published)
+                    </button>
                     <button
-                        class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Pending
-                        Review</button>
+                        (click)="onFilterStatus(BlogStatus.DRAFT)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.DRAFT"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.DRAFT"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.DRAFT"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Nháp (Draft)
+                    </button>
                     <button
-                        class="px-4 py-2 text-secondary hover:text-accent-rust font-label-md text-label-md whitespace-nowrap">Flagged</button>
+                        (click)="onFilterStatus(BlogStatus.REJECTED)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.REJECTED"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.REJECTED"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.REJECTED"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Từ chối (Rejected)
+                    </button>
                 </div>
                 <!-- Search Bar -->
-                <div class="relative w-full md:w-80">
-                    <span class="material-symbols-outlined absolute left-3 top-8 -translate-y-1/2 text-secondary text-2"
-                        data-icon="search">search</span>
-                    <input
-                        class="w-full pl-10 pr-4 py-2 -container-low border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md"
-                        placeholder="Search by title or author..." type="text">
+                <div class="relative w-full md:w-80 flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+                        <input
+                            [(ngModel)]="searchKeyword"
+                            (keyup.enter)="onSearch()"
+                            class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md"
+                            placeholder="Tìm theo tiêu đề hoặc từ khóa..." type="text">
+                    </div>
+                    <button (click)="onSearch()" class="px-3 py-2 bg-accent-rust text-white text-label-md font-bold rounded-lg hover:opacity-90">
+                        Tìm
+                    </button>
                 </div>
             </div>
         </div>
+
+        <!-- Reject Reason Dialog Overlay -->
+        <div *ngIf="rejectingBlogId !== null" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+                <h3 class="text-headline-md font-headline-md text-text-ink">Từ chối xuất bản bài viết</h3>
+                <p class="text-body-md text-secondary">Vui lòng nhập lý do từ chối bài viết (ID: {{ rejectingBlogId }}):</p>
+                <textarea
+                    [(ngModel)]="rejectReason"
+                    rows="4"
+                    class="w-full p-3 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust text-body-md"
+                    placeholder="Nhập lý do chi tiết..."></textarea>
+                <div class="flex justify-end gap-3">
+                    <button (click)="cancelReject()" class="px-4 py-2 border border-gray-300 text-secondary rounded-lg font-label-md hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button (click)="confirmReject()" class="px-4 py-2 bg-red-600 text-white rounded-lg font-label-md hover:bg-red-700">
+                        Xác nhận từ chối
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <!-- Data Table Container -->
         <div class="bg-pure-white rounded-xl border border-on-surface/5 overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
                         <tr class="-container border-b border-outline-variant">
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Article Title</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Author</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Category</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Status</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Created</th>
-                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">
-                                Stats</th>
-                            <th
-                                class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">
-                                Actions</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Tiêu đề bài viết</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Tác giả</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Trạng thái</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Ngày tạo</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Thống kê</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Thao tác</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-on-surface/5">
-                        <!-- Row 1 -->
-                        <tr class="hover:-bright transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-12 h-12 rounded -container flex-shrink-0 overflow-hidden border border-on-surface/5">
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            data-alt="A sophisticated editorial-style thumbnail representing a technical blog post. The image features clean, minimalist abstract architecture in warm rust and cool charcoal tones, mirroring the brand's 'Editorial Modernist' aesthetic with high-key lighting and sharp geometric lines."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiDj_zTrWHbH6-7B8h6C7rsdRLgljg1s3HDxijEx2ct8XMcWAEqWSpRAxP7evw68ICKrF5C-DyYIr-9OlsJRU8azaVe86H771U7XLt_OeavRrLgkX4aT7T3WAWR_Pz8aEnPvB3i3-wITntNQ8OVfHheXZp6r0j066EjPPqDCMXRW7MutbaxXzrN1Qho_b8eN9dhyganuCAAKFeKYN5ZyxRSvdWtxYFiWMEonC23DplwHlCGRd2b-aXzd02cVbf7ladu7TJxq4PKlo">
+                        <ng-container *ngIf="blogs$ | async as blogs">
+                            <tr *ngIf="blogs.length === 0">
+                                <td colspan="6" class="px-6 py-8 text-center text-secondary font-body-md">
+                                    Không tìm thấy bài viết nào.
+                                </td>
+                            </tr>
+                            <tr *ngFor="let blog of blogs" class="hover:-bright transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-body-md font-bold text-text-ink leading-tight line-clamp-2">
+                                            {{ blog.title }}
+                                        </span>
                                     </div>
-                                    <span class="text-body-md text-text-ink leading-tight line-clamp-2">Mastering CSS
-                                        Grid: The Editorial Layout Guide</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0">
-                                        <img class="w-full h-full rounded-full object-cover"
-                                            data-alt="A small circular avatar of a developer, with a minimalist and professional look. The style is consistent with high-end tech publications, featuring soft lighting, a neutral studio background, and a color palette that includes subtle rust accents to match the UI."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJfE4xVNzN7AagId5qJSQFQ8tzsiAvNiLCWUdIhez5qYgqO9crZqql4iUleEqxY2DkTCrKaP4VcU5iIwqXyybMdpa7Ig7Ni8u_2HDiMUCHxVv0nchwPZS3vP8ORZ-ULzq3YuH8S7QisXxq7cpxNgcp2WLbri11x7_sGG8aubvu3G64b25gRnwMGe360zZbT0D1efxc96wBqKqcw72i4B4EtOOJ3j8fwyK5Id8q12AFCbxRTJ-ba71e4G34JM2dY51RWxx-NKjS11A">
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-label-md text-text-ink">{{ blog.author?.email || 'N/A' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        [ngClass]="{
+                                            'bg-amber-100 text-amber-800': blog.status === BlogStatus.PENDING,
+                                            'bg-green-100 text-green-800': blog.status === BlogStatus.PUBLISHED,
+                                            'bg-gray-100 text-gray-800': blog.status === BlogStatus.DRAFT,
+                                            'bg-red-100 text-red-800': blog.status === BlogStatus.REJECTED
+                                        }"
+                                        class="px-2.5 py-1 text-[11px] font-bold rounded-full uppercase tracking-wider">
+                                        {{ blog.status }}
+                                    </span>
+                                    <p *ngIf="blog.status === BlogStatus.REJECTED && blog.rejectionReason" class="text-xs text-red-600 mt-1 italic">
+                                        Lý do: {{ blog.rejectionReason }}
+                                    </p>
+                                </td>
+                                <td class="px-6 py-4 text-text-muted text-label-md">
+                                    {{ blog.createdDate | date:'dd/MM/yyyy HH:mm' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col gap-0.5 text-caption text-secondary">
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">visibility</span> {{ blog.viewsCount | number }}
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">thumb_up</span> {{ blog.likesCount | number }}
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">comment</span> {{ blog.commentsCount | number }}
+                                        </span>
                                     </div>
-                                    <span class="text-label-md text-text-ink">Alex Rivera</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="px-2 py-1 bg-accent-rust/10 text-accent-rust text-[10px] font-bold uppercase rounded tracking-wider">Design</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-1.5 text-tertiary">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
-                                    <span class="text-label-md font-semibold">Published</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-text-muted text-label-md">Oct 24, 2023</td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-0.5 text-caption text-secondary">
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]"
-                                            data-icon="visibility">visibility</span> 1.2k</span>
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]"
-                                            data-icon="chat_bubble">chat_bubble</span> 42</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span
-                                            class="material-symbols-outlined text-xl"
-                                            data-icon="edit">edit</span></button>
-                                    <button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span
-                                            class="material-symbols-outlined text-xl"
-                                            data-icon="visibility">visibility</span></button>
-                                    <button class="p-1.5 text-secondary hover:text-error transition-colors"><span
-                                            class="material-symbols-outlined text-xl"
-                                            data-icon="delete">delete</span></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Row 2 (Pending Review) -->
-                        <tr class="hover:-bright transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-12 h-12 rounded -container flex-shrink-0 overflow-hidden border border-on-surface/5">
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            data-alt="A minimalist technical illustration showing stylized server components in a three-dimensional grid. The artwork uses a sophisticated palette of rust, gray, and cream, maintaining a professional and high-legibility look consistent with technical developer documentation."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAwPYMancgIXYW_ZKyWaBWXGOrA2OHLb8B1pdyKTrU3RDtnaRfT5C15dqZW6AwriQbvqr4x2hFuEwLvgUVPvIDxxhl8ldfvElSQP84oiaRQ1ljB-aLJ3p4RtQOR2DdBKb9VJt7fwNHo1CZx00adlAQ7ymKF47BfYEQrzLGWB0fIs6w1XBMCBUif54R8i4Rby5bDyS2Oh7gvDAmyIRc8HHkbP27GCM8nvnCtLCCq9p6GPAeIYhvsnIRS0nciri-YfbUKgQbVzx0kuvU">
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button
+                                            *ngIf="blog.status === BlogStatus.PENDING"
+                                            (click)="onApprove(blog.id)"
+                                            class="px-3 py-1.5 bg-green-600 text-white font-bold text-xs rounded hover:bg-green-700 transition-colors">
+                                            Duyệt
+                                        </button>
+                                        <button
+                                            *ngIf="blog.status === BlogStatus.PENDING"
+                                            (click)="openRejectDialog(blog.id)"
+                                            class="px-3 py-1.5 bg-red-600 text-white font-bold text-xs rounded hover:bg-red-700 transition-colors">
+                                            Từ chối
+                                        </button>
+                                        <span *ngIf="blog.status !== BlogStatus.PENDING" class="text-xs text-secondary italic">
+                                            Đã xử lý
+                                        </span>
                                     </div>
-                                    <span class="text-body-md text-text-ink leading-tight line-clamp-2">Scaling Node.js
-                                        Microservices at Peak Load</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <div
-                                        class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0 overflow-hidden">
-                                        <img class="w-full h-full object-cover"
-                                            data-alt="A professional headshot avatar of a female software engineer. Minimalist style with soft lighting, a warm paper-tone background, and a focus on clarity and professionalism in an editorial tech context."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjjJd_JI5q_96Q9TakV1Sm_x-JvUXK0fhXQ7PygwBe7IU6Vr9sOGADK-O9qapT-IjaqQGDr39ft_okUfEaBn9lm90JN6ULDk1fdDt-KS4j_9XVp7UQezlxpVDfKsNTWONurevI19SKHSJhErX8F7tC7V7ZTArXnQf5QrKMFzcAsaiSkoJxR-O8ffwzQ394x-mxsl-UFv9kVagea7m07b5cL2xdcuizHOKKO5yXRTSB-xMcbeh9CoRT32nVn0B4h69TklohSuOwL8w">
-                                    </div>
-                                    <span class="text-label-md text-text-ink">Sarah Chen</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="px-2 py-1 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold uppercase rounded tracking-wider">Backend</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-1.5 text-on-secondary-container">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-on-secondary-container"></span>
-                                    <span class="text-label-md font-semibold">Review</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-text-muted text-label-md">Oct 26, 2023</td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-0.5 text-caption text-secondary">
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]"
-                                            data-icon="visibility">visibility</span> 0</span>
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]"
-                                            data-icon="chat_bubble">chat_bubble</span> 0</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button
-                                        class="px-3 py-1 bg-tertiary text-pure-white text-[12px] font-bold rounded hover:opacity-90 transition-all">Approve</button>
-                                    <button
-                                        class="px-3 py-1 border border-outline text-secondary text-[12px] font-bold rounded hover:-container transition-all">Reject</button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Row 3 (Draft) -->
-                        <tr class="hover:-bright transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-12 h-12 rounded -container flex-shrink-0 overflow-hidden border border-on-surface/5">
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            data-alt="A clean, minimalist digital artwork of a stylized laptop with code snippets floating around it. The lighting is bright and high-key, with a color palette of rust-orange and warm grays, adhering to the brand's editorial aesthetic."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBwQm2BSocV7WTw4rOWY47ByLpagXbpdfmoMKYvyADauQbaYzsYNlNMry9r_ZxiVW5DlO2O3rcSkiqqcO8mECNx6VIUHznIv21zLiX8kMNzS64vVmuCDkP59c_yax4fgbr8avOwy4WMvIccENEy66ue9WAKIIh83fnr_0wOHWjy_SoUUorNhCJ7fcLc__dveo-4IbQuaOVvO61Hvaaf_XmveZJgGK9Xihm8pmNigH-qtdlcHcMzfzqX0HpdrFCq5O163M8qhcF7fGo">
-                                    </div>
-                                    <span class="text-body-md text-text-ink leading-tight line-clamp-2">Understanding
-                                        the New TypeScript 5.2 Features</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <div
-                                        class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0 overflow-hidden">
-                                        <img class="w-full h-full object-cover"
-                                            data-alt="A minimalist professional avatar headshot for a content writer, featuring soft, even lighting and a clean, light-mode background that matches the site's warm-toned palette."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJK1Xx5MUXH711jfT1WDuuB5it3qkYEcTpVaz-ZR-bt-0whqSM6xuQiUnrVzQ0pz8JGyduqRHfPhgJ-izu37XTWhA5y78Z9eZvyLOhoR1aUjWII-0U-RGGdP2s5BRjlwZwrIN0GOHl_Y3Fra6Yq0itM3D4YkWR_F8FFiy-qbfZaR_Lp5d9XEq85rgXaifvUBlODwEeB40k2sA_Mu_K5HjOB_g2TN7Ww2fe3kVLXPPW_P1uxrDJ7zrExBwmKvShhs61ugVmI3g7uck">
-                                    </div>
-                                    <span class="text-label-md text-text-ink">Marcus Vane</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="px-2 py-1 bg-accent-rust/10 text-accent-rust text-[10px] font-bold uppercase rounded tracking-wider">Frontend</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-1.5 text-secondary">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
-                                    <span class="text-label-md font-semibold">Draft</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-text-muted text-label-md">Oct 27, 2023</td>
-                            <td class="px-6 py-4 text-secondary text-caption italic">No stats yet</td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button class="p-1.5 text-secondary hover:text-accent-rust transition-colors"><span
-                                            class="material-symbols-outlined text-xl"
-                                            data-icon="edit">edit</span></button>
-                                    <button class="p-1.5 text-secondary hover:text-error transition-colors"><span
-                                            class="material-symbols-outlined text-xl"
-                                            data-icon="delete">delete</span></button>
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Row 4 (Flagged) -->
-                        <tr class="hover:-bright transition-colors group">
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div
-                                        class="w-12 h-12 rounded -container flex-shrink-0 overflow-hidden border border-on-surface/5">
-                                        <img class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                            data-alt="An abstract, architectural photo of a modern building with complex patterns. The image is styled with a warm rust filter, emphasizing high-quality editorial photography for a professional blog header."
-                                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuD3tvtqw1BQ1uMiwASPhSacouE0kIFUJTYP2YGwfN5hDggy_qihiXVfinx2jIb9D-niql-rya_U8jYG8SWmc1oUTW-7d2n9wWmK6eT7pO0fYnw1x9VHvy3r-sTVBuSCzr_rIFAD97LxTluvVyIVfyFYgGZUJldl6PMQalOy_gIGyQv7qxpuSHqTb3FVQZo71FDtQ8c4Pilu3dMwcxYpjMPav5cTzoU9Xl5ORJXB2iyfDfnPT2NLbQWkdCYEAu1n5odfxB9O1YibRDI">
-                                    </div>
-                                    <span class="text-body-md text-text-ink leading-tight line-clamp-2">Why Web3 is
-                                        Still relevant in 2024</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-secondary-container flex-shrink-0"></div>
-                                    <span class="text-label-md text-text-ink">James Wilson</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4">
-                                <span
-                                    class="px-2 py-1 bg-secondary-container text-on-secondary-fixed-variant text-[10px] font-bold uppercase rounded tracking-wider">Blockchain</span>
-                            </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center gap-1.5 text-error">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-error"></span>
-                                    <span class="text-label-md font-semibold">Flagged</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-text-muted text-label-md">Oct 20, 2023</td>
-                            <td class="px-6 py-4">
-                                <div class="flex flex-col gap-0.5 text-caption text-secondary">
-                                    <span class="flex items-center gap-1"><span
-                                            class="material-symbols-outlined text-[14px]"
-                                            data-icon="warning">warning</span> 12 Reports</span>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 text-right">
-                                <div class="flex items-center justify-end gap-2">
-                                    <button
-                                        class="px-3 py-1 bg-error text-pure-white text-[12px] font-bold rounded hover:opacity-90 transition-all">Review
-                                        Reports</button>
-                                </div>
-                            </td>
-                        </tr>
+                                </td>
+                            </tr>
+                        </ng-container>
                     </tbody>
                 </table>
             </div>
+
             <!-- Pagination Footer -->
-            <div
-                class="px-6 py-4 border-t border-on-surface/5 flex items-center justify-between -container-low">
-                <span class="text-caption text-secondary">Showing <span class="font-bold">1-10</span> of <span
-                        class="font-bold">248</span> results</span>
-                <div class="flex items-center gap-2">
-                    <button class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30" disabled="">
-                        <span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
-                    </button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded bg-accent-rust text-pure-white font-bold text-caption rounded-full">1</button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded hover:-container text-secondary font-bold text-caption transition-colors">2</button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded hover:-container text-secondary font-bold text-caption transition-colors">3</button>
-                    <span class="text-secondary text-caption">...</span>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded hover:-container text-secondary font-bold text-caption transition-colors">25</button>
-                    <button class="p-1 text-secondary hover:text-accent-rust">
-                        <span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
-                    </button>
+            <ng-container *ngIf="pageMeta$ | async as pageMeta">
+                <div *ngIf="pageMeta.totalPages > 0" class="px-6 py-4 border-t border-on-surface/5 flex items-center justify-between -container-low">
+                    <span class="text-caption text-secondary">
+                        Trang <span class="font-bold">{{ pageMeta.pageNumber + 1 }}</span> / <span class="font-bold">{{ pageMeta.totalPages }}</span>
+                        (Tổng {{ pageMeta.totalElements }} kết quả)
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button
+                            (click)="goToPage(currentPage - 1)"
+                            [disabled]="currentPage === 0"
+                            class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+
+                        <button
+                            *ngFor="let page of [].constructor(pageMeta.totalPages); let i = index"
+                            (click)="goToPage(i)"
+                            [class.bg-accent-rust]="currentPage === i"
+                            [class.text-pure-white]="currentPage === i"
+                            [class.text-secondary]="currentPage !== i"
+                            class="w-8 h-8 flex items-center justify-center rounded font-bold text-caption transition-colors">
+                            {{ i + 1 }}
+                        </button>
+
+                        <button
+                            (click)="goToPage(currentPage + 1)"
+                            [disabled]="pageMeta.last || currentPage >= pageMeta.totalPages - 1"
+                            class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            </ng-container>
         </div>
-        <!-- Contextual FAB (Only for Home/Dashboard/Listings)
-        <button
-            class="fixed bottom-8 right-8 w-14 h-14 bg-accent-rust text-pure-white rounded-full shadow-lg flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-50 group">
-            <span class="material-symbols-outlined" data-icon="add">add</span>
-            <span
-                class="absolute right-full mr-4 px-3 py-1 bg-inverse-surface text-pure-white text-caption rounded whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity">Create
-                New Article</span>
-        </button> -->
     </div>
 </main>
