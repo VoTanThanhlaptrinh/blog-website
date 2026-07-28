@@ -52,6 +52,13 @@ export class AuthService {
   }
 
   /**
+   * Lấy danh sách URL đăng nhập qua mạng xã hội (Google, Facebook)
+   */
+  getSocialLoginUrls(): Observable<ApiResponse<{ [key: string]: string }>> {
+    return this.http.get<ApiResponse<{ [key: string]: string }>>(`${this.apiUrl}/login/social`);
+  }
+
+  /**
    * Đăng ký tài khoản mới.
    */
   register(request: RegisterRequest): Observable<ApiResponse<AuthResponse>> {
