@@ -34,6 +34,10 @@ public class Blog {
     private String content;
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
+    @Builder.Default
+    private int viewCount = 0;
+    @Builder.Default
+    private int shareCount = 0;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

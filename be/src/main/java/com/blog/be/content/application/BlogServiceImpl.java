@@ -197,6 +197,8 @@ public class BlogServiceImpl implements BlogService {
                 .author(authorResponse)
                 .likesCount(likesCount)
                 .commentsCount(commentsCount)
+                .viewsCount(blog.getViewCount())
+                .sharesCount(blog.getShareCount())
                 .createdDate(blog.getCreatedDate())
                 .modifiedDate(blog.getModifiedDate())
                 .build();

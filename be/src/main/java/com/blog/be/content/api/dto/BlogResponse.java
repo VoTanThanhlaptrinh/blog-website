@@ -21,6 +21,8 @@ public class BlogResponse {
     private AuthorResponse author;
     private int likesCount;
     private int commentsCount;
+    private int viewsCount;
+    private int sharesCount;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 }

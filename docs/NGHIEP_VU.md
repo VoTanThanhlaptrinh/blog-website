@@ -14,7 +14,7 @@ Backend chia theo các module domain, mỗi module có 4 lớp `api` → `applic
 |---|---|---|
 | **identity** | Đăng ký, đăng nhập, hồ sơ, phân quyền, OAuth2 | Đã triển khai |
 | **content** | Quản lý bài viết (blog/post) | Đã triển khai |
-| **interaction** | Like, Comment, Share, Bookmark, View | Có entity, chưa có API |
+| **interaction** | Like, Comment, Share, Bookmark, View | Đã triển khai hoàn thiện API & Service |
 | **storage** | Upload ảnh (Cloudflare R2), presigned URL | Đã triển khai |
 | **notification** | Gửi email (kích hoạt, OTP) qua event | Đã triển khai |
 | **recommendation** | Gợi ý nội dung | Chỉ có khung thư mục (chưa code) |
@@ -59,7 +59,7 @@ Endpoint gốc: `/api/v1/blogs`
 | Nghiệp vụ | Endpoint | Mô tả |
 |---|---|---|
 | Tạo bài viết | `POST /blogs` | Người dùng đăng bài mới (title, description, content, status). |
-| Xem chi tiết | `GET /blogs/{id}` | Lấy 1 bài viết kèm tác giả, số like, số comment. |
+| Xem chi tiết | `GET /blogs/{id}` | Lấy 1 bài viết kèm tác giả, số like, số comment, số view, số share. |
 | Danh sách / tìm kiếm | `GET /blogs` | Phân trang + lọc theo `keyword`, `status`, `userId`. Sắp xếp mặc định theo ngày tạo giảm dần. |
 | Cập nhật | `PUT /blogs/{id}` | Sửa bài (kiểm tra quyền sở hữu). |
 | Xóa | `DELETE /blogs/{id}` | Xóa mềm bài viết. |
@@ -77,22 +77,30 @@ Lỗi nghiệp vụ đã định nghĩa: bài không tồn tại, bài đã bị
 
 ## 4. Nghiệp vụ Tương tác (Interaction)
 
-> Đã có entity + repository, **chưa có Controller/Service** (chưa expose API). Đây là các nghiệp vụ đã thiết kế cấu trúc dữ liệu, chờ triển khai.
+> Đã triển khai đầy đủ Controller/Service/DTO cho các nghiệp vụ **Like**, **Comment**, **Bookmark**, **Share** và **View**.
 
-| Nghiệp vụ | Entity | Mô tả dữ liệu |
+### Các Endpoint đã triển khai
+
+| Nghiệp vụ | Endpoint | Mô tả | Trạng thái |
+|---|---|---|---|
+| Toggle Like bài viết | `POST /api/v1/likes/toggle` | Thích / bỏ thích bài viết. Trả về tổng số like + trạng thái `isLiked`. | Đã triển khai |
+| Toggle Like bình luận | `POST /api/v1/likes/comment/toggle` | Thích / bỏ thích bình luận (`CommentLike`). Trả về số like + `isLiked`. | Đã triển khai |
+| Tạo bình luận | `POST /api/v1/comments` | Bình luận bài viết hoặc trả lời comment khác (`parentId`, tối đa 1 cấp reply). | Đã triển khai |
+| Cập nhật bình luận | `PUT /api/v1/comments/{id}` | Chỉnh sửa nội dung bình luận (kiểm tra quyền chủ sở hữu). | Đã triển khai |
+| Xóa bình luận | `DELETE /api/v1/comments/{id}` | Xóa mềm bình luận (chuyển trạng thái sang `DELETED`). | Đã triển khai |
+| Danh sách bình luận theo Blog | `GET /api/v1/comments/blog/{blogId}` | Phân trang danh sách bình luận kèm các câu trả lời con (replies). | Đã triển khai |
+| Toggle Bookmark | `POST /api/v1/bookmarks/toggle` | Thêm / gỡ lưu bài viết. Trả về trạng thái `bookmarked`. | Đã triển khai |
+| Danh sách Bookmark của tôi | `GET /api/v1/bookmarks/me` | Phân trang danh sách các bài viết người dùng đã lưu. | Đã triển khai |
+| Ghi nhận Share | `POST /api/v1/shares` | Ghi nhận lượt chia sẻ ra các nền tảng (`provider`) và cộng dồn lượt share trên bài viết. | Đã triển khai |
+| Ghi nhận View | `POST /api/v1/views/record` | Ghi nhận lượt xem bài viết kèm cơ chế anti-spam (giới hạn 1 view / User hoặc IP trong 24h). | Đã triển khai |
+
+### Cấu trúc Dữ liệu & Entity
+
+| Nghiệp vụ | Entity | Mô tả dữ liệu & Trạng thái API |
 |---|---|---|
-| **Like** (thích) | `Like` | Cờ `liked`, liên kết `Blog` + `User`. Một người like một bài. |
-| **Comment** (bình luận) | `Comment` | Nội dung, người tạo, bài viết, hỗ trợ **trả lời lồng nhau** (`reply` là danh sách comment con). |
-| **Share** (chia sẻ) | `Share` | Trạng thái (`ACTIVE`/`DELETED`), `provider` (nền tảng chia sẻ), liên kết `Blog` + `User`. |
-| **Bookmark** (lưu bài) | `Bookmark` | Trạng thái (`ACTIVE`/`REMOVED`), liên kết `User` + `Blog`. |
-| **View** (lượt xem) | `View` | Hiện chỉ có `id` — cấu trúc chưa hoàn chỉnh (cần bổ sung liên kết Blog/User/thời điểm). |
-
-Nghiệp vụ dự kiến cần bổ sung API:
-- Like / Unlike một bài viết.
-- Thêm / sửa / xóa bình luận; trả lời bình luận.
-- Chia sẻ bài viết ra nền tảng ngoài, đếm lượt share.
-- Thêm / gỡ bookmark; xem danh sách bài đã lưu.
-- Ghi nhận và đếm lượt xem.
+| **Like** (thích bài viết) | `Like` | Cờ `liked`, liên kết `Blog` + `User`. *(Đã triển khai API)* |
+| **CommentLike** (thích bình luận) | `CommentLike` | Cờ `liked`, liên kết `Comment` + `User`. *(Đã triển khai API)* |
+- **Interaction Events & Notification**: Phát `ApplicationEvent` khi người dùng like bài, bình luận, hoặc trả lời comment để gửi thông báo cho tác giả bài viết/comment thông qua module `notification`.
 
 ---
 
@@ -147,10 +155,11 @@ Hạ tầng FE: `jwt.interceptor` gắn token vào request, `auth.service` / `to
 
 ## 8. Nghiệp vụ chưa triển khai / cần hoàn thiện
 
-- **Interaction API**: Like, Comment, Share, Bookmark, View — mới có entity, chưa có controller/service.
+- **Interaction API (chưa hoàn thiện)**: Đã triển khai Controller/Service cho Like và Comment. Chưa có API cho Bookmark, Share, View; View entity chưa hoàn chỉnh.
+- **Interaction Notification Events**: Chưa phát Application Event khi có Like/Comment để gửi thông báo cho tác giả.
 - **Recommendation**: gợi ý bài viết — thư mục rỗng.
 - **Admin backend**: các trang quản trị FE đã có nhưng API backend chưa được viết.
-- **View entity**: thiếu trường liên kết và timestamp.
+- **View entity**: thiếu trường liên kết (`blog`, `user`, `ipAddress`) và timestamp.
 - **Follow/Following** (theo dõi người dùng): chưa có trong hệ thống — cần bổ sung nếu muốn đầy đủ tính năng mạng xã hội.
 - **Feed cá nhân hóa / Notification realtime**: chưa có.
 
