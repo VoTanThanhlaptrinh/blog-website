@@ -4,6 +4,7 @@ import { BlogDetailAuthorComponent } from './blog-detail-author/blog-detail-auth
 
 export const BLOG_ROUTES: Routes = [
   { path: 'creation', component: BlogCreationSplitComponent },
+  { path: 'edit/:id', component: BlogCreationSplitComponent },
   { path: 'detail/:id', component: BlogDetailAuthorComponent },
   { path: '', redirectTo: 'detail', pathMatch: 'full' }
 ];

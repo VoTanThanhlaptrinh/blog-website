@@ -1,11 +1,12 @@
-import { Component, ElementRef, HostListener, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { FileService } from '../../../core/services/file.service';
+import { BlogService } from '../../../core/services/blog.service';
+import { BlogStatus } from '../../../core/models/blog.model';
 
 interface HistoryState {
-
   content: string;
   selectionStart: number;
   selectionEnd: number;
@@ -17,8 +18,11 @@ interface HistoryState {
   templateUrl: './blog-creation-split.component.html',
   styleUrl: './blog-creation-split.component.scss'
 })
-export class BlogCreationSplitComponent {
+export class BlogCreationSplitComponent implements OnInit {
   private readonly fileService = inject(FileService);
+  private readonly blogService = inject(BlogService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   @ViewChild('bodyInput') bodyInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
@@ -29,9 +33,29 @@ export class BlogCreationSplitComponent {
   newTag = '';
   showTagInput = false;
   mobilePreview = signal(false);
+  submitting = signal(false);
 
-  toggleMobilePreview() {
-    this.mobilePreview.set(!this.mobilePreview());
+  isEditMode = false;
+  blogId: number | string | null = null;
+  BlogStatus = BlogStatus;
+
+  ngOnInit(): void {
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.isEditMode = true;
+      this.blogId = id;
+      this.blogService.getBlogById(id).subscribe({
+        next: (blog) => {
+          this.title = blog.title;
+          this.body = blog.content;
+          this.recordHistory(this.body);
+        },
+        error: (err) => {
+          console.error('Lỗi khi tải thông tin bài viết:', err);
+          alert('Không thể tải bài viết để chỉnh sửa.');
+        }
+      });
+    }
   }
 
   /** Ảnh base64 lưu riêng theo key ngắn (img-N) để textarea không bị nhồi data URL. */
@@ -280,5 +304,60 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
   removeTag(index: number): void {
     this.tags.splice(index, 1);
   }
+
+  toggleMobilePreview(): void {
+    this.mobilePreview.set(!this.mobilePreview());
+  }
+
+  submit(status: BlogStatus): void {
+    if (!this.title.trim()) {
+      alert('Vui lòng nhập tiêu đề bài viết.');
+      return;
+    }
+    if (!this.body.trim()) {
+      alert('Vui lòng nhập nội dung bài viết.');
+      return;
+    }
+
+    const description = this.body.trim().slice(0, 150);
+    this.submitting.set(true);
+
+    if (this.isEditMode && this.blogId) {
+      this.blogService.updateBlog(this.blogId, {
+        title: this.title.trim(),
+        description,
+        content: this.body,
+        status,
+      }).subscribe({
+        next: (res) => {
+          this.submitting.set(false);
+          this.router.navigate(['/blog/detail', res.id || this.blogId]);
+        },
+        error: (err) => {
+          console.error('Lỗi khi cập nhật bài viết:', err);
+          this.submitting.set(false);
+          alert(err?.error?.message || 'Có lỗi xảy ra khi cập nhật bài viết.');
+        }
+      });
+    } else {
+      this.blogService.createBlog({
+        title: this.title.trim(),
+        description,
+        content: this.body,
+        status,
+      }).subscribe({
+        next: (res) => {
+          this.submitting.set(false);
+          this.router.navigate(['/blog/detail', res.id]);
+        },
+        error: (err) => {
+          console.error('Lỗi khi tạo bài viết:', err);
+          this.submitting.set(false);
+          alert(err?.error?.message || 'Có lỗi xảy ra khi tạo bài viết.');
+        }
+      });
+    }
+  }
 }
+
 

@@ -5,7 +5,9 @@ import {
   ApiResponse,
   BlogQueryParams,
   BlogResponse,
+  CreateBlogRequest,
   PageResponse,
+  UpdateBlogRequest,
 } from '../models/blog.model';
 
 @Injectable({
@@ -77,4 +79,62 @@ export class BlogService {
       })
     );
   }
+
+  /**
+   * Create a new blog
+   */
+  createBlog(request: CreateBlogRequest): Observable<BlogResponse> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    return this.http.post<ApiResponse<BlogResponse>>(this.apiUrl, request).pipe(
+      map((res) => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể tạo bài viết mới';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Update an existing blog
+   */
+  updateBlog(id: number | string, request: UpdateBlogRequest): Observable<BlogResponse> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    return this.http.put<ApiResponse<BlogResponse>>(`${this.apiUrl}/${id}`, request).pipe(
+      map((res) => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể cập nhật bài viết';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Delete a blog
+   */
+  deleteBlog(id: number | string): Observable<void> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    return this.http.delete<ApiResponse<void>>(`${this.apiUrl}/${id}`).pipe(
+      map((res) => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể xóa bài viết';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
 }
+

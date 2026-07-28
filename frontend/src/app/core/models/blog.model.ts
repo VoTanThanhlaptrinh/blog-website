@@ -51,3 +51,18 @@ export interface BlogQueryParams {
   size?: number;
   sort?: string;
 }
+
+export interface CreateBlogRequest {
+  title: string;
+  description: string;
+  content: string;
+  status?: BlogStatus;
+}
+
+export interface UpdateBlogRequest {
+  title: string;
+  description: string;
+  content: string;
+  status?: BlogStatus;
+}
+

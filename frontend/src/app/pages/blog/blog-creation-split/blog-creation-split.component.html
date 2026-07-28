@@ -267,12 +267,16 @@
 
   <!-- Right: Save Draft & Publish Buttons -->
   <button type="button"
-    class="px-4 py-1.5 rounded-full text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all active:scale-95">
+    (click)="submit(BlogStatus.DRAFT)"
+    [disabled]="submitting()"
+    class="px-4 py-1.5 rounded-full text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
     Lưu nháp
   </button>
   <button type="button"
-    class="px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95">
-    Xuất bản
+    (click)="submit(BlogStatus.PUBLISHED)"
+    [disabled]="submitting()"
+    class="px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+    {{ submitting() ? 'Đang gửi...' : (isEditMode ? 'Cập nhật' : 'Xuất bản') }}
   </button>
 </div>
 

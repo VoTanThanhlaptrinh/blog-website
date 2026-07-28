@@ -70,6 +70,7 @@
           >
             {{ blog()?.title || 'Không có tiêu đề' }}
           </h2>
+
           <!-- Author Info & Quick Actions -->
           <div class="flex flex-wrap items-center justify-between gap-4 py-4 my-6 border-y border-text-ink/10">
             <div class="flex items-center gap-3">
@@ -88,18 +89,46 @@
                 <div class="flex items-center gap-2 text-xs text-text-muted mt-0.5">
                   <span>{{ blog()?.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
                   <span>•</span>
-                  <span>👁️ {{ blog()?.viewsCount || 0 }} lượt xem</span>
+                  <span>👁️ {{ viewsCount() }} lượt xem</span>
                 </div>
               </div>
             </div>
-            <div class="flex items-center gap-2">
-              <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95">
+
+            <!-- Header Interaction Buttons -->
+            <div class="flex items-center gap-2 relative">
+              <button
+                (click)="toggleShareModal()"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95"
+              >
                 <span class="material-symbols-outlined text-[16px]">share</span>
-                <span>Chia sẻ ({{ blog()?.sharesCount || 0 }})</span>
+                <span>Chia sẻ ({{ sharesCount() }})</span>
               </button>
-              <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-rust/10 text-accent-rust hover:bg-accent-rust hover:text-white transition-all text-xs font-semibold active:scale-95">
-                <span class="material-symbols-outlined text-[16px]">bookmark_add</span>
-                <span>Lưu bài</span>
+
+              <!-- Share Dropdown Modal -->
+              @if (showShareModal()) {
+                <div class="absolute right-0 top-10 z-50 w-48 bg-white rounded-xl shadow-lg border border-stone-200 p-2 space-y-1">
+                  <button (click)="sharePost('facebook')" class="w-full text-left px-3 py-2 text-xs hover:bg-stone-100 rounded-lg flex items-center gap-2 text-stone-700 font-medium">
+                    <span class="material-symbols-outlined text-[16px] text-blue-600">public</span> Facebook
+                  </button>
+                  <button (click)="sharePost('twitter')" class="w-full text-left px-3 py-2 text-xs hover:bg-stone-100 rounded-lg flex items-center gap-2 text-stone-700 font-medium">
+                    <span class="material-symbols-outlined text-[16px] text-sky-500">tag</span> Twitter / X
+                  </button>
+                  <button (click)="sharePost('link')" class="w-full text-left px-3 py-2 text-xs hover:bg-stone-100 rounded-lg flex items-center gap-2 text-stone-700 font-medium">
+                    <span class="material-symbols-outlined text-[16px] text-stone-600">link</span> Sao chép liên kết
+                  </button>
+                </div>
+              }
+
+              <!-- Bookmark Button (Optimistic UI) -->
+              <button
+                (click)="toggleBookmark()"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold active:scale-95"
+                [ngClass]="isBookmarked() ? 'bg-accent-rust text-white' : 'bg-accent-rust/10 text-accent-rust'"
+              >
+                <span class="material-symbols-outlined text-[16px]">
+                  {{ isBookmarked() ? 'bookmark' : 'bookmark_add' }}
+                </span>
+                <span>{{ isBookmarked() ? 'Đã lưu' : 'Lưu bài' }}</span>
               </button>
             </div>
           </div>
@@ -115,33 +144,116 @@
         ></markdown>
       </article>
 
-      <!-- Social Share Bar -->
+      <!-- Social Share / Like Bar -->
       <section class="px-5 mt-16">
-        <div
-          class="flex items-center justify-between py-4 border-y border-text-ink/10"
-        >
+        <div class="flex items-center justify-between py-4 border-y border-text-ink/10">
           <div class="flex gap-4">
+            <!-- Like Button (Optimistic UI) -->
             <button
-              class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
+              (click)="toggleLike()"
+              class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors active:scale-95"
+              [class.text-accent-rust]="isLiked()"
+              [class.font-bold]="isLiked()"
             >
-              <span class="material-symbols-outlined">thumb_up</span>
-              <span class="font-label-md text-label-md">{{ blog()?.likesCount || 0 }}</span>
+              <span class="material-symbols-outlined">
+                {{ isLiked() ? 'thumb_up_filled' : 'thumb_up' }}
+              </span>
+              <span class="font-label-md text-label-md">{{ likesCount() }}</span>
             </button>
-            <button
+
+            <!-- Comments Count indicator -->
+            <a
+              href="#comments-section"
               class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
             >
               <span class="material-symbols-outlined">chat_bubble</span>
-              <span class="font-label-md text-label-md">{{ blog()?.commentsCount || 0 }}</span>
-            </button>
+              <span class="font-label-md text-label-md">{{ totalComments() }}</span>
+            </a>
           </div>
+
           <div class="flex gap-3">
             <button
+              (click)="toggleLike()"
               class="px-4 py-2 text-white font-medium text-xs active:scale-95 transition-transform bg-accent-rust rounded-lg shadow"
             >
-              Thích bài viết
+              {{ isLiked() ? 'Đã thích' : 'Thích bài viết' }}
             </button>
           </div>
         </div>
+      </section>
+
+      <!-- Comments Section -->
+      <section id="comments-section" class="px-5 mt-12 mb-20 space-y-6">
+        <h3 class="text-xl font-bold text-text-ink flex items-center gap-2">
+          <span class="material-symbols-outlined text-accent-rust">forum</span>
+          Bình luận ({{ totalComments() }})
+        </h3>
+
+        <!-- Add Comment Input Box -->
+        <div class="p-4 bg-surface-paper border border-text-ink/10 rounded-xl space-y-3 shadow-sm">
+          @if (replyingTo()) {
+            <div class="flex items-center justify-between bg-accent-rust/10 text-accent-rust px-3 py-1.5 rounded-lg text-xs font-medium">
+              <span>Đang phản hồi <strong>{{ replyingTo()?.authorEmail }}</strong></span>
+              <button (click)="cancelReply()" class="hover:text-stone-900">
+                <span class="material-symbols-outlined text-[16px]">close</span>
+              </button>
+            </div>
+          }
+
+          <textarea
+            [(ngModel)]="newCommentContent"
+            rows="3"
+            placeholder="Viết bình luận của bạn..."
+            class="w-full p-3 text-sm border border-text-ink/10 rounded-lg focus:outline-none focus:border-accent-rust resize-none bg-white"
+          ></textarea>
+
+          <div class="flex justify-end">
+            <button
+              (click)="submitComment()"
+              [disabled]="!newCommentContent().trim()"
+              class="px-4 py-2 bg-accent-rust text-white text-xs font-semibold rounded-lg hover:opacity-90 transition-opacity disabled:opacity-50 active:scale-95 shadow"
+            >
+              Gửi bình luận
+            </button>
+          </div>
+        </div>
+
+        <!-- Comments List -->
+        <div class="space-y-4">
+          @for (c of comments(); track c.id) {
+            <app-comment-item
+              [comment]="c"
+              [currentUserId]="authService.currentUser()?.id"
+              (likeComment)="handleLikeComment($event)"
+              (replyComment)="setReplyTo($event)"
+              (editComment)="handleEditComment($event)"
+              (deleteComment)="handleDeleteComment($event)"
+            ></app-comment-item>
+          } @empty {
+            @if (!commentsLoading()) {
+              <div class="text-center py-8 text-text-muted text-sm italic">
+                Chưa có bình luận nào. Hãy là người đầu tiên để lại ý kiến!
+              </div>
+            }
+          }
+        </div>
+
+        <!-- Load More Comments Button -->
+        @if (hasMoreComments()) {
+          <div class="text-center pt-4">
+            <button
+              (click)="loadMoreComments()"
+              [disabled]="commentsLoading()"
+              class="px-5 py-2 text-xs font-semibold border border-text-ink/20 rounded-lg hover:bg-stone-100 transition-colors text-text-ink active:scale-95"
+            >
+              @if (commentsLoading()) {
+                Đang tải...
+              } @else {
+                Tải thêm bình luận
+              }
+            </button>
+          </div>
+        }
       </section>
     </div>
 
