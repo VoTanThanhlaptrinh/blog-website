@@ -33,11 +33,18 @@ public class BlogServiceImpl implements BlogService {
             throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để tạo bài viết");
         }
 
+        BlogStatus targetStatus = request.getStatus();
+        if (targetStatus == null) {
+            targetStatus = BlogStatus.PENDING;
+        } else if (targetStatus == BlogStatus.PUBLISHED && !isAdmin(currentUser)) {
+            targetStatus = BlogStatus.PENDING;
+        }
+
         Blog blog = Blog.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .content(request.getContent())
-                .status(request.getStatus() != null ? request.getStatus() : BlogStatus.DRAFT)
+                .status(targetStatus)
                 .user(currentUser)
                 .build();
 
@@ -66,29 +73,37 @@ public class BlogServiceImpl implements BlogService {
         Specification<Blog> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            boolean isAuthenticated = currentUser != null && currentUser.getId() != null;
+            boolean isAdmin = isAdmin(currentUser);
+            boolean isFetchingOwnBlogs = isAuthenticated && userId != null && userId.equals(currentUser.getId());
+
             if (status != null) {
+                // 1. Trường hợp có truyền status cụ thể
                 if (status != BlogStatus.PUBLISHED) {
-                    if (currentUser == null || currentUser.getId() == null) {
+                    if (!isAuthenticated) {
                         throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để xem các bài viết ở trạng thái " + status);
                     }
-                    boolean isAdmin = isAdmin(currentUser);
-                    if (!isAdmin && (userId == null || !userId.equals(currentUser.getId()))) {
+                    // User thường chỉ được xem bài không phải PUBLISHED của chính mình
+                    if (!isAdmin && !isFetchingOwnBlogs) {
                         predicates.add(cb.equal(root.get("user").get("id"), currentUser.getId()));
                     } else if (userId != null) {
                         predicates.add(cb.equal(root.get("user").get("id"), userId));
                     }
-                    predicates.add(cb.equal(root.get("status"), status));
                 } else {
-                    predicates.add(cb.equal(root.get("status"), BlogStatus.PUBLISHED));
+                    // Bài PUBLISHED thì ai cũng xem được
                     if (userId != null) {
                         predicates.add(cb.equal(root.get("user").get("id"), userId));
                     }
                 }
+                predicates.add(cb.equal(root.get("status"), status));
             } else {
-                if (currentUser != null && userId != null && userId.equals(currentUser.getId())) {
+                // 2. Trường hợp lấy danh sách chung (không truyền status)
+                if (isFetchingOwnBlogs) {
+                    // Lấy bài của chính mình -> Lấy mọi trạng thái trừ DELETED
                     predicates.add(cb.notEqual(root.get("status"), BlogStatus.DELETED));
                     predicates.add(cb.equal(root.get("user").get("id"), userId));
                 } else {
+                    // Xem bài người khác hoặc xem chung -> Chỉ lấy PUBLISHED
                     predicates.add(cb.equal(root.get("status"), BlogStatus.PUBLISHED));
                     if (userId != null) {
                         predicates.add(cb.equal(root.get("user").get("id"), userId));
@@ -194,6 +209,7 @@ public class BlogServiceImpl implements BlogService {
                 .description(blog.getDescription())
                 .content(blog.getContent())
                 .status(blog.getStatus())
+                .rejectionReason(blog.getRejectionReason())
                 .author(authorResponse)
                 .likesCount(likesCount)
                 .commentsCount(commentsCount)

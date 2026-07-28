@@ -34,6 +34,7 @@ public class Blog {
     private String content;
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
+    private String rejectionReason;
     @Builder.Default
     private int viewCount = 0;
     @Builder.Default

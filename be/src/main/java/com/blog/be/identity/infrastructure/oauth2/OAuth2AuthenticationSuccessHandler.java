@@ -20,6 +20,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Xử lý sự kiện đăng nhập OAuth2 thành công (Google / Facebook).
+ * Luồng hoạt động:
+ * 1. Lấy thông tin User đã được lưu/đồng bộ từ CustomOAuth2UserService.
+ * 2. Tạo Refresh Token và ghi vào HttpOnly Cookie an toàn để chống XSS.
+ * 3. Tạo Access Token tạm thời.
+ * 4. Chuyển hướng (Redirect) về Client Frontend kèm Access Token trên Query Parameter để Client lưu phiên.
+ */
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {

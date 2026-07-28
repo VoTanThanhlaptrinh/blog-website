@@ -147,6 +147,15 @@ public class CloudflareStorageServiceImpl implements StorageService {
                 .build();
     }
 
+    /**
+     * Cập nhật tiền tố (prefix/thư mục) hàng loạt cho danh sách URL ảnh trên R2.
+     * Thường dùng khi chuyển ảnh tạm từ thư mục "temp/" sang thư mục lưu trữ chính thức như "blog/" hoặc "avatar/".
+     *
+     * @param imageUrls Danh sách URL/Key ảnh cần chuyển đổi
+     * @param sourcePrefix Tiền tố nguồn (mặc định "temp/")
+     * @param targetPrefix Tiền tố đích (mặc định "blog/")
+     * @return Danh sách các URL công khai mới sau khi đã di chuyển thành công
+     */
     @Override
     public UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix, String targetPrefix) {
         if (imageUrls == null || imageUrls.isEmpty()) {

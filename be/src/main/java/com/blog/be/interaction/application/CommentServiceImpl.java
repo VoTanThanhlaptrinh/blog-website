@@ -25,6 +25,10 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service quản lý bình luận (Comment), hỗ trợ bình luận lồng nhau 1 cấp (Replies),
+ * phân quyền chỉnh sửa/xóa đa vai trò và đếm số lượt thích bình luận.
+ */
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -33,6 +37,10 @@ public class CommentServiceImpl implements CommentService {
     private final CommentLikeRepository commentLikeRepository;
     private final BlogRepository blogRepository;
 
+    /**
+     * Tạo mới một bình luận hoặc câu trả lời (Reply).
+     * Quy tắc nghiệp vụ: Hệ thống giới hạn cấp lồng nhau tối đa là 1 (không cho phép reply một reply).
+     */
     @Override
     @Transactional
     public CommentResponse createComment(User currentUser, CreateCommentRequest request) {
@@ -52,6 +60,7 @@ public class CommentServiceImpl implements CommentService {
                 throw new CommentAlreadyDeletedException("Không thể trả lời bình luận đã bị xóa");
             }
 
+            // Kiểm tra quy tắc 1 cấp reply: Bình luận cha không được phép có parent khác
             if (parentComment.getParent() != null) {
                 throw new CannotReplyToReplyException("Hệ thống chỉ hỗ trợ trả lời bình luận 1 cấp");
             }
@@ -83,6 +92,7 @@ public class CommentServiceImpl implements CommentService {
             throw new CommentAlreadyDeletedException("Bình luận đã bị xóa và không thể chỉnh sửa");
         }
 
+        // Chỉ chính chủ bình luận mới được sửa nội dung
         if (comment.getCreator() == null || !comment.getCreator().getId().equals(currentUser.getId())) {
             throw new UnauthorizedCommentAccessException("Bạn không có quyền chỉnh sửa bình luận này");
         }
@@ -93,6 +103,10 @@ public class CommentServiceImpl implements CommentService {
         return mapToResponse(comment, currentUser, true);
     }
 
+    /**
+     * Xóa mềm bình luận (chuyển status sang DELETED).
+     * Quy tắc phân quyền xóa: Được phép xóa bởi (1) Tác giả bình luận, (2) Tác giả bài viết, hoặc (3) Admin hệ thống.
+     */
     @Override
     @Transactional
     public void deleteComment(Long commentId, User currentUser) {
@@ -111,6 +125,7 @@ public class CommentServiceImpl implements CommentService {
         boolean isBlogAuthor = comment.getBlog() != null && comment.getBlog().getUser() != null && comment.getBlog().getUser().getId().equals(currentUser.getId());
         boolean isAdmin = isAdmin(currentUser);
 
+        // Kiểm tra quyền 3 bên (Chủ bình luận, Chủ bài viết, Admin)
         if (!isCommentCreator && !isBlogAuthor && !isAdmin) {
             throw new UnauthorizedCommentAccessException("Bạn không có quyền xóa bình luận này");
         }

@@ -24,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+/**
+ * Service quản lý lượt Thích (Like) cho bài viết và bình luận.
+ * Cơ chế State-Flip: Lần bấm đầu sẽ tạo record (liked=true), các lần bấm tiếp theo sẽ đảo ngược trạng thái (liked=true <-> false).
+ */
 @Service
 @RequiredArgsConstructor
 public class LikeServiceImpl implements LikeService {
@@ -33,6 +37,9 @@ public class LikeServiceImpl implements LikeService {
     private final BlogRepository blogRepository;
     private final CommentRepository commentRepository;
 
+    /**
+     * Bật/Tắt thích bài viết. Nếu chưa từng thích -> Thêm mới với liked=true. Nếu đã có -> Đảo trạng thái liked.
+     */
     @Override
     @Transactional
     public LikeResponse toggleLike(User currentUser, ToggleLikeRequest request) {

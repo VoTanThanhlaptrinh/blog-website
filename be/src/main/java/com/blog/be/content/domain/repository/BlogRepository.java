@@ -19,4 +19,10 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificat
     @Modifying
     @Query("UPDATE Blog b SET b.shareCount = b.shareCount + 1 WHERE b.id = :blogId")
     void incrementShareCount(@Param("blogId") Long blogId);
+
+    long countByStatus(com.blog.be.content.domain.enums.BlogStatus status);
+
+    long countByCreatedDateBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);
+
+    org.springframework.data.domain.Page<Blog> findByStatusOrderByViewCountDesc(com.blog.be.content.domain.enums.BlogStatus status, org.springframework.data.domain.Pageable pageable);
 }

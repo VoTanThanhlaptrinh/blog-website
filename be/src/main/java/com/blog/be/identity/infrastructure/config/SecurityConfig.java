@@ -22,6 +22,9 @@ import com.blog.be.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHan
 
 import lombok.AllArgsConstructor;
 
+/**
+ * Cấu hình bảo mật hệ thống (Spring Security + OAuth2 + JWT Resource Server).
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
@@ -32,6 +35,14 @@ public class SecurityConfig {
         private final CustomOAuth2UserService customOAuth2UserService;
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
 
+        /**
+         * Cấu hình Chuỗi lọc Bảo mật (Security Filter Chain):
+         * 1. Vô hiệu hóa CSRF do hệ thống dùng Token Stateless.
+         * 2. Quản lý phiên Session STATELESS (không dùng Session trên Server).
+         * 3. Phân quyền Request: Mở công khai các đường dẫn Đăng nhập, OAuth2, và các API GET xem bài viết.
+         * 4. Tích hợp OAuth2 Login (Google/Facebook) kèm xử lý thành công Custom Success Handler.
+         * 5. Cấu hình JWT Resource Server tự động xác thực Bearer Token trong Request Header.
+         */
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 return http

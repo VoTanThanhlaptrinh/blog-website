@@ -158,6 +158,9 @@ public class AuthServiceImpl implements AuthService {
                 .build();
     }
 
+    /**
+     * Quên mật khẩu: Tạo mã OTP ngẫu nhiên 6 chữ số, lưu vào Redis với TTL 2 phút, và phát sự kiện gửi Email.
+     */
     @Override
     public void forgotPassword(ForgotPasswordRequest request) {
         User user = userRepository.findUserByEmail(request.getEmail())
@@ -166,13 +169,16 @@ public class AuthServiceImpl implements AuthService {
         String otp = generateOtp();
         String key = "forgot_password_otp:" + request.getEmail();
         
-        // Save OTP to Redis with 2 minutes TTL
+        // Lưu OTP vào Redis với thời hạn hết hạn 2 phút
         redisTemplate.opsForValue().set(key, otp, 2, TimeUnit.MINUTES);
         
-        // Publish event to send email
+        // Phát sự kiện gửi email chứa OTP cho người dùng
         publisher.publishEvent(new ForgotPasswordEvent(this, request.getEmail(), otp));
     }
 
+    /**
+     * Xác thực OTP: Kiểm tra OTP trong Redis. Nếu chính xác, cấp Reset Token (UUID) lưu vào Redis trong 15 phút.
+     */
     @Override
     public String verifyOtp(VerifyOtpRequest request) {
         String key = "forgot_password_otp:" + request.getEmail();
@@ -189,14 +195,14 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findUserByEmail(request.getEmail())
                 .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
         
-        // Generate UUID token
+        // Sinh ngẫu nhiên UUID token đại diện cho phiên đặt lại mật khẩu
         String uuid = UUID.randomUUID().toString();
         String tokenKey = "forgot_password_token:" + uuid;
         
-        // Save to Redis (UUID -> userId) with 15 minutes TTL
+        // Lưu mapping UUID -> userId vào Redis với TTL 15 phút
         redisTemplate.opsForValue().set(tokenKey, String.valueOf(user.getId()), 15, TimeUnit.MINUTES);
         
-        // Delete OTP from Redis
+        // Xóa mã OTP sau khi đã xác thực thành công
         redisTemplate.delete(key);
         
         return uuid;
