@@ -18,8 +18,35 @@
       }
     </nav>
 
-    <!-- Desktop auth buttons -->
-    <div class="hidden items-center gap-3 md:flex">
+    <!-- Desktop Right Controls (Notification Icon + Auth) -->
+    <div class="hidden items-center gap-3 md:flex relative">
+      <!-- Notification Icon Button (Desktop) -->
+      <button
+        type="button"
+        (click)="toggleNotificationDropdown($event)"
+        class="relative flex h-10 w-10 items-center justify-center rounded-full text-stone-600 transition-colors hover:bg-stone-100 active:scale-95"
+        aria-label="Thông báo"
+      >
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+        @if (unreadCount$ | async; as count) {
+          @if (count > 0) {
+            <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-rust px-1 text-[10px] font-bold text-white shadow-xs animate-pulse">
+              {{ count > 99 ? '99+' : count }}
+            </span>
+          }
+        }
+      </button>
+
+      <!-- Desktop Popover Dropdown Panel -->
+      @if (notificationDropdownOpen()) {
+        <div class="absolute right-0 top-full mt-2 z-50">
+          <app-notification-dropdown (closeDropdown)="closeNotificationDropdown()"></app-notification-dropdown>
+        </div>
+      }
+
+      <!-- Auth Buttons -->
       <a routerLink="/login"
         routerLinkActive="!bg-accent-rust !text-white"
         class="rounded-md px-4 py-2 text-sm font-medium text-stone-600 transition-all hover:bg-stone-100 hover:text-stone-900">
@@ -32,30 +59,64 @@
       </a>
     </div>
 
-    <!-- Mobile menu toggle -->
-    <button type="button"
-      class="inline-flex items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100 md:hidden"
-      (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen()" aria-label="Mở menu">
-      @if (mobileMenuOpen()) {
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
-      </svg>
-      } @else {
-      <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
-      </svg>
-      }
-    </button>
+    <!-- Mobile Right Header Actions -->
+    <div class="flex items-center gap-1 md:hidden">
+      <!-- Notification Icon Button (Mobile Header) -->
+      <button
+        type="button"
+        (click)="toggleNotificationDropdown($event)"
+        class="relative flex h-10 w-10 items-center justify-center rounded-full text-stone-600 hover:bg-stone-100"
+        aria-label="Thông báo"
+      >
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0" />
+        </svg>
+        @if (unreadCount$ | async; as count) {
+          @if (count > 0) {
+            <span class="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-accent-rust px-1 text-[10px] font-bold text-white animate-pulse">
+              {{ count > 99 ? '99+' : count }}
+            </span>
+          }
+        }
+      </button>
+
+      <!-- Mobile Menu Toggle Button -->
+      <button type="button"
+        class="inline-flex items-center justify-center rounded-md p-2 text-stone-600 hover:bg-stone-100"
+        (click)="toggleMobileMenu()" [attr.aria-expanded]="mobileMenuOpen()" aria-label="Mở menu">
+        @if (mobileMenuOpen()) {
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+        </svg>
+        } @else {
+        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+        </svg>
+        }
+      </button>
+    </div>
   </div>
 
-  <!-- Mobile menu -->
+  <!-- Mobile/Tablet Bottom Sheet Modal for Notification -->
+  @if (notificationDropdownOpen()) {
+    <div
+      (click)="closeNotificationDropdown()"
+      class="fixed inset-0 z-50 flex items-end justify-center bg-stone-900/40 backdrop-blur-xs md:hidden animate-fade-in"
+    >
+      <div (click)="$event.stopPropagation()" class="w-full max-w-lg">
+        <app-notification-dropdown (closeDropdown)="closeNotificationDropdown()"></app-notification-dropdown>
+      </div>
+    </div>
+  }
+
+  <!-- Mobile Navigation Menu -->
   @if (mobileMenuOpen()) {
   <div class="border-t border-stone-200 bg-white md:hidden">
     <nav class="space-y-1 px-4 py-3">
       @for (link of navLinks; track link.path) {
       <a [routerLink]="link.path" routerLinkActive="!text-accent-rust !font-bold !bg-accent-rust/10"
         [routerLinkActiveOptions]="{ exact: link.path === '/' }" (click)="closeMobileMenu()"
-        class="block rounded-md px-3 py-2 text-2 font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900">
+        class="block rounded-md px-3 py-2 text-base font-medium text-stone-600 hover:bg-stone-100 hover:text-stone-900">
         {{ link.label }}
       </a>
       }

@@ -1,14 +1,23 @@
-import { Component, HostListener, signal } from '@angular/core';
+import { Component, HostListener, ElementRef, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { NotificationService } from '../../core/services/notification.service';
+import { NotificationDropdownComponent } from './notification-dropdown/notification-dropdown.component';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [CommonModule, RouterLink, RouterLinkActive, NotificationDropdownComponent],
   templateUrl: './header.component.html',
 })
-export class HeaderComponent {
-  mobileMenuOpen = signal(false);
+export class HeaderComponent implements OnInit {
+  private readonly elementRef = inject(ElementRef);
+  private readonly notificationService = inject(NotificationService);
+
+  readonly mobileMenuOpen = signal(false);
+  readonly notificationDropdownOpen = signal(false);
+
+  readonly unreadCount$ = this.notificationService.unreadCount$;
 
   navLinks = [
     { label: 'Trang chủ', path: '/' },
@@ -16,16 +25,48 @@ export class HeaderComponent {
     { label: 'Viết bài', path: '/blog/creation' },
   ];
 
-  toggleMobileMenu() {
+  ngOnInit(): void {
+    // Initial fetch of notifications & unread count
+    this.notificationService.getUnreadCount().subscribe();
+    this.notificationService.getNotifications().subscribe();
+  }
+
+  toggleMobileMenu(): void {
+    this.notificationDropdownOpen.set(false);
     this.mobileMenuOpen.update((open) => !open);
   }
 
-  closeMobileMenu() {
+  closeMobileMenu(): void {
     this.mobileMenuOpen.set(false);
   }
 
+  toggleNotificationDropdown(event?: Event): void {
+    if (event) {
+      event.stopPropagation();
+    }
+    this.mobileMenuOpen.set(false);
+    this.notificationDropdownOpen.update((open) => {
+      const willOpen = !open;
+      if (willOpen) {
+        this.notificationService.getNotifications().subscribe();
+      }
+      return willOpen;
+    });
+  }
+
+  closeNotificationDropdown(): void {
+    this.notificationDropdownOpen.set(false);
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event): void {
+    if (!this.elementRef.nativeElement.contains(event.target)) {
+      this.closeNotificationDropdown();
+    }
+  }
+
   @HostListener('window:resize')
-  onResize() {
+  onResize(): void {
     if (window.innerWidth >= 768) {
       this.closeMobileMenu();
     }

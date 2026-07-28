@@ -77,6 +77,13 @@ public class NotificationServiceImpl implements NotificationService {
         }
     }
 
+    @Override
+    @Transactional
+    public void markAllAsRead(User currentUser) {
+        if (currentUser == null || currentUser.getId() == null) return;
+        notificationRepository.markAllAsReadByRecipientId(currentUser.getId());
+    }
+
     private NotificationResponse mapToResponse(Notification notification) {
         return NotificationResponse.builder()
                 .id(notification.getId())

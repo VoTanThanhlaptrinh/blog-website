@@ -7,9 +7,16 @@ import {
   AccountLoginRequest,
   ApiResponse,
   AuthResponse,
+  ChangePasswordRequest,
+  ForgotPasswordRequest,
   RegisterRequest,
+  ResetPasswordRequest,
+  UpdateProfileRequest,
   UserProfileResponse,
+  VerifyOtpRequest,
 } from '../models/auth.model';
+import { UploadPostResponse, UploadUrlRequest } from '../models/file.model';
+
 
 @Injectable({
   providedIn: 'root',
@@ -101,6 +108,63 @@ export class AuthService {
   }
 
   /**
+   * Cập nhật thông tin người dùng (profile)
+   */
+  updateProfile(request: UpdateProfileRequest): Observable<ApiResponse<UserProfileResponse>> {
+    return this.http.put<ApiResponse<UserProfileResponse>>(`${this.apiUrl}/profile`, request).pipe(
+      tap((res) => {
+        if (res && res.data) {
+          this.currentUser.set(res.data);
+        }
+      })
+    );
+  }
+
+  /**
+   * Lấy presigned URL upload avatar cá nhân
+   */
+  getAvatarUploadUrl(request: UploadUrlRequest): Observable<ApiResponse<UploadPostResponse>> {
+    return this.http.post<ApiResponse<UploadPostResponse>>(`${this.apiUrl}/profile/avatar/upload-url`, request);
+  }
+
+  /**
+   * Yêu cầu gửi mã OTP quên mật khẩu về email
+   */
+  forgotPassword(request: ForgotPasswordRequest): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/forgot-password`, request);
+  }
+
+  /**
+   * Xác thực mã OTP quên mật khẩu
+   */
+  verifyOtp(request: VerifyOtpRequest): Observable<ApiResponse<string>> {
+    return this.http.post<ApiResponse<string>>(`${this.apiUrl}/verify-otp`, request);
+  }
+
+  /**
+   * Đặt lại mật khẩu mới
+   */
+  resetPassword(request: ResetPasswordRequest): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/reset-password`, request);
+  }
+
+  /**
+   * Đổi mật khẩu
+   */
+  changePassword(request: ChangePasswordRequest): Observable<ApiResponse<void>> {
+    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/change-password`, request);
+  }
+
+  /**
+   * Kích hoạt tài khoản qua Token
+   */
+  activeAccount(token: string): Observable<ApiResponse<void>> {
+    return this.http.get<ApiResponse<void>>(`${this.apiUrl}/activeAccount`, {
+      params: { token },
+    });
+  }
+
+  /**
    * Xử lý khi lỗi xác thực (401 không refresh được, hoặc lỗi khác khi gọi refresh):
    * 1. Xóa token trong sessionStorage
    * 2. Xóa state người dùng
@@ -118,3 +182,4 @@ export class AuthService {
     }
   }
 }
+

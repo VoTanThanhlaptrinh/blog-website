@@ -1,18 +1,8 @@
-import { afterNextRender, Component, signal } from '@angular/core';
+import { afterNextRender, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-
-interface Post {
-  id: number;
-  title: string;
-  excerpt: string;
-  author: string;
-  authorInitial: string;
-  date: string;
-  readTime: number;
-  likes: number;
-  comments: number;
-  tag: string;
-}
+import { CommonModule } from '@angular/common';
+import { BlogService } from '../../core/services/blog.service';
+import { BlogResponse, PageResponse } from '../../core/models/blog.model';
 
 interface Stat {
   value: number;
@@ -23,10 +13,13 @@ interface Stat {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  standalone: true,
+  imports: [CommonModule, RouterLink],
   templateUrl: './home.component.html',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
+  private readonly blogService = inject(BlogService);
+
   readonly rotatingWords = ['kết nối cộng đồng', 'lan tỏa ý tưởng', 'phát triển bản thân', 'truyền cảm hứng'];
   readonly currentWord = signal(0);
 
@@ -37,11 +30,41 @@ export class HomeComponent {
     { value: 30, suffix: '+', label: 'Chủ đề', display: signal(0) },
   ];
 
+  // Observables / Signals for Blog Data
+  readonly blogs$ = this.blogService.blogs$;
+  readonly pageMeta$ = this.blogService.pageMeta$;
+  readonly loading$ = this.blogService.loading$;
+  readonly error$ = this.blogService.error$;
+
+  readonly currentPage = signal<number>(0);
+  readonly pageSize = signal<number>(6);
+
   constructor() {
     afterNextRender(() => {
       this.startWordRotation();
       this.startCountUp();
     });
+  }
+
+  ngOnInit(): void {
+    this.loadBlogs(this.currentPage());
+  }
+
+  loadBlogs(page: number): void {
+    this.currentPage.set(page);
+    this.blogService.getBlogs({
+      page: page,
+      size: this.pageSize(),
+    }).subscribe();
+  }
+
+  onPageChange(page: number): void {
+    this.loadBlogs(page);
+    window.scrollTo({ top: 500, behavior: 'smooth' });
+  }
+
+  getPagesArray(totalPages: number): number[] {
+    return Array.from({ length: totalPages }, (_, i) => i);
   }
 
   formatStat(stat: Stat): string {
@@ -73,88 +96,6 @@ export class HomeComponent {
     };
     requestAnimationFrame(tick);
   }
-
-  readonly featured: Post = {
-    id: 1,
-    title: 'Bắt đầu với Angular 19 và Signals: Kiến trúc phản ứng hiện đại',
-    excerpt:
-      'Signals thay đổi cách chúng ta quản lý trạng thái trong Angular. Bài viết đi sâu vào cách xây dựng ứng dụng standalone, tối ưu render và loại bỏ zone.js một cách an toàn.',
-    author: 'Nguyễn Văn A',
-    authorInitial: 'A',
-    date: '01 Th7, 2026',
-    readTime: 8,
-    likes: 324,
-    comments: 42,
-    tag: 'Angular',
-  };
-
-  readonly posts: Post[] = [
-    {
-      id: 2,
-      title: 'Thiết kế REST API với Spring Boot theo kiến trúc DDD',
-      excerpt:
-        'Hướng dẫn xây dựng REST API sạch, bảo mật và dễ mở rộng bằng cách tách domain, application và infrastructure.',
-      author: 'Trần Thị B',
-      authorInitial: 'B',
-      date: '28 Th6, 2026',
-      readTime: 8,
-      likes: 189,
-      comments: 12,
-      tag: 'Spring Boot',
-    },
-    {
-      id: 3,
-      title: 'Tailwind CSS: Utility-first trong thực tế',
-      excerpt:
-        'Vì sao utility-first CSS giúp bạn xây dựng giao diện nhanh hơn mà vẫn nhất quán trong dự án lớn.',
-      author: 'Lê Văn C',
-      authorInitial: 'C',
-      date: '20 Th6, 2026',
-      readTime: 6,
-      likes: 256,
-      comments: 24,
-      tag: 'CSS',
-    },
-    {
-      id: 4,
-      title: 'PostgreSQL: Tối ưu truy vấn cho hệ thống đọc nhiều',
-      excerpt:
-        'Index, materialized view và cách đọc EXPLAIN ANALYZE để tăng tốc những truy vấn chậm nhất của bạn.',
-      author: 'Phạm Thị D',
-      authorInitial: 'D',
-      date: '15 Th6, 2026',
-      readTime: 10,
-      likes: 142,
-      comments: 9,
-      tag: 'Database',
-    },
-    {
-      id: 5,
-      title: 'JWT và OAuth2 Resource Server: Bảo mật đúng cách',
-      excerpt:
-        'Phân biệt access token, refresh token và cách cấu hình Resource Server để tránh những lỗ hổng phổ biến.',
-      author: 'Hoàng Văn E',
-      authorInitial: 'E',
-      date: '10 Th6, 2026',
-      readTime: 7,
-      likes: 198,
-      comments: 15,
-      tag: 'Security',
-    },
-    {
-      id: 6,
-      title: 'Redis trong thực chiến: Cache, session và rate limit',
-      excerpt:
-        'Ba mô hình dùng Redis phổ biến nhất, kèm ví dụ cụ thể và những cạm bẫy về TTL cần tránh.',
-      author: 'Vũ Thị F',
-      authorInitial: 'F',
-      date: '05 Th6, 2026',
-      readTime: 6,
-      likes: 167,
-      comments: 11,
-      tag: 'Backend',
-    },
-  ];
 
   readonly topics = [
     'Angular',

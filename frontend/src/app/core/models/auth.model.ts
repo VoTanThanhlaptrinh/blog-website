@@ -30,3 +30,31 @@ export interface RegisterRequest {
   password?: string;
   confirmPassword?: string;
 }
+
+export interface UpdateProfileRequest {
+  phone?: string;
+  birthDate?: string;
+  avatarUrl?: string;
+  bio?: string;
+}
+
+export interface ForgotPasswordRequest {
+  email: string;
+}
+
+export interface VerifyOtpRequest {
+  email: string;
+  otp: string;
+}
+
+export interface ResetPasswordRequest {
+  token: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface ChangePasswordRequest {
+  oldPassword: string;
+  newPassword: string;
+}
+

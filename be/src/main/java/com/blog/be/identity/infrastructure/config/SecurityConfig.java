@@ -39,9 +39,12 @@ public class SecurityConfig {
          * Cấu hình Chuỗi lọc Bảo mật (Security Filter Chain):
          * 1. Vô hiệu hóa CSRF do hệ thống dùng Token Stateless.
          * 2. Quản lý phiên Session STATELESS (không dùng Session trên Server).
-         * 3. Phân quyền Request: Mở công khai các đường dẫn Đăng nhập, OAuth2, và các API GET xem bài viết.
-         * 4. Tích hợp OAuth2 Login (Google/Facebook) kèm xử lý thành công Custom Success Handler.
-         * 5. Cấu hình JWT Resource Server tự động xác thực Bearer Token trong Request Header.
+         * 3. Phân quyền Request: Mở công khai các đường dẫn Đăng nhập, OAuth2, và các
+         * API GET xem bài viết.
+         * 4. Tích hợp OAuth2 Login (Google/Facebook) kèm xử lý thành công Custom
+         * Success Handler.
+         * 5. Cấu hình JWT Resource Server tự động xác thực Bearer Token trong Request
+         * Header.
          */
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,9 +53,17 @@ public class SecurityConfig {
                                 .sessionManagement(session -> session
                                                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                                 .authorizeHttpRequests(auth -> auth
+                                                .requestMatchers("/api/v1/auth/login", "/api/v1/auth/register",
+                                                                "/api/v1/auth/activeAccount",
+                                                                "/api/v1/auth/forgot-password",
+                                                                "/api/v1/auth/verify-otp",
+                                                                "/api/v1/auth/reset-password", "/api/v1/auth/refresh",
+                                                                "/api/v1/auth/login/social")
+                                                .permitAll()
                                                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/blogs", "/api/v1/blogs/**")
                                                 .permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/comments/blog/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
                                                 .userInfoEndpoint(userInfo -> userInfo

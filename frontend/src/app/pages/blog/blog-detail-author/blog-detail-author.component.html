@@ -1,423 +1,187 @@
 <main class="mt-20 max-w-[1100px] mx-auto overflow-hidden flex relative">
-  <!-- Left Sticky Sidebar (Table of Contents) -->
-  <aside
-    class="hidden md:block w-64 pt-4 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto px-5 border-r border-text-ink/5"
-  >
-    <nav class="space-y-4">
-      <h4
-        class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
-      >
-        Nội dung bài viết
-      </h4>
-      <ul class="space-y-4 font-body-md text-body-md text-text-ink">
-        @for (item of toc; track item.id) {
-          <li [style.padding-left.px]="(item.level - 1) * 12">
-            <a
-              class="hover:text-accent-rust transition-colors flex items-center gap-2 group cursor-pointer"
-              (click)="scrollTo(item.id)"
-            >
-              <span class="material-symbols-outlined text-[18px] text-accent-rust"
-                >{{ item.level === 1 ? 'list' : 'subdirectory_arrow_right' }}</span
-              >
-              {{ item.text }}
-            </a>
-          </li>
-        } @empty {
-          <li class="text-caption text-text-muted italic">Chưa có mục nào.</li>
-        }
-      </ul>
-    </nav>
-  </aside>
-  <!-- Mobile Sticky Side Rail -->
-  <aside
-    class="md:hidden sticky top-20 left-0 h-[calc(100vh-5rem)] w-12 border-r border-text-ink/5 flex flex-col items-center py-8 gap-8 z-40 bg-surface-paper/50 backdrop-blur-sm"
-  >
-    @for (item of toc; track item.id) {
-      <a
-        class="text-text-muted hover:text-accent-rust transition-colors cursor-pointer"
-        (click)="scrollTo(item.id)"
-        [title]="item.text"
-      >
-        <span class="material-symbols-outlined text-[20px]">{{ item.level === 1 ? 'bolt' : 'subdirectory_arrow_right' }}</span>
-      </a>
-    }
-  </aside>
-  <!-- Main Article Content Area -->
-  <div class="flex-1 max-w-[720px] mx-auto md:mx-0">
-    <article class="pt-8">
-      <div class="px-5">
-        <span
-          class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-2"
-          >Angular</span
-        >
-        <h2
-          class="font-headline-lg-mobile text-headline-lg-mobile leading-tight mb-4 text-text-ink"
-        >
-          Bắt đầu với Angular 19 và Signals: Kiến trúc phản ứng hiện đại
-        </h2>
-        <!-- Author Info & Quick Actions -->
-        <div class="flex flex-wrap items-center justify-between gap-4 py-4 my-6 border-y border-text-ink/10">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-full overflow-hidden border border-accent-rust/20 p-0.5 bg-surface-container">
-              <img title="images"
-                class="w-full h-full object-cover rounded-full"
-                data-alt="Author avatar"
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPzIpWOoWdzpWTSFF5quxz-gyxUkyXWQMQ5q7lHy_aApvZYuxJTWQ-fyCg4oNBH-bV0QJ-Ke2iw7nNYdoovNvQboIITdkZ-Kl7YyazJWf4NKOUX0-3TaC9jBaqeCM23Jl8by7N6v0akTF3EHE-7Sywyni449XwV-h2lDPoMYhqxrGdQfB3W1KdUFItRF9lbwcEUehx4gCjXV71u0xpQJh2SngjnSHIkXL1I7RpK4gdprG_UJdFDFIPPWMdhx8Onjx7zq86lGcfxk"
-              />
-            </div>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-label-md text-sm text-text-ink font-bold">Nguyễn Văn A</span>
-                <span class="text-[11px] text-accent-rust bg-accent-rust/10 px-2 py-0.5 rounded-full font-medium">Tác giả</span>
-              </div>
-              <div class="flex items-center gap-2 text-xs text-text-muted mt-0.5">
-                <span>24 Th05, 2024</span>
-                <span>•</span>
-                <span>12 phút đọc</span>
-              </div>
-            </div>
-          </div>
-          <div class="flex items-center gap-2">
-            <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95">
-              <span class="material-symbols-outlined text-[16px]">share</span>
-              <span>Chia sẻ</span>
-            </button>
-            <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-rust/10 text-accent-rust hover:bg-accent-rust hover:text-white transition-all text-xs font-semibold active:scale-95">
-              <span class="material-symbols-outlined text-[16px]">bookmark_add</span>
-              <span>Lưu bài</span>
-            </button>
-          </div>
-        </div>
+  <!-- Loading state -->
+  @if (loading()) {
+    <div class="w-full py-24 flex flex-col items-center justify-center">
+      <div class="h-10 w-10 animate-spin rounded-full border-4 border-accent-rust border-t-transparent"></div>
+      <p class="mt-4 text-sm text-text-muted">Đang tải nội dung bài viết...</p>
+    </div>
+  } @else if (error()) {
+    <div class="w-full py-20 px-5 text-center">
+      <div class="inline-block p-4 bg-red-50 text-red-600 rounded-xl border border-red-200">
+        <p class="font-bold text-lg">⚠️ Rất tiếc!</p>
+        <p class="mt-1 text-sm">{{ error() }}</p>
       </div>
-      <!-- Hero Image -->
-      <div class="w-full aspect-video mb-8 px-0 md:px-5">
-        <div
-          class="w-full h-full overflow-hidden rounded-none md:rounded-xl shadow-sm border border-text-ink/5"
-        >
-          <img title="images"
-            class="w-full h-full object-cover"
-            data-alt="High-tech digital abstract background"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDJUQgCWh5Lw0GMgK2JnB-Va0k3aOaq_ueoKp8CQsVN6hD_IgoTJoQG4uDM1zSkPCfLVl09fvGr6LsgOgKwmDRIvQjjfeAxs0cfU0jT6mh7Jp-T-QdsNYtq1ovU036VZd2iDi_9lvndmuh3o3wSu9hhfAOU-hKTnHxhAOgrO-j5vVkKd8gvcfYuxfLHtuN35DD-oGXSARVME3vlQMcWPJWiaf8r3F2B07ZzTeuv6SO73Kegv70Th8-_XffRRpVulEId8IkcF2J6yeE"
-          />
-        </div>
-      </div>
-      <!-- Content Area -->
-      <markdown
-        #article
-        clipboard
-        [data]="content"
-        (ready)="onMarkdownReady()"
-        class="block px-5 prose prose-stone max-w-none"
-      ></markdown>
-    </article>
-    <!-- Social Share Bar -->
-    <section class="px-5 mt-16">
-      <div
-        class="flex items-center justify-between py-4 border-y border-text-ink/10"
-      >
-        <div class="flex gap-4">
-          <button
-            class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
-          >
-            <span class="material-symbols-outlined">thumb_up</span>
-            <span class="font-label-md text-label-md">189</span>
-          </button>
-          <button
-            class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
-          >
-            <span class="material-symbols-outlined">chat_bubble</span>
-            <span class="font-label-md text-label-md">12</span>
-          </button>
-        </div>
-        <div class="flex gap-3">
-          <button
-            class="w-8 h-8 flex items-center justify-center rounded-full border border-text-ink/10 text-text-muted active:scale-90 transition-transform"
-          >
-            <i class="material-symbols-outlined text-[18px]">share</i>
-          </button>
-          <button
-            class="px-3 py-1 text-pure-white font-label-md text-[12px] active:scale-95 transition-transform bg-accent-rust rounded-lg"
-          >
-            Lưu bài viết
-          </button>
-        </div>
-      </div>
-    </section>
-    <!-- Related Posts -->
-    <section
-      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
+    </div>
+  } @else {
+    <!-- Left Sticky Sidebar (Table of Contents) -->
+    <aside
+      class="hidden md:block w-64 pt-4 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto px-5 border-r border-text-ink/5"
     >
-      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
-        Bài viết liên quan
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Related Card 1 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >CSS</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            Tailwind CSS: Utility-first trong thực tế
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Lê Văn C</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">6 phút</span>
-          </div>
-        </div>
-        <!-- Related Card 2 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >Database</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            PostgreSQL: Tối ưu truy vấn
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Phạm Thị D</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">10 phút</span>
-          </div>
-        </div>
-      </div>
-    </section>
-    <!-- Comments Section -->
-    <!-- Footer -->
-    <section
-      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
-    >
-      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
-        Cùng tác giả
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Card 1 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >Angular</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            Làm chủ RxJS trong Angular 19
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Nguyễn Văn A</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">12 phút</span>
-          </div>
-        </div>
-        <!-- Card 2 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >Web Dev</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            Tối ưu Core Web Vitals cho Single Page App
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Nguyễn Văn A</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">15 phút</span>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section
-      class="mt-16 bg-surface-container/30 py-8 px-5 border-y border-text-ink/5"
-    >
-      <h3 class="font-headline-md text-headline-md text-text-ink mb-4">
-        Gợi ý cho bạn
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Card 1 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >UI/UX</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            Nguyên lý thiết kế cho lập trình viên
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Hoàng Minh T</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">8 phút</span>
-          </div>
-        </div>
-        <!-- Card 2 -->
-        <div
-          class="bg-pure-white border border-text-ink/5 p-4 rounded-lg group shadow-sm cursor-pointer"
-        >
-          <span
-            class="font-label-md text-[10px] text-accent-rust uppercase tracking-wider"
-            >DevOps</span
-          >
-          <h4
-            class="font-headline-md text-[18px] text-text-ink mt-2 mb-3 group-hover:text-accent-rust transition-colors"
-          >
-            Dockerize ứng dụng Node.js trong 5 phút
-          </h4>
-          <div
-            class="flex items-center gap-2 text-text-muted font-caption text-caption"
-          >
-            <span class="">Trần Quốc K</span>
-            <span class="w-1 h-1 bg-text-muted/30 rounded-full"></span>
-            <span class="">5 phút</span>
-          </div>
-        </div>
-      </div>
-    </section>
-  </div>
-  <aside
-    class="hidden lg:block w-64 pt-4 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto px-5 border-l border-text-ink/5"
-  >
-    <div class="space-y-6">
-      <h4
-        class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
-      >
-        Tác giả
-      </h4>
-      <div
-        class="flex flex-col items-center text-center gap-4 p-6 bg-surface-container/30 rounded-xl"
-      >
-        <div
-          class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1"
-        >
-          <img
-            title="images"
-            class="w-full h-full object-cover rounded-full"
-            data-alt="A professional studio portrait of a modern software engineer"
-            src="https://lh3.googleusercontent.com/aida-public/AB6AXuBxPzIpWOoWdzpWTSFF5quxz-gyxUkyXWQMQ5q7lHy_aApvZYuxJTWQ-fyCg4oNBH-bV0QJ-Ke2iw7nNYdoovNvQboIITdkZ-Kl7YyazJWf4NKOUX0-3TaC9jBaqeCM23Jl8by7N6v0akTF3EHE-7Sywyni449XwV-h2lDPoMYhqxrGdQfB3W1KdUFItRF9lbwcEUehx4gCjXV71u0xpQJh2SngjnSHIkXL1I7RpK4gdprG_UJdFDFIPPWMdhx8Onjx7zq86lGcfxk"
-          />
-        </div>
-        <div class="flex flex-col">
-          <span class="font-headline-md text-[18px] text-text-ink"
-            >Nguyễn Văn A</span
-          >
-          <span class="text-caption text-text-muted italic"
-            >Software Engineer</span
-          >
-        </div>
-        <div class="w-full border-t border-text-ink/5 pt-4 flex flex-col gap-2">
-          <div
-            class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted"
-          >
-            <span class="material-symbols-outlined text-[16px]"
-              >calendar_today</span
-            >
-            <span class="">01 Th7, 2026</span>
-          </div>
-          <div
-            class="flex items-center justify-center gap-2 font-caption text-caption text-text-muted"
-          >
-            <span class="material-symbols-outlined text-[16px]">schedule</span>
-            <span class="">8 phút đọc</span>
-          </div>
-        </div>
-        <button
-          class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-pure-white transition-all rounded-lg"
-        >
-          Theo dõi
-        </button>
-      </div>
-      <section class="pt-6 border-t border-text-ink/5" id="discussion">
-        <h3
+      <nav class="space-y-4">
+        <h4
           class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
         >
-          Thảo luận (12)
-        </h3>
-        <div class="mb-6">
-          <textarea
-            class="w-full p-3 bg-pure-white border border-text-ink/10 focus:ring-2 focus:ring-accent-rust/20 text-body-md font-body-md rounded-lg min-h-[100px] placeholder:text-text-muted/40 shadow-sm"
-            placeholder="Viết bình luận..."
-          ></textarea>
-          <div class="flex justify-end mt-2">
-            <button
-              class="bg-accent-rust text-pure-white px-4 py-1.5 font-label-md text-[12px] hover:opacity-90 active:scale-95 transition-all rounded-lg"
-            >
-              Gửi
-            </button>
+          Nội dung bài viết
+        </h4>
+        <ul class="space-y-4 font-body-md text-body-md text-text-ink">
+          @for (item of toc; track item.id) {
+            <li [style.padding-left.px]="(item.level - 1) * 12">
+              <a
+                class="hover:text-accent-rust transition-colors flex items-center gap-2 group cursor-pointer"
+                (click)="scrollTo(item.id)"
+              >
+                <span class="material-symbols-outlined text-[18px] text-accent-rust"
+                  >{{ item.level === 1 ? 'list' : 'subdirectory_arrow_right' }}</span
+                >
+                {{ item.text }}
+              </a>
+            </li>
+          } @empty {
+            <li class="text-caption text-text-muted italic">Chưa có mục nào.</li>
+          }
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Mobile Sticky Side Rail -->
+    <aside
+      class="md:hidden sticky top-20 left-0 h-[calc(100vh-5rem)] w-12 border-r border-text-ink/5 flex flex-col items-center py-8 gap-8 z-40 bg-surface-paper/50 backdrop-blur-sm"
+    >
+      @for (item of toc; track item.id) {
+        <a
+          class="text-text-muted hover:text-accent-rust transition-colors cursor-pointer"
+          (click)="scrollTo(item.id)"
+          [title]="item.text"
+        >
+          <span class="material-symbols-outlined text-[20px]">{{ item.level === 1 ? 'bolt' : 'subdirectory_arrow_right' }}</span>
+        </a>
+      }
+    </aside>
+
+    <!-- Main Article Content Area -->
+    <div class="flex-1 max-w-[720px] mx-auto md:mx-0">
+      <article class="pt-8">
+        <div class="px-5">
+          <span
+            class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-2"
+          >{{ blog()?.status || 'BLOG' }}</span>
+          <h2
+            class="font-headline-lg-mobile text-headline-lg-mobile leading-tight mb-4 text-text-ink font-bold text-3xl"
+          >
+            {{ blog()?.title || 'Không có tiêu đề' }}
+          </h2>
+          <!-- Author Info & Quick Actions -->
+          <div class="flex flex-wrap items-center justify-between gap-4 py-4 my-6 border-y border-text-ink/10">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full overflow-hidden border border-accent-rust/20 p-0.5 bg-surface-container flex items-center justify-center font-bold text-accent-rust">
+                @if (blog()?.author?.avatarUrl) {
+                  <img title="Avatar" class="w-full h-full object-cover rounded-full" [src]="blog()?.author?.avatarUrl" />
+                } @else {
+                  {{ blog()?.author?.email ? blog()!.author.email[0].toUpperCase() : 'A' }}
+                }
+              </div>
+              <div>
+                <div class="flex items-center gap-2">
+                  <span class="font-label-md text-sm text-text-ink font-bold">{{ blog()?.author?.email || 'Tác giả vô danh' }}</span>
+                  <span class="text-[11px] text-accent-rust bg-accent-rust/10 px-2 py-0.5 rounded-full font-medium">Tác giả</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs text-text-muted mt-0.5">
+                  <span>{{ blog()?.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+                  <span>•</span>
+                  <span>👁️ {{ blog()?.viewsCount || 0 }} lượt xem</span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95">
+                <span class="material-symbols-outlined text-[16px]">share</span>
+                <span>Chia sẻ ({{ blog()?.sharesCount || 0 }})</span>
+              </button>
+              <button class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent-rust/10 text-accent-rust hover:bg-accent-rust hover:text-white transition-all text-xs font-semibold active:scale-95">
+                <span class="material-symbols-outlined text-[16px]">bookmark_add</span>
+                <span>Lưu bài</span>
+              </button>
+            </div>
           </div>
         </div>
-        <div class="space-y-4">
-          <div class="flex gap-3">
-            <div
-              class="w-8 h-8 rounded-full bg-secondary-container flex-shrink-0 flex items-center justify-center text-secondary font-bold text-[12px]"
+
+        <!-- Content Area -->
+        <markdown
+          #article
+          clipboard
+          [data]="blog()?.content || blog()?.description || 'Nội dung đang được cập nhật...'"
+          (ready)="onMarkdownReady()"
+          class="block px-5 prose prose-stone max-w-none"
+        ></markdown>
+      </article>
+
+      <!-- Social Share Bar -->
+      <section class="px-5 mt-16">
+        <div
+          class="flex items-center justify-between py-4 border-y border-text-ink/10"
+        >
+          <div class="flex gap-4">
+            <button
+              class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
             >
-              T
-            </div>
-            <div class="flex-1">
-              <div class="flex flex-col mb-1">
-                <span class="font-label-md text-[13px] text-text-ink"
-                  >Trần Thị B</span
-                >
-                <span class="font-caption text-[10px] text-text-muted"
-                  >2 giờ trước</span
-                >
-              </div>
-              <p
-                class="font-body-md text-[14px] text-text-muted leading-relaxed"
-              >
-                Bài viết rất chi tiết! Hy vọng có bài viết sâu hơn về migration.
-              </p>
-            </div>
+              <span class="material-symbols-outlined">thumb_up</span>
+              <span class="font-label-md text-label-md">{{ blog()?.likesCount || 0 }}</span>
+            </button>
+            <button
+              class="flex items-center gap-2 text-text-muted hover:text-accent-rust transition-colors"
+            >
+              <span class="material-symbols-outlined">chat_bubble</span>
+              <span class="font-label-md text-label-md">{{ blog()?.commentsCount || 0 }}</span>
+            </button>
+          </div>
+          <div class="flex gap-3">
+            <button
+              class="px-4 py-2 text-white font-medium text-xs active:scale-95 transition-transform bg-accent-rust rounded-lg shadow"
+            >
+              Thích bài viết
+            </button>
           </div>
         </div>
       </section>
     </div>
-  </aside>
-</main>
-<script>
-  // Micro-interaction: Reading Progress Bar
-  const progressBar = document.createElement("div");
-  progressBar.className =
-    "fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150";
-  progressBar.style.width = "0%";
-  document.body.appendChild(progressBar);
 
-  window.addEventListener("scroll", () => {
-    const winScroll =
-      document.body.scrollTop || document.documentElement.scrollTop;
-    const height =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
-    progressBar.style.width = scrolled + "%";
-  });
-</script>
-<div
-  class="fixed top-[56px] left-0 h-0.5 bg-accent-rust z-[60] transition-all duration-150"
-  style="width: 0%"
-></div>
+    <!-- Right Sidebar Author info -->
+    <aside
+      class="hidden lg:block w-64 pt-4 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto px-5 border-l border-text-ink/5"
+    >
+      <div class="space-y-6">
+        <h4
+          class="font-label-md text-label-md text-text-muted uppercase tracking-widest mb-4"
+        >
+          Tác giả
+        </h4>
+        <div
+          class="flex flex-col items-center text-center gap-4 p-6 bg-surface-container/30 rounded-xl"
+        >
+          <div
+            class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1 flex items-center justify-center bg-stone-100 text-2xl font-bold text-stone-600"
+          >
+            @if (blog()?.author?.avatarUrl) {
+              <img class="w-full h-full object-cover rounded-full" [src]="blog()?.author?.avatarUrl" />
+            } @else {
+              {{ blog()?.author?.email ? blog()!.author.email[0].toUpperCase() : 'A' }}
+            }
+          </div>
+          <div class="flex flex-col">
+            <span class="font-headline-md text-[16px] font-bold text-text-ink break-all"
+              >{{ blog()?.author?.email || 'Tác giả' }}</span
+            >
+            <span class="text-caption text-text-muted italic"
+              >{{ blog()?.author?.bio || 'Tác giả bài viết' }}</span
+            >
+          </div>
+          <button
+            class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-white transition-all rounded-lg"
+          >
+            Theo dõi
+          </button>
+        </div>
+      </div>
+    </aside>
+  }
+</main>
