@@ -8,8 +8,6 @@ import com.blog.be.content.domain.exception.BlogNotFoundException;
 import com.blog.be.content.domain.exception.UnauthorizedBlogAccessException;
 import com.blog.be.content.domain.repository.BlogRepository;
 import com.blog.be.identity.domain.entity.User;
-import com.blog.be.identity.domain.exception.UserNotFoundException;
-import com.blog.be.identity.domain.repository.UserRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,7 +16,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,14 +23,13 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class BlogServiceImpl implements BlogService {
+
     private final BlogRepository blogRepository;
-    private final UserRepository userRepository;
 
     @Override
     @Transactional
-    public BlogResponse createBlog(Principal principal, CreateBlogRequest request) {
-        User user = getCurrentUser(principal);
-        if (user == null) {
+    public BlogResponse createBlog(User currentUser, CreateBlogRequest request) {
+        if (currentUser == null || currentUser.getId() == null) {
             throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để tạo bài viết");
         }
 
@@ -42,7 +38,7 @@ public class BlogServiceImpl implements BlogService {
                 .description(request.getDescription())
                 .content(request.getContent())
                 .status(request.getStatus() != null ? request.getStatus() : BlogStatus.DRAFT)
-                .user(user)
+                .user(currentUser)
                 .build();
 
         blog = blogRepository.save(blog);
@@ -51,13 +47,12 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional(readOnly = true)
-    public BlogResponse getBlogById(Long id, Principal principal) {
+    public BlogResponse getBlogById(Long id, User currentUser) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException("Không tìm thấy bài viết với ID: " + id));
 
         if (blog.getStatus() != BlogStatus.PUBLISHED) {
-            User user = getCurrentUser(principal);
-            if (!isAuthorOrAdmin(user, blog)) {
+            if (!isAuthorOrAdmin(currentUser, blog)) {
                 throw new UnauthorizedBlogAccessException("Bạn không có quyền xem bài viết này hoặc bài viết chưa được xuất bản");
             }
         }
@@ -67,20 +62,18 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<BlogResponse> getBlogs(String keyword, BlogStatus status, Long userId, Pageable pageable, Principal principal) {
-        User user = getCurrentUser(principal);
-
+    public PageResponse<BlogResponse> getBlogs(String keyword, BlogStatus status, Long userId, Pageable pageable, User currentUser) {
         Specification<Blog> spec = (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             if (status != null) {
                 if (status != BlogStatus.PUBLISHED) {
-                    if (user == null) {
+                    if (currentUser == null || currentUser.getId() == null) {
                         throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để xem các bài viết ở trạng thái " + status);
                     }
-                    boolean isAdmin = isAdmin(user);
-                    if (!isAdmin && (userId == null || !userId.equals(user.getId()))) {
-                        predicates.add(cb.equal(root.get("user").get("id"), user.getId()));
+                    boolean isAdmin = isAdmin(currentUser);
+                    if (!isAdmin && (userId == null || !userId.equals(currentUser.getId()))) {
+                        predicates.add(cb.equal(root.get("user").get("id"), currentUser.getId()));
                     } else if (userId != null) {
                         predicates.add(cb.equal(root.get("user").get("id"), userId));
                     }
@@ -92,7 +85,7 @@ public class BlogServiceImpl implements BlogService {
                     }
                 }
             } else {
-                if (user != null && userId != null && userId.equals(user.getId())) {
+                if (currentUser != null && userId != null && userId.equals(currentUser.getId())) {
                     predicates.add(cb.notEqual(root.get("status"), BlogStatus.DELETED));
                     predicates.add(cb.equal(root.get("user").get("id"), userId));
                 } else {
@@ -130,7 +123,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional
-    public BlogResponse updateBlog(Long id, Principal principal, UpdateBlogRequest request) {
+    public BlogResponse updateBlog(Long id, User currentUser, UpdateBlogRequest request) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException("Không tìm thấy bài viết với ID: " + id));
 
@@ -138,8 +131,7 @@ public class BlogServiceImpl implements BlogService {
             throw new BlogAlreadyDeletedException("Bài viết đã bị xóa mềm và không thể chỉnh sửa");
         }
 
-        User user = getCurrentUser(principal);
-        if (!isAuthorOrAdmin(user, blog)) {
+        if (!isAuthorOrAdmin(currentUser, blog)) {
             throw new UnauthorizedBlogAccessException("Bạn không có quyền chỉnh sửa bài viết này");
         }
 
@@ -154,7 +146,7 @@ public class BlogServiceImpl implements BlogService {
 
     @Override
     @Transactional
-    public void deleteBlog(Long id, Principal principal) {
+    public void deleteBlog(Long id, User currentUser) {
         Blog blog = blogRepository.findById(id)
                 .orElseThrow(() -> new BlogNotFoundException("Không tìm thấy bài viết với ID: " + id));
 
@@ -162,8 +154,7 @@ public class BlogServiceImpl implements BlogService {
             return;
         }
 
-        User user = getCurrentUser(principal);
-        if (!isAuthorOrAdmin(user, blog)) {
+        if (!isAuthorOrAdmin(currentUser, blog)) {
             throw new UnauthorizedBlogAccessException("Bạn không có quyền xóa bài viết này");
         }
 
@@ -171,22 +162,10 @@ public class BlogServiceImpl implements BlogService {
         blogRepository.save(blog);
     }
 
-    private User getCurrentUser(Principal principal) {
-        if (principal == null || principal.getName() == null) {
-            return null;
-        }
-        try {
-            Long userId = Long.valueOf(principal.getName());
-            return userRepository.findUserById(userId).orElse(null);
-        } catch (NumberFormatException e) {
-            return userRepository.findUserByEmail(principal.getName()).orElse(null);
-        }
-    }
-
-    private boolean isAuthorOrAdmin(User user, Blog blog) {
-        if (user == null) return false;
-        boolean isAuthor = blog.getUser() != null && blog.getUser().getId().equals(user.getId());
-        return isAuthor || isAdmin(user);
+    private boolean isAuthorOrAdmin(User currentUser, Blog blog) {
+        if (currentUser == null || currentUser.getId() == null) return false;
+        boolean isAuthor = blog.getUser() != null && blog.getUser().getId().equals(currentUser.getId());
+        return isAuthor || isAdmin(currentUser);
     }
 
     private boolean isAdmin(User user) {

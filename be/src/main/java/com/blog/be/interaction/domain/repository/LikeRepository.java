@@ -4,6 +4,11 @@ import com.blog.be.interaction.domain.entity.Like;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
+    Optional<Like> findByBlogIdAndUserId(Long blogId, Long userId);
+    long countByBlogIdAndLikedTrue(Long blogId);
+    boolean existsByBlogIdAndUserIdAndLikedTrue(Long blogId, Long userId);
 }

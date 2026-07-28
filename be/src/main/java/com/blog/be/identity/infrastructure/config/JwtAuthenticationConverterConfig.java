@@ -1,13 +1,14 @@
 package com.blog.be.identity.infrastructure.config;
 
+import com.blog.be.identity.domain.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
 import java.util.Collection;
@@ -18,41 +19,43 @@ import java.util.stream.Stream;
 
 @Configuration
 public class JwtAuthenticationConverterConfig {
+
     @Bean
     public Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter() {
-        JwtAuthenticationConverter converter = new JwtAuthenticationConverter();
+        return new Converter<Jwt, AbstractAuthenticationToken>() {
+            private final CustomGrantedAuthoritiesConverter authoritiesConverter = new CustomGrantedAuthoritiesConverter();
 
-        // Set our custom authorities converter that combines scopes and roles
-        converter.setJwtGrantedAuthoritiesConverter(new CustomGrantedAuthoritiesConverter());
+            @Override
+            public AbstractAuthenticationToken convert(Jwt jwt) {
+                Collection<GrantedAuthority> authorities = authoritiesConverter.convert(jwt);
 
-        // Use 'sub' claim as the principal name (default behavior)
-        converter.setPrincipalClaimName("sub");
+                Long userId = null;
+                if (jwt.getSubject() != null) {
+                    try {
+                        userId = Long.valueOf(jwt.getSubject());
+                    } catch (NumberFormatException ignored) {}
+                }
 
-        return converter;
+                User user = User.builder()
+                        .id(userId)
+                        .email(jwt.getClaimAsString("email"))
+                        .enabled(true)
+                        .build();
+
+                return new UsernamePasswordAuthenticationToken(user, jwt.getTokenValue(), authorities);
+            }
+        };
     }
 
-    /**
-     * Custom converter that extracts authorities from multiple JWT claims:
-     * - Standard 'scope' claim (space-separated string)
-     * - Keycloak 'realm_access.roles' claim (nested object)
-     * - Auth0 'permissions' claim (array)
-     */
     static class CustomGrantedAuthoritiesConverter implements Converter<Jwt, Collection<GrantedAuthority>> {
-
         private final JwtGrantedAuthoritiesConverter defaultConverter = new JwtGrantedAuthoritiesConverter();
 
         @Override
         public Collection<GrantedAuthority> convert(Jwt jwt) {
-            // Get default authorities from 'scope' claim (prefixed with SCOPE_)
             Collection<GrantedAuthority> defaultAuthorities = defaultConverter.convert(jwt);
-
-            // Extract roles from Keycloak's realm_access claim
             Collection<GrantedAuthority> keycloakRoles = extractKeycloakRoles(jwt);
-
-            // Extract permissions from Auth0's permissions claim
             Collection<GrantedAuthority> auth0Permissions = extractAuth0Permissions(jwt);
 
-            // Combine all authorities into a single collection
             return Stream.of(defaultAuthorities, keycloakRoles, auth0Permissions)
                     .flatMap(Collection::stream)
                     .collect(Collectors.toSet());
@@ -60,7 +63,6 @@ public class JwtAuthenticationConverterConfig {
 
         @SuppressWarnings("unchecked")
         private Collection<GrantedAuthority> extractKeycloakRoles(Jwt jwt) {
-            // Keycloak stores roles in: realm_access.roles
             var realmAccess = jwt.getClaimAsMap("realm_access");
             if (realmAccess == null) {
                 return Collections.emptyList();
@@ -71,14 +73,12 @@ public class JwtAuthenticationConverterConfig {
                 return Collections.emptyList();
             }
 
-            // Prefix with ROLE_ to work with hasRole() checks
             return roles.stream()
                     .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
                     .collect(Collectors.toList());
         }
 
         private Collection<GrantedAuthority> extractAuth0Permissions(Jwt jwt) {
-            // Auth0 stores permissions in a 'permissions' claim array
             List<String> permissions = jwt.getClaimAsStringList("permissions");
             if (permissions == null) {
                 return Collections.emptyList();

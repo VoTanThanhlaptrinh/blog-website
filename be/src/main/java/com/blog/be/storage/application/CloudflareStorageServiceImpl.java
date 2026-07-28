@@ -1,8 +1,11 @@
 package com.blog.be.storage.application;
 
+import com.blog.be.storage.api.dto.UpdateImagePrefixRequest;
+import com.blog.be.storage.api.dto.UpdateImagePrefixResponse;
 import com.blog.be.storage.api.dto.UploadPostResponse;
 import com.blog.be.storage.api.dto.UploadUrlRequest;
 import com.blog.be.storage.infrastructure.cloudflare.config.CloudflareR2Properties;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -143,5 +146,85 @@ public class CloudflareStorageServiceImpl implements StorageService {
                 .publicUrl(publicUrl)
                 .build();
     }
-}
 
+    @Override
+    public UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix, String targetPrefix) {
+        if (imageUrls == null || imageUrls.isEmpty()) {
+            return new UpdateImagePrefixResponse(List.of());
+        }
+
+        String srcPrefix = sourcePrefix != null && !sourcePrefix.isBlank()
+                ? sourcePrefix.trim()
+                : StorageConstants.TEMP_FOLDER_PREFIX;
+        if (!srcPrefix.endsWith("/")) {
+            srcPrefix = srcPrefix + "/";
+        }
+
+        String tgtPrefix = targetPrefix != null && !targetPrefix.isBlank()
+                ? targetPrefix.trim()
+                : "blog/";
+        if (!tgtPrefix.endsWith("/")) {
+            tgtPrefix = tgtPrefix + "/";
+        }
+
+        String baseUrl = properties.getPublicUrl();
+        if (baseUrl != null && baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+
+        List<String> updatedUrls = new java.util.ArrayList<>();
+        String bucketName = properties.getBucket();
+
+        for (String urlOrKey : imageUrls) {
+            if (urlOrKey == null || urlOrKey.isBlank()) {
+                continue;
+            }
+
+            String key = urlOrKey.trim();
+            if (baseUrl != null && key.startsWith(baseUrl)) {
+                key = key.substring(baseUrl.length());
+                if (key.startsWith("/")) {
+                    key = key.substring(1);
+                }
+            } else if (key.contains("://")) {
+                int pathIndex = key.indexOf('/', key.indexOf("://") + 3);
+                if (pathIndex != -1) {
+                    key = key.substring(pathIndex + 1);
+                }
+            }
+
+            String destinationKey;
+            if (key.startsWith(srcPrefix)) {
+                destinationKey = tgtPrefix + key.substring(srcPrefix.length());
+            } else if (key.startsWith("temp/")) {
+                destinationKey = tgtPrefix + key.substring("temp/".length());
+            } else {
+                destinationKey = tgtPrefix + key;
+            }
+
+            try {
+                CopyObjectRequest copyRequest = CopyObjectRequest.builder()
+                        .sourceBucket(bucketName)
+                        .sourceKey(key)
+                        .destinationBucket(bucketName)
+                        .destinationKey(destinationKey)
+                        .build();
+                s3Client.copyObject(copyRequest);
+
+                DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key(key)
+                        .build();
+                s3Client.deleteObject(deleteRequest);
+
+                String finalPublicUrl = String.format("%s/%s", baseUrl, destinationKey);
+                updatedUrls.add(finalPublicUrl);
+            } catch (Exception e) {
+                log.error("Lỗi khi chuyển prefix từ key {} sang {}: {}", key, destinationKey, e.getMessage());
+                throw new RuntimeException("Không thể cập nhật prefix cho file: " + key + ". Lỗi: " + e.getMessage(), e);
+            }
+        }
+
+        return new UpdateImagePrefixResponse(updatedUrls);
+    }
+}

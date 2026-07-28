@@ -1,6 +1,5 @@
 package com.blog.be.interaction.domain.entity;
 
-import com.blog.be.content.domain.entity.Blog;
 import com.blog.be.identity.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +14,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "likes", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"blog_id", "user_id"})
+@Table(name = "comment_likes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"comment_id", "user_id"})
 })
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,14 +23,16 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-public class Like {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class CommentLike {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private boolean liked;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "blog_id")
-    private Blog blog;
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -39,7 +40,7 @@ public class Like {
 
     @CreatedDate
     private LocalDateTime createdDate;
+
     @LastModifiedDate
     private LocalDateTime modifiedDate;
 }
-
