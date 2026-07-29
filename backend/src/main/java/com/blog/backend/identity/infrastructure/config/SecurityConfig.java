@@ -22,6 +22,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.blog.be.identity.domain.repository.UserRepository;
 import com.blog.be.identity.infrastructure.oauth2.CustomOAuth2UserService;
+import com.blog.be.identity.infrastructure.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.blog.be.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class SecurityConfig {
         private final Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter;
         private final CustomOAuth2UserService customOAuth2UserService;
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
+        private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
         @Value("${app.frontend.url:http://localhost:4200}")
         private String frontendUrl;
@@ -76,8 +78,11 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/stats/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/comments/blog/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories", "/api/v1/categories/**").permitAll()
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
+                                                .authorizationEndpoint(auth -> auth
+                                                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oAuth2AuthenticationSuccessHandler))

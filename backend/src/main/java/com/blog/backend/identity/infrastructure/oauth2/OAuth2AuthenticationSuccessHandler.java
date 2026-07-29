@@ -34,6 +34,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
     @Value("${identity.expire-rt-day}")
     private Integer expireRtDay;
@@ -53,6 +54,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
 
         OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
         Long userId = oAuth2User.getAttribute("db_user_id");
+
+        // Clear the OAuth2 cookies
+        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found after OAuth2 login"));
