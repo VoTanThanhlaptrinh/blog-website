@@ -6,6 +6,7 @@ import {
   BlogQueryParams,
   BlogResponse,
   CreateBlogRequest,
+  HomeStatsResponse,
   PageResponse,
   UpdateBlogRequest,
 } from '../models/blog.model';
@@ -41,6 +42,7 @@ export class BlogService {
     if (params.keyword) httpParams = httpParams.set('keyword', params.keyword);
     if (params.status) httpParams = httpParams.set('status', params.status);
     if (params.userId) httpParams = httpParams.set('userId', params.userId.toString());
+    if (params.categoryId) httpParams = httpParams.set('categoryId', params.categoryId.toString());
     if (params.page !== undefined) httpParams = httpParams.set('page', params.page.toString());
     if (params.size !== undefined) httpParams = httpParams.set('size', params.size.toString());
     if (params.sort) httpParams = httpParams.set('sort', params.sort);
@@ -146,6 +148,18 @@ export class BlogService {
       catchError((err) => {
         const errorMessage = err?.error?.message || 'Không thể kích hoạt hình ảnh bài viết';
         return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
+  /**
+   * Fetch statistics for home page hero section
+   */
+  getHomeStats(): Observable<HomeStatsResponse> {
+    return this.http.get<ApiResponse<HomeStatsResponse>>('/api/v1/stats/home').pipe(
+      map((res) => res.data),
+      catchError((err) => {
+        return throwError(() => err);
       })
     );
   }

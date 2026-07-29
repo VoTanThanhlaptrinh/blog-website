@@ -52,6 +52,14 @@ export class LoginComponent {
     return c.invalid && (c.dirty || c.touched);
   }
 
+  loginWithGoogle() {
+    this.authService.loginWithSocial('google');
+  }
+
+  loginWithFacebook() {
+    this.authService.loginWithSocial('facebook');
+  }
+
   submit() {
     this.errorMessage.set(null);
     if (this.form.invalid) {

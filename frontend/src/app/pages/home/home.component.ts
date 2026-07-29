@@ -1,6 +1,7 @@
 import { afterNextRender, Component, OnInit, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BlogCardComponent } from '../../shared/components/blog-card/blog-card.component';
 import { BlogService } from '../../core/services/blog.service';
 import { BlogResponse, PageResponse } from '../../core/models/blog.model';
 
@@ -14,7 +15,7 @@ interface Stat {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, BlogCardComponent],
   templateUrl: './home.component.html',
 })
 export class HomeComponent implements OnInit {
@@ -24,10 +25,10 @@ export class HomeComponent implements OnInit {
   readonly currentWord = signal(0);
 
   readonly stats: Stat[] = [
-    { value: 12000, suffix: 'K+', label: 'Bài viết', display: signal(0) },
-    { value: 4800, suffix: 'K+', label: 'Tác giả', display: signal(0) },
-    { value: 95000, suffix: 'K+', label: 'Lượt yêu thích', display: signal(0) },
-    { value: 30, suffix: '+', label: 'Chủ đề', display: signal(0) },
+    { value: 0, suffix: '+', label: 'Bài viết', display: signal(0) },
+    { value: 0, suffix: '+', label: 'Tác giả', display: signal(0) },
+    { value: 0, suffix: '+', label: 'Lượt yêu thích', display: signal(0) },
+    { value: 0, suffix: '+', label: 'Chủ đề', display: signal(0) },
   ];
 
   // Observables / Signals for Blog Data
@@ -42,12 +43,33 @@ export class HomeComponent implements OnInit {
   constructor() {
     afterNextRender(() => {
       this.startWordRotation();
-      this.startCountUp();
     });
   }
 
   ngOnInit(): void {
     this.loadBlogs(this.currentPage());
+    this.loadStats();
+  }
+
+  loadStats(): void {
+    this.blogService.getHomeStats().subscribe({
+      next: (res) => {
+        this.stats[0].value = res.totalBlogs;
+        this.stats[0].suffix = res.totalBlogs >= 1000 ? 'K+' : '+';
+
+        this.stats[1].value = res.totalAuthors;
+        this.stats[1].suffix = res.totalAuthors >= 1000 ? 'K+' : '+';
+
+        this.stats[2].value = res.totalLikes;
+        this.stats[2].suffix = res.totalLikes >= 1000 ? 'K+' : '+';
+
+        this.stats[3].value = res.totalCategories;
+        this.stats[3].suffix = res.totalCategories >= 1000 ? 'K+' : '+';
+
+        this.startCountUp();
+      },
+      error: (err) => console.error('Failed to load home stats', err)
+    });
   }
 
   loadBlogs(page: number): void {

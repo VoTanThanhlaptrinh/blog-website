@@ -20,6 +20,7 @@ const AUTH_ENDPOINTS = [
   '/verify-otp',
   '/reset-password',
   '/activeAccount',
+  '/login/social',
 ];
 
 export const jwtInterceptor: HttpInterceptorFn = (req, next) => {

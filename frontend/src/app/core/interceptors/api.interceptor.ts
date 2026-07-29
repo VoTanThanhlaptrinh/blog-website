@@ -8,7 +8,7 @@ export const apiInterceptor: HttpInterceptorFn = (req, next) => {
   if (!isExternalUrl) {
     const urlPath = req.url.startsWith('/') ? req.url.substring(1) : req.url;
     apiReq = req.clone({
-      url: `${environment.apiUrl}${urlPath}`
+      url: `${environment.apiUrl}/${urlPath}`
     });
   }
 

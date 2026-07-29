@@ -19,6 +19,13 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'oauth2/redirect',
+    loadComponent: () =>
+      import('./pages/auth/oauth2-redirect/oauth2-redirect.component').then(
+        (m) => m.Oauth2RedirectComponent,
+      ),
+  },
+  {
     path: 'admin',
     loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },

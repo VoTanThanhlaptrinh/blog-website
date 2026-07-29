@@ -20,6 +20,13 @@ export interface AuthorResponse {
   bio?: string;
 }
 
+export interface CategoryResponse {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+}
+
 export enum BlogStatus {
   DRAFT = 'DRAFT',
   PENDING = 'PENDING',
@@ -35,6 +42,7 @@ export interface BlogResponse {
   status: BlogStatus;
   rejectionReason?: string;
   author: AuthorResponse;
+  category?: CategoryResponse;
   likesCount: number;
   commentsCount: number;
   viewsCount: number;
@@ -47,6 +55,7 @@ export interface BlogQueryParams {
   keyword?: string;
   status?: BlogStatus;
   userId?: number;
+  categoryId?: number;
   page?: number;
   size?: number;
   sort?: string;
@@ -65,4 +74,12 @@ export interface UpdateBlogRequest {
   content: string;
   status?: BlogStatus;
 }
+
+export interface HomeStatsResponse {
+  totalBlogs: number;
+  totalAuthors: number;
+  totalLikes: number;
+  totalCategories: number;
+}
+
 

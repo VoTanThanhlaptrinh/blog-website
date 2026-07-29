@@ -98,6 +98,14 @@ export class RegisterComponent {
     );
   }
 
+  loginWithGoogle() {
+    this.authService.loginWithSocial('google');
+  }
+
+  loginWithFacebook() {
+    this.authService.loginWithSocial('facebook');
+  }
+
   submit() {
     this.errorMessage.set(null);
     this.successMessage.set(null);

@@ -17,6 +17,7 @@ import {
 } from '../models/auth.model';
 import { UploadPostResponse, UploadUrlRequest } from '../models/file.model';
 
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -29,6 +30,14 @@ export class AuthService {
   private readonly apiUrl = '/api/v1/auth';
 
   readonly currentUser = signal<UserProfileResponse | null>(null);
+
+  /**
+   * Đăng nhập mạng xã hội (Google / Facebook).
+   * Chuyển hướng trình duyệt đến endpoint OAuth2 của backend.
+   */
+  loginWithSocial(provider: 'google' | 'facebook'): void {
+    window.location.href = `${environment.apiUrl}/oauth2/authorization/${provider}`;
+  }
 
   /**
    * Đăng nhập tài khoản.
