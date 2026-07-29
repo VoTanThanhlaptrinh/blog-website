@@ -3,6 +3,7 @@ package com.blog.backend.identity.api;
 import com.blog.backend.notification.api.ApiResponse;
 import com.blog.backend.identity.api.dto.*;
 import com.blog.backend.identity.application.AuthService;
+import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.identity.domain.event.ProfileImageUploadEvent;
 import com.blog.backend.storage.api.dto.UploadUrlRequest;
 import com.blog.backend.storage.api.dto.UploadPostResponse;
@@ -20,6 +21,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Objects;
 
 @RestController
@@ -40,8 +43,8 @@ public class AuthController {
     }
 
     @GetMapping("/login/social")
-    public ResponseEntity<ApiResponse<java.util.Map<String, String>>> getSocialLoginUrls() {
-        java.util.Map<String, String> urls = new java.util.HashMap<>();
+    public ResponseEntity<ApiResponse<Map<String, String>>> getSocialLoginUrls() {
+        Map<String, String> urls = new HashMap<>();
         urls.put("google", "/oauth2/authorization/google");
         urls.put("facebook", "/oauth2/authorization/facebook");
         return ResponseEntity.ok(new ApiResponse<>(urls, "Danh sách URL đăng nhập mạng xã hội", 200));
@@ -59,25 +62,25 @@ public class AuthController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@AuthenticationPrincipal Principal principal) {
-        return ResponseEntity.ok(new ApiResponse<>(authService.profile(principal)
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getProfile(@AuthenticationPrincipal User currentUser) {
+        return ResponseEntity.ok(new ApiResponse<>(authService.profile(currentUser)
                 , "Xem profile thanh cong", 200));
     }
 
     @PutMapping("/profile")
-    public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(@AuthenticationPrincipal Principal principal, @Valid @RequestBody UpdateProfileRequest request
+    public ResponseEntity<ApiResponse<UserProfileResponse>> updateProfile(@AuthenticationPrincipal User currentUser, @Valid @RequestBody UpdateProfileRequest request
     , BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body(new ApiResponse<>(null
                     , Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), 400));
         }
-        Long userId = Long.valueOf(principal.getName());
+        Long userId = currentUser.getId();
         UserProfileResponse res = authService.updateProfile(userId, request);
         return ResponseEntity.ok(new  ApiResponse<>(res, "Cập nhật thành công", 200));
     }
 
     @PostMapping("/profile/avatar/upload-url")
-    public ResponseEntity<ApiResponse<UploadPostResponse>> getAvatarUploadUrl(@AuthenticationPrincipal Principal principal, @Valid @RequestBody UploadUrlRequest request
+    public ResponseEntity<ApiResponse<UploadPostResponse>> getAvatarUploadUrl(@AuthenticationPrincipal User currentUser, @Valid @RequestBody UploadUrlRequest request
             , BindingResult bindingResult) {
         if(bindingResult.hasErrors()){
             return ResponseEntity.badRequest().body(new ApiResponse<>(null

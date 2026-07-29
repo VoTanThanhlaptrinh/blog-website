@@ -3,9 +3,7 @@ package com.blog.backend.identity.infrastructure.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.convert.converter.Converter;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -14,10 +12,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
-import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -40,10 +36,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
         private final UserRepository userRepository;
-        private final Converter<Jwt, AbstractAuthenticationToken> jwtAuthenticationConverter;
         private final CustomOAuth2UserService customOAuth2UserService;
         private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
         private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+        private final com.blog.backend.identity.api.filter.CookieJwtAuthenticationFilter cookieJwtAuthenticationFilter;
 
         @Value("${app.frontend.url:http://localhost:4200}")
         private String frontendUrl;
@@ -80,34 +76,19 @@ public class SecurityConfig {
                                                 .permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/stats/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/comments/blog/**").permitAll()
-                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories", "/api/v1/categories/**").permitAll()
+                                                .requestMatchers(HttpMethod.GET, "/api/v1/categories",
+                                                                "/api/v1/categories/**")
+                                                .permitAll()
                                                 .anyRequest().authenticated())
                                 .oauth2Login(oauth2 -> oauth2
                                                 .authorizationEndpoint(auth -> auth
-                                                                .authorizationRequestRepository(httpCookieOAuth2AuthorizationRequestRepository))
+                                                                .authorizationRequestRepository(
+                                                                                httpCookieOAuth2AuthorizationRequestRepository))
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oAuth2AuthenticationSuccessHandler))
-                                .oauth2ResourceServer(oauth2 -> oauth2
-                                                .bearerTokenResolver(bearerTokenResolver())
-                                                .jwt(jwt -> jwt
-                                                                .jwtAuthenticationConverter(
-                                                                                jwtAuthenticationConverter)))
+                                .addFilterBefore(cookieJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                                 .build();
-        }
-
-        @Bean
-        public BearerTokenResolver bearerTokenResolver() {
-                return request -> {
-                        if (request.getCookies() != null) {
-                                for (var cookie : request.getCookies()) {
-                                        if ("token".equals(cookie.getName())) {
-                                                return cookie.getValue();
-                                        }
-                                }
-                        }
-                        return null;
-                };
         }
 
         @Bean

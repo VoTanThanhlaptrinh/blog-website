@@ -96,7 +96,19 @@ public class AuthServiceImpl implements AuthService {
 
         response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
 
-        return AuthResponse.builder().accessToken(tokenValue).build();
+        UserProfileResponse userProfile = UserProfileResponse.builder()
+                .id(currentUser.getId())
+                .email(currentUser.getEmail())
+                .phone(currentUser.getPhone())
+                .bio(currentUser.getBio())
+                .birthDate(currentUser.getBirthDate() != null ? currentUser.getBirthDate().toString() : null)
+                .avatarUrl(currentUser.getAvatar() != null ? currentUser.getAvatar().getUrl() : null)
+                .build();
+
+        return AuthResponse.builder()
+                .accessToken(tokenValue)
+                .user(userProfile)
+                .build();
     }
 
     @Override
@@ -157,7 +169,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .bio(user.getBio())
-                .birthDate(user.getBirthDate())
+                .birthDate(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
                 .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
                 .build();
     }
@@ -261,8 +273,11 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public UserProfileResponse profile(Principal principal) {
-        long userId = Long.parseLong(principal.getName());
+    public UserProfileResponse profile(User currentUser) {
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new UserNotFoundException("Tài khoản không tồn tại!");
+        }
+        long userId = currentUser.getId();
         User user = userRepository.findUserById(userId)
                 .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
         return UserProfileResponse.builder()
@@ -270,7 +285,8 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .phone(user.getPhone())
                 .bio(user.getBio())
-                .birthDate(user.getBirthDate())
+                .birthDate(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
+                .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
                 .build();
     }
 

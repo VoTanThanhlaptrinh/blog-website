@@ -35,7 +35,7 @@ public interface AuthService {
 
      void activeAccount(String token);
 
-     UserProfileResponse profile(Principal principal);
+     UserProfileResponse profile(User currentUser);
 
      AuthResponse refreshToken(String token);
 }
