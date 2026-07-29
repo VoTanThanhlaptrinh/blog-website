@@ -1,6 +1,6 @@
-package com.blog.be.storage.domain.repository;
+package com.blog.backend.storage.domain.repository;
 
-import com.blog.be.storage.domain.entity.Image;
+import com.blog.backend.storage.domain.entity.Image;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

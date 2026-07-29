@@ -1,7 +1,7 @@
-package com.blog.be.content.application;
+package com.blog.backend.content.application;
 
-import com.blog.be.content.api.dto.CategoryResponse;
-import com.blog.be.content.api.dto.CreateCategoryRequest;
+import com.blog.backend.content.api.dto.CategoryResponse;
+import com.blog.backend.content.api.dto.CreateCategoryRequest;
 
 import java.util.List;
 

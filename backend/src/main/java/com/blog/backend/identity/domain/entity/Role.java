@@ -1,4 +1,4 @@
-package com.blog.be.identity.domain.entity;
+package com.blog.backend.identity.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 
-import com.blog.be.identity.domain.enums.RoleStatus;
+import com.blog.backend.identity.domain.enums.RoleStatus;
 
 import java.time.LocalDateTime;
 

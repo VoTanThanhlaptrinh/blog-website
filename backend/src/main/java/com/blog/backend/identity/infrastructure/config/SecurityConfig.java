@@ -1,4 +1,4 @@
-package com.blog.be.identity.infrastructure.config;
+package com.blog.backend.identity.infrastructure.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -15,15 +15,17 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver;
+import org.springframework.security.oauth2.server.resource.web.DefaultBearerTokenResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.blog.be.identity.domain.repository.UserRepository;
-import com.blog.be.identity.infrastructure.oauth2.CustomOAuth2UserService;
-import com.blog.be.identity.infrastructure.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
-import com.blog.be.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHandler;
+import com.blog.backend.identity.domain.repository.UserRepository;
+import com.blog.backend.identity.infrastructure.oauth2.CustomOAuth2UserService;
+import com.blog.backend.identity.infrastructure.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
+import com.blog.backend.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHandler;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,7 +72,7 @@ public class SecurityConfig {
                                                                 "/api/v1/auth/activeAccount",
                                                                 "/api/v1/auth/forgot-password",
                                                                 "/api/v1/auth/verify-otp",
-                                                                "/api/v1/auth/reset-password", "/api/v1/auth/refresh",
+                                                                "/api/v1/auth/reset-password",
                                                                 "/api/v1/auth/login/social")
                                                 .permitAll()
                                                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
@@ -87,10 +89,25 @@ public class SecurityConfig {
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oAuth2AuthenticationSuccessHandler))
                                 .oauth2ResourceServer(oauth2 -> oauth2
+                                                .bearerTokenResolver(bearerTokenResolver())
                                                 .jwt(jwt -> jwt
                                                                 .jwtAuthenticationConverter(
                                                                                 jwtAuthenticationConverter)))
                                 .build();
+        }
+
+        @Bean
+        public BearerTokenResolver bearerTokenResolver() {
+                return request -> {
+                        if (request.getCookies() != null) {
+                                for (var cookie : request.getCookies()) {
+                                        if ("token".equals(cookie.getName())) {
+                                                return cookie.getValue();
+                                        }
+                                }
+                        }
+                        return null;
+                };
         }
 
         @Bean

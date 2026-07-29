@@ -1,4 +1,4 @@
-package com.blog.be.storage.api.dto;
+package com.blog.backend.storage.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

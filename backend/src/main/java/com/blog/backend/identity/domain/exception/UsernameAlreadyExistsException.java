@@ -1,6 +1,6 @@
-package com.blog.be.identity.domain.exception;
+package com.blog.backend.identity.domain.exception;
 
-import com.blog.be.notification.domain.exception.DomainException;
+import com.blog.backend.notification.domain.exception.DomainException;
 
 public class UsernameAlreadyExistsException extends DomainException {
     public UsernameAlreadyExistsException() {

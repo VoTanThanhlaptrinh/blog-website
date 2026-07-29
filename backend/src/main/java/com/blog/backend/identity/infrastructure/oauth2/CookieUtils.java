@@ -1,4 +1,4 @@
-package com.blog.be.identity.infrastructure.oauth2;
+package com.blog.backend.identity.infrastructure.oauth2;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

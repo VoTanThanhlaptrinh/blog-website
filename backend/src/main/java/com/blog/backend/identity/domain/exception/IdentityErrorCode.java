@@ -1,6 +1,6 @@
-package com.blog.be.identity.domain.exception;
+package com.blog.backend.identity.domain.exception;
 
-import com.blog.be.notification.domain.exception.ErrorCode;
+import com.blog.backend.notification.domain.exception.ErrorCode;
 
 public enum IdentityErrorCode implements ErrorCode {
     USER_ALREADY_EXISTS(400, "Username is already taken"),

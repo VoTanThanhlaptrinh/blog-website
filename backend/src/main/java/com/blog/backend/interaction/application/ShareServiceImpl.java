@@ -1,14 +1,14 @@
-package com.blog.be.interaction.application;
+package com.blog.backend.interaction.application;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.exception.BlogNotFoundException;
-import com.blog.be.content.domain.repository.BlogRepository;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.api.dto.CreateShareRequest;
-import com.blog.be.interaction.api.dto.ShareResponse;
-import com.blog.be.interaction.domain.entity.Share;
-import com.blog.be.interaction.domain.enums.ShareStatus;
-import com.blog.be.interaction.domain.repository.ShareRepository;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.exception.BlogNotFoundException;
+import com.blog.backend.content.domain.repository.BlogRepository;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.api.dto.CreateShareRequest;
+import com.blog.backend.interaction.api.dto.ShareResponse;
+import com.blog.backend.interaction.domain.entity.Share;
+import com.blog.backend.interaction.domain.enums.ShareStatus;
+import com.blog.backend.interaction.domain.repository.ShareRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

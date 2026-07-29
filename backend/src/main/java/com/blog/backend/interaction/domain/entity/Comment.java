@@ -1,8 +1,8 @@
-package com.blog.be.interaction.domain.entity;
+package com.blog.backend.interaction.domain.entity;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.domain.enums.CommentStatus;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.domain.enums.CommentStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

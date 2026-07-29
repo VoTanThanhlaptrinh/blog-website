@@ -1,6 +1,6 @@
-package com.blog.be.identity.infrastructure.config;
+package com.blog.backend.identity.infrastructure.config;
 
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.identity.domain.entity.User;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;

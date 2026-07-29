@@ -1,12 +1,12 @@
-package com.blog.be.content.api;
+package com.blog.backend.content.api;
 
-import com.blog.be.content.api.dto.*;
-import com.blog.be.content.application.BlogService;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.content.domain.event.BlogImagesActivatedEvent;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.notification.api.ApiResponse;
-import com.blog.be.storage.api.dto.UpdateImagePrefixRequest;
+import com.blog.backend.content.api.dto.*;
+import com.blog.backend.content.application.BlogService;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.event.BlogImagesActivatedEvent;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.notification.api.ApiResponse;
+import com.blog.backend.storage.api.dto.UpdateImagePrefixRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

@@ -1,7 +1,7 @@
-package com.blog.be.notification.domain.entity;
+package com.blog.backend.notification.domain.entity;
 
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.notification.domain.enums.NotificationType;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.notification.domain.enums.NotificationType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

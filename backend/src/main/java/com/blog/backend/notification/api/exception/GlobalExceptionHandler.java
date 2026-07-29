@@ -1,7 +1,7 @@
-package com.blog.be.notification.api.exception;
+package com.blog.backend.notification.api.exception;
 
-import com.blog.be.notification.api.ApiResponse;
-import com.blog.be.notification.domain.exception.DomainException;
+import com.blog.backend.notification.api.ApiResponse;
+import com.blog.backend.notification.domain.exception.DomainException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

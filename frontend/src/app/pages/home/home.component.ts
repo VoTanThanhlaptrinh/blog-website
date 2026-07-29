@@ -1,6 +1,6 @@
-import { afterNextRender, Component, OnInit, inject, signal } from '@angular/core';
+import { afterNextRender, Component, OnInit, inject, signal, PLATFORM_ID } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { BlogCardComponent } from '../../shared/components/blog-card/blog-card.component';
 import { BlogService } from '../../core/services/blog.service';
 import { BlogResponse, PageResponse } from '../../core/models/blog.model';
@@ -20,6 +20,7 @@ interface Stat {
 })
 export class HomeComponent implements OnInit {
   private readonly blogService = inject(BlogService);
+  private readonly platformId = inject(PLATFORM_ID);
 
   readonly rotatingWords = ['kết nối cộng đồng', 'lan tỏa ý tưởng', 'phát triển bản thân', 'truyền cảm hứng'];
   readonly currentWord = signal(0);
@@ -104,6 +105,12 @@ export class HomeComponent implements OnInit {
   }
 
   private startCountUp() {
+    if (!isPlatformBrowser(this.platformId)) {
+      for (const stat of this.stats) {
+        stat.display.set(stat.value);
+      }
+      return;
+    }
     const duration = 1600;
     const start = performance.now();
     const tick = (now: number) => {

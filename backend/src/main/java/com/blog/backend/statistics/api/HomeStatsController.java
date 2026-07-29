@@ -1,8 +1,8 @@
-package com.blog.be.statistics.api;
+package com.blog.backend.statistics.api;
 
-import com.blog.be.notification.api.ApiResponse;
-import com.blog.be.statistics.application.HomeStatsService;
-import com.blog.be.statistics.dto.HomeStatsResponse;
+import com.blog.backend.notification.api.ApiResponse;
+import com.blog.backend.statistics.application.HomeStatsService;
+import com.blog.backend.statistics.dto.HomeStatsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

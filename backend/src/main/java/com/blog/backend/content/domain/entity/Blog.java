@@ -1,8 +1,8 @@
-package com.blog.be.content.domain.entity;
+package com.blog.backend.content.domain.entity;
 
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.domain.entity.Comment;
-import com.blog.be.interaction.domain.entity.Like;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.domain.entity.Comment;
+import com.blog.backend.interaction.domain.entity.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import com.blog.be.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.enums.BlogStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;

@@ -1,8 +1,8 @@
-package com.blog.be.admin.domain.entity;
+package com.blog.backend.admin.domain.entity;
 
-import com.blog.be.admin.domain.enums.ReportStatus;
-import com.blog.be.admin.domain.enums.ReportTargetType;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.identity.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;

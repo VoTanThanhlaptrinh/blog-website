@@ -1,6 +1,6 @@
-package com.blog.be.interaction.api.dto;
+package com.blog.backend.interaction.api.dto;
 
-import com.blog.be.interaction.domain.enums.BookmarkStatus;
+import com.blog.backend.interaction.domain.enums.BookmarkStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

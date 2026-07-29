@@ -1,6 +1,6 @@
-package com.blog.be.admin.api.dto;
+package com.blog.backend.admin.api.dto;
 
-import com.blog.be.admin.domain.enums.ReportTargetType;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;

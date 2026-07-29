@@ -1,4 +1,4 @@
-package com.blog.be.admin.domain.enums;
+package com.blog.backend.admin.domain.enums;
 
 public enum ReportTargetType {
     BLOG,

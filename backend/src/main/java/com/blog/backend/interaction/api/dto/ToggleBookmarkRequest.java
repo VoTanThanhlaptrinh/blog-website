@@ -1,4 +1,4 @@
-package com.blog.be.interaction.api.dto;
+package com.blog.backend.interaction.api.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;

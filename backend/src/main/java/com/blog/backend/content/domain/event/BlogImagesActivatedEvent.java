@@ -1,4 +1,4 @@
-package com.blog.be.content.domain.event;
+package com.blog.backend.content.domain.event;
 
 import org.springframework.context.ApplicationEvent;
 import java.util.List;

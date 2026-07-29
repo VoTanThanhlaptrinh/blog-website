@@ -1,7 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-import { TokenService } from '../../../core/services/token.service';
 
 @Component({
   selector: 'app-oauth2-redirect',
@@ -19,25 +18,17 @@ import { TokenService } from '../../../core/services/token.service';
   `
 })
 export class Oauth2RedirectComponent implements OnInit {
-  private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly tokenService = inject(TokenService);
   private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    const accessToken = this.route.snapshot.queryParams['accessToken'];
-    if (accessToken) {
-      this.tokenService.saveToken(accessToken);
-      this.authService.getProfile().subscribe({
-        next: () => {
-          this.router.navigate(['/']);
-        },
-        error: () => {
-          this.router.navigate(['/']);
-        }
-      });
-    } else {
-      this.router.navigate(['/login']);
-    }
+    this.authService.getProfile().subscribe({
+      next: () => {
+        this.router.navigate(['/']);
+      },
+      error: () => {
+        this.router.navigate(['/login']);
+      }
+    });
   }
 }

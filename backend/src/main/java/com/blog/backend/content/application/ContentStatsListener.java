@@ -1,9 +1,9 @@
-package com.blog.be.content.application;
+package com.blog.backend.content.application;
 
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.content.domain.repository.BlogRepository;
-import com.blog.be.content.domain.repository.CategoryRepository;
-import com.blog.be.statistics.domain.event.GatherHomeStatsEvent;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.repository.BlogRepository;
+import com.blog.backend.content.domain.repository.CategoryRepository;
+import com.blog.backend.statistics.domain.event.GatherHomeStatsEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

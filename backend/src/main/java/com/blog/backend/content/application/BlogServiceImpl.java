@@ -1,18 +1,18 @@
-package com.blog.be.content.application;
+package com.blog.backend.content.application;
 
-import com.blog.be.content.api.dto.*;
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.content.domain.exception.BlogAlreadyDeletedException;
-import com.blog.be.content.domain.exception.BlogNotFoundException;
-import com.blog.be.content.domain.exception.UnauthorizedBlogAccessException;
-import com.blog.be.content.domain.repository.BlogRepository;
-import com.blog.be.content.domain.repository.CategoryRepository;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.content.api.dto.*;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.exception.BlogAlreadyDeletedException;
+import com.blog.backend.content.domain.exception.BlogNotFoundException;
+import com.blog.backend.content.domain.exception.UnauthorizedBlogAccessException;
+import com.blog.backend.content.domain.repository.BlogRepository;
+import com.blog.backend.content.domain.repository.CategoryRepository;
+import com.blog.backend.identity.domain.entity.User;
 import jakarta.persistence.criteria.Predicate;
-import com.blog.be.interaction.domain.enums.CommentStatus;
-import com.blog.be.interaction.domain.repository.CommentRepository;
-import com.blog.be.interaction.domain.repository.LikeRepository;
+import com.blog.backend.interaction.domain.enums.CommentStatus;
+import com.blog.backend.interaction.domain.repository.CommentRepository;
+import com.blog.backend.interaction.domain.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +47,7 @@ public class BlogServiceImpl implements BlogService {
             targetStatus = BlogStatus.PENDING;
         }
 
-        com.blog.be.content.domain.entity.Category category = null;
+        com.blog.backend.content.domain.entity.Category category = null;
         if (request.getCategoryId() != null) {
             category = categoryRepository.findById(request.getCategoryId()).orElse(null);
         }
@@ -219,7 +219,7 @@ public class BlogServiceImpl implements BlogService {
         }
         CategoryResponse categoryResponse = null;
         if (blog.getCategory() != null) {
-            com.blog.be.content.domain.entity.Category c = blog.getCategory();
+            com.blog.backend.content.domain.entity.Category c = blog.getCategory();
             categoryResponse = CategoryResponse.builder()
                     .id(c.getId())
                     .name(c.getName())

@@ -1,13 +1,13 @@
-package com.blog.be.admin.api;
+package com.blog.backend.admin.api;
 
-import com.blog.be.admin.api.dto.ReportResponse;
-import com.blog.be.admin.api.dto.ResolveReportRequest;
-import com.blog.be.admin.application.AdminService;
-import com.blog.be.admin.domain.enums.ReportStatus;
-import com.blog.be.admin.domain.enums.ReportTargetType;
-import com.blog.be.notification.api.ApiResponse;
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.admin.api.dto.ReportResponse;
+import com.blog.backend.admin.api.dto.ResolveReportRequest;
+import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.notification.api.ApiResponse;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.identity.domain.entity.User;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

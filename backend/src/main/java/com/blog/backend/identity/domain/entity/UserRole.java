@@ -1,6 +1,6 @@
-package com.blog.be.identity.domain.entity;
+package com.blog.backend.identity.domain.entity;
 
-import com.blog.be.identity.domain.enums.UserRoleStatus;
+import com.blog.backend.identity.domain.enums.UserRoleStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

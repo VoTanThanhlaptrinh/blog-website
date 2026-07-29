@@ -1,4 +1,4 @@
-package com.blog.be.infrastructure.config;
+package com.blog.backend.infrastructure.config;
 
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;

@@ -1,12 +1,12 @@
-package com.blog.be.interaction.api;
+package com.blog.backend.interaction.api;
 
-import com.blog.be.content.api.dto.BlogResponse;
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.api.dto.BookmarkResponse;
-import com.blog.be.interaction.api.dto.ToggleBookmarkRequest;
-import com.blog.be.interaction.application.BookmarkService;
-import com.blog.be.notification.api.ApiResponse;
+import com.blog.backend.content.api.dto.BlogResponse;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.api.dto.BookmarkResponse;
+import com.blog.backend.interaction.api.dto.ToggleBookmarkRequest;
+import com.blog.backend.interaction.application.BookmarkService;
+import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

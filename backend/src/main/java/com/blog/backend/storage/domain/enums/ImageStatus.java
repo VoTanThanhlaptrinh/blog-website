@@ -1,4 +1,4 @@
-package com.blog.be.storage.domain.enums;
+package com.blog.backend.storage.domain.enums;
 
 public enum ImageStatus {
     ACTIVE,

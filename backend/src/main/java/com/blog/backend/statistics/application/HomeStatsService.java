@@ -1,7 +1,7 @@
-package com.blog.be.statistics.application;
+package com.blog.backend.statistics.application;
 
-import com.blog.be.statistics.domain.event.GatherHomeStatsEvent;
-import com.blog.be.statistics.dto.HomeStatsResponse;
+import com.blog.backend.statistics.domain.event.GatherHomeStatsEvent;
+import com.blog.backend.statistics.dto.HomeStatsResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;

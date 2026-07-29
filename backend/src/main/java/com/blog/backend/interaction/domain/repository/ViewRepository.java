@@ -1,6 +1,6 @@
-package com.blog.be.interaction.domain.repository;
+package com.blog.backend.interaction.domain.repository;
 
-import com.blog.be.interaction.domain.entity.View;
+import com.blog.backend.interaction.domain.entity.View;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

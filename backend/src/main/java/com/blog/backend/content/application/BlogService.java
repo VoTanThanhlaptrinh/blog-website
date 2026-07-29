@@ -1,8 +1,8 @@
-package com.blog.be.content.application;
+package com.blog.backend.content.application;
 
-import com.blog.be.content.api.dto.*;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.content.api.dto.*;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.identity.domain.entity.User;
 import org.springframework.data.domain.Pageable;
 
 public interface BlogService {

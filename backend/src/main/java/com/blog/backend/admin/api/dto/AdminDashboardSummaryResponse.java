@@ -1,4 +1,4 @@
-package com.blog.be.admin.api.dto;
+package com.blog.backend.admin.api.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

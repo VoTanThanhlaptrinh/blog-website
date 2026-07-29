@@ -1,8 +1,8 @@
-package com.blog.be.notification.application.listener;
+package com.blog.backend.notification.application.listener;
 
-import com.blog.be.identity.domain.event.UserRegistrationEvent;
-import com.blog.be.identity.infrastructure.utils.StringHelper;
-import com.blog.be.notification.application.service.MailService;
+import com.blog.backend.identity.domain.event.UserRegistrationEvent;
+import com.blog.backend.identity.infrastructure.utils.StringHelper;
+import com.blog.backend.notification.application.service.MailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;

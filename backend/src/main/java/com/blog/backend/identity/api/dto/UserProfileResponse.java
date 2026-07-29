@@ -1,6 +1,6 @@
-package com.blog.be.identity.api.dto;
+package com.blog.backend.identity.api.dto;
 
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.identity.domain.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

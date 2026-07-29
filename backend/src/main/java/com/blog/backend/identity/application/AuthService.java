@@ -1,15 +1,15 @@
-package com.blog.be.identity.application;
+package com.blog.backend.identity.application;
 
-import com.blog.be.identity.api.dto.AccountLoginRequest;
-import com.blog.be.identity.api.dto.AuthResponse;
-import com.blog.be.identity.api.dto.ChangePasswordRequest;
-import com.blog.be.identity.api.dto.ForgotPasswordRequest;
-import com.blog.be.identity.api.dto.RegisterRequest;
-import com.blog.be.identity.api.dto.ResetPasswordRequest;
-import com.blog.be.identity.api.dto.VerifyOtpRequest;
-import com.blog.be.identity.api.dto.UpdateProfileRequest;
-import com.blog.be.identity.api.dto.UserProfileResponse;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.identity.api.dto.AccountLoginRequest;
+import com.blog.backend.identity.api.dto.AuthResponse;
+import com.blog.backend.identity.api.dto.ChangePasswordRequest;
+import com.blog.backend.identity.api.dto.ForgotPasswordRequest;
+import com.blog.backend.identity.api.dto.RegisterRequest;
+import com.blog.backend.identity.api.dto.ResetPasswordRequest;
+import com.blog.backend.identity.api.dto.VerifyOtpRequest;
+import com.blog.backend.identity.api.dto.UpdateProfileRequest;
+import com.blog.backend.identity.api.dto.UserProfileResponse;
+import com.blog.backend.identity.domain.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 

@@ -1,9 +1,9 @@
-package com.blog.be.content.application;
+package com.blog.backend.content.application;
 
-import com.blog.be.content.api.dto.CategoryResponse;
-import com.blog.be.content.api.dto.CreateCategoryRequest;
-import com.blog.be.content.domain.entity.Category;
-import com.blog.be.content.domain.repository.CategoryRepository;
+import com.blog.backend.content.api.dto.CategoryResponse;
+import com.blog.backend.content.api.dto.CreateCategoryRequest;
+import com.blog.backend.content.domain.entity.Category;
+import com.blog.backend.content.domain.repository.CategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

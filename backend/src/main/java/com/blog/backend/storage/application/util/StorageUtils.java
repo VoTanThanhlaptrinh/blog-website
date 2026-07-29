@@ -1,6 +1,6 @@
-package com.blog.be.storage.application.util;
+package com.blog.backend.storage.application.util;
 
-import com.blog.be.storage.domain.constant.StorageConstants;
+import com.blog.backend.storage.domain.constant.StorageConstants;
 
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;

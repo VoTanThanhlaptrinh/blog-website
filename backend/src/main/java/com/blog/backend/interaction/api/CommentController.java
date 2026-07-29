@@ -1,12 +1,12 @@
-package com.blog.be.interaction.api;
+package com.blog.backend.interaction.api;
 
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.api.dto.CommentResponse;
-import com.blog.be.interaction.api.dto.CreateCommentRequest;
-import com.blog.be.interaction.api.dto.UpdateCommentRequest;
-import com.blog.be.interaction.application.CommentService;
-import com.blog.be.notification.api.ApiResponse;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.api.dto.CommentResponse;
+import com.blog.backend.interaction.api.dto.CreateCommentRequest;
+import com.blog.backend.interaction.api.dto.UpdateCommentRequest;
+import com.blog.backend.interaction.application.CommentService;
+import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

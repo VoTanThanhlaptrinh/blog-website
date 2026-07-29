@@ -1,22 +1,22 @@
-package com.blog.be.admin.application;
+package com.blog.backend.admin.application;
 
-import com.blog.be.admin.api.dto.*;
-import com.blog.be.admin.domain.entity.Report;
-import com.blog.be.admin.domain.enums.ReportStatus;
-import com.blog.be.admin.domain.enums.ReportTargetType;
-import com.blog.be.admin.domain.repository.ReportRepository;
-import com.blog.be.content.api.dto.AuthorResponse;
-import com.blog.be.content.api.dto.BlogResponse;
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.content.domain.event.BlogModerationEvent;
-import com.blog.be.content.domain.exception.BlogNotFoundException;
-import com.blog.be.content.domain.exception.UnauthorizedBlogAccessException;
-import com.blog.be.content.domain.repository.BlogRepository;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.identity.domain.repository.UserRepository;
-import com.blog.be.interaction.domain.repository.CommentRepository;
+import com.blog.backend.admin.api.dto.*;
+import com.blog.backend.admin.domain.entity.Report;
+import com.blog.backend.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.admin.domain.repository.ReportRepository;
+import com.blog.backend.content.api.dto.AuthorResponse;
+import com.blog.backend.content.api.dto.BlogResponse;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.event.BlogModerationEvent;
+import com.blog.backend.content.domain.exception.BlogNotFoundException;
+import com.blog.backend.content.domain.exception.UnauthorizedBlogAccessException;
+import com.blog.backend.content.domain.repository.BlogRepository;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.identity.domain.repository.UserRepository;
+import com.blog.backend.interaction.domain.repository.CommentRepository;
 import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -33,8 +33,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import com.blog.be.interaction.domain.enums.CommentStatus;
-import com.blog.be.interaction.domain.repository.LikeRepository;
+import com.blog.backend.interaction.domain.enums.CommentStatus;
+import com.blog.backend.interaction.domain.repository.LikeRepository;
 
 /**
  * Service xử lý toàn bộ các nghiệp vụ dành riêng cho Quản trị viên (Admin):

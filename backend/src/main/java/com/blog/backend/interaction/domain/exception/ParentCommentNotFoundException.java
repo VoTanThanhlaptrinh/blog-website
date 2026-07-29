@@ -1,6 +1,6 @@
-package com.blog.be.interaction.domain.exception;
+package com.blog.backend.interaction.domain.exception;
 
-import com.blog.be.notification.domain.exception.DomainException;
+import com.blog.backend.notification.domain.exception.DomainException;
 
 public class ParentCommentNotFoundException extends DomainException {
     public ParentCommentNotFoundException(String message) {

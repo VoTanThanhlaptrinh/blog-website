@@ -1,6 +1,6 @@
-package com.blog.be.content.domain.repository;
+package com.blog.backend.content.domain.repository;
 
-import com.blog.be.content.domain.entity.Category;
+import com.blog.backend.content.domain.entity.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

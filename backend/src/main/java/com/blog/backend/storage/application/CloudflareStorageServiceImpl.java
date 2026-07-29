@@ -1,10 +1,10 @@
-package com.blog.be.storage.application;
+package com.blog.backend.storage.application;
 
-import com.blog.be.storage.api.dto.UpdateImagePrefixRequest;
-import com.blog.be.storage.api.dto.UpdateImagePrefixResponse;
-import com.blog.be.storage.api.dto.UploadPostResponse;
-import com.blog.be.storage.api.dto.UploadUrlRequest;
-import com.blog.be.storage.infrastructure.cloudflare.config.CloudflareR2Properties;
+import com.blog.backend.storage.api.dto.UpdateImagePrefixRequest;
+import com.blog.backend.storage.api.dto.UpdateImagePrefixResponse;
+import com.blog.backend.storage.api.dto.UploadPostResponse;
+import com.blog.backend.storage.api.dto.UploadUrlRequest;
+import com.blog.backend.storage.infrastructure.cloudflare.config.CloudflareR2Properties;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,9 +13,9 @@ import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 
-import com.blog.be.storage.application.util.AwsSignatureUtils;
-import com.blog.be.storage.application.util.StorageUtils;
-import com.blog.be.storage.domain.constant.StorageConstants;
+import com.blog.backend.storage.application.util.AwsSignatureUtils;
+import com.blog.backend.storage.application.util.StorageUtils;
+import com.blog.backend.storage.domain.constant.StorageConstants;
 
 import java.util.HashMap;
 import java.util.Map;

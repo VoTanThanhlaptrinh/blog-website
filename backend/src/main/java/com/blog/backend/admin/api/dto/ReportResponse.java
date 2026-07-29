@@ -1,8 +1,8 @@
-package com.blog.be.admin.api.dto;
+package com.blog.backend.admin.api.dto;
 
-import com.blog.be.admin.domain.enums.ReportStatus;
-import com.blog.be.admin.domain.enums.ReportTargetType;
-import com.blog.be.content.api.dto.AuthorResponse;
+import com.blog.backend.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.content.api.dto.AuthorResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.blog.be.notification.domain.exception;
+package com.blog.backend.notification.domain.exception;
 
 public interface ErrorCode {
     int getCode();

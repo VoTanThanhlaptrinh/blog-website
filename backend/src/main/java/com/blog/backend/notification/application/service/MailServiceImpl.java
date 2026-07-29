@@ -1,4 +1,4 @@
-package com.blog.be.notification.application.service;
+package com.blog.backend.notification.application.service;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

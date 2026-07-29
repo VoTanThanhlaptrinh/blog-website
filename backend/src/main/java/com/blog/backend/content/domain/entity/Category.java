@@ -1,4 +1,4 @@
-package com.blog.be.content.domain.entity;
+package com.blog.backend.content.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

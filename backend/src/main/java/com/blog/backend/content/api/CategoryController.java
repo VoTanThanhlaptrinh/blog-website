@@ -1,9 +1,9 @@
-package com.blog.be.content.api;
+package com.blog.backend.content.api;
 
-import com.blog.be.content.api.dto.CategoryResponse;
-import com.blog.be.content.api.dto.CreateCategoryRequest;
-import com.blog.be.content.application.CategoryService;
-import com.blog.be.notification.api.ApiResponse;
+import com.blog.backend.content.api.dto.CategoryResponse;
+import com.blog.backend.content.api.dto.CreateCategoryRequest;
+import com.blog.backend.content.application.CategoryService;
+import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

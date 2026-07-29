@@ -1,7 +1,7 @@
-package com.blog.be.interaction.api.dto;
+package com.blog.backend.interaction.api.dto;
 
-import com.blog.be.content.api.dto.AuthorResponse;
-import com.blog.be.interaction.domain.enums.CommentStatus;
+import com.blog.backend.content.api.dto.AuthorResponse;
+import com.blog.backend.interaction.domain.enums.CommentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

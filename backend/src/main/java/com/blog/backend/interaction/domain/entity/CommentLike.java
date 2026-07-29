@@ -1,6 +1,6 @@
-package com.blog.be.interaction.domain.entity;
+package com.blog.backend.interaction.domain.entity;
 
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.identity.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

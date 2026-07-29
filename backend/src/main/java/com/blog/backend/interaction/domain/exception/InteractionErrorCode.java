@@ -1,6 +1,6 @@
-package com.blog.be.interaction.domain.exception;
+package com.blog.backend.interaction.domain.exception;
 
-import com.blog.be.notification.domain.exception.ErrorCode;
+import com.blog.backend.notification.domain.exception.ErrorCode;
 
 public enum InteractionErrorCode implements ErrorCode {
     COMMENT_NOT_FOUND(404, "Không tìm thấy bình luận"),

@@ -1,13 +1,13 @@
-package com.blog.be.identity.application;
+package com.blog.backend.identity.application;
 
-import com.blog.be.identity.api.dto.AccountLoginRequest;
-import com.blog.be.identity.api.dto.AuthResponse;
-import com.blog.be.identity.api.dto.ChangePasswordRequest;
-import com.blog.be.identity.api.dto.RegisterRequest;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.identity.domain.event.UserRegistrationEvent;
-import com.blog.be.identity.domain.repository.UserRepository;
-import com.blog.be.identity.domain.exception.UsernameAlreadyExistsException;
+import com.blog.backend.identity.api.dto.AccountLoginRequest;
+import com.blog.backend.identity.api.dto.AuthResponse;
+import com.blog.backend.identity.api.dto.ChangePasswordRequest;
+import com.blog.backend.identity.api.dto.RegisterRequest;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.identity.domain.event.UserRegistrationEvent;
+import com.blog.backend.identity.domain.repository.UserRepository;
+import com.blog.backend.identity.domain.exception.UsernameAlreadyExistsException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,22 +18,22 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.blog.be.identity.domain.exception.InvalidTokenException;
-import com.blog.be.identity.domain.exception.UserNotFoundException;
-import com.blog.be.identity.api.dto.ForgotPasswordRequest;
-import com.blog.be.identity.api.dto.ResetPasswordRequest;
-import com.blog.be.identity.api.dto.UpdateProfileRequest;
-import com.blog.be.identity.api.dto.UserProfileResponse;
-import com.blog.be.identity.api.dto.VerifyOtpRequest;
-import com.blog.be.identity.domain.event.ForgotPasswordEvent;
-import com.blog.be.identity.domain.event.ProfileImageConfirmEvent;
-import com.blog.be.storage.domain.entity.Image;
-import com.blog.be.identity.domain.exception.AccountAlreadyActiveException;
-import com.blog.be.identity.domain.exception.ExpiredOtpException;
-import com.blog.be.identity.domain.exception.IncorrectPasswordException;
-import com.blog.be.identity.domain.exception.InvalidOtpException;
-import com.blog.be.identity.domain.exception.InvalidResetTokenException;
-import com.blog.be.identity.domain.exception.PasswordMismatchException;
+import com.blog.backend.identity.domain.exception.InvalidTokenException;
+import com.blog.backend.identity.domain.exception.UserNotFoundException;
+import com.blog.backend.identity.api.dto.ForgotPasswordRequest;
+import com.blog.backend.identity.api.dto.ResetPasswordRequest;
+import com.blog.backend.identity.api.dto.UpdateProfileRequest;
+import com.blog.backend.identity.api.dto.UserProfileResponse;
+import com.blog.backend.identity.api.dto.VerifyOtpRequest;
+import com.blog.backend.identity.domain.event.ForgotPasswordEvent;
+import com.blog.backend.identity.domain.event.ProfileImageConfirmEvent;
+import com.blog.backend.storage.domain.entity.Image;
+import com.blog.backend.identity.domain.exception.AccountAlreadyActiveException;
+import com.blog.backend.identity.domain.exception.ExpiredOtpException;
+import com.blog.backend.identity.domain.exception.IncorrectPasswordException;
+import com.blog.backend.identity.domain.exception.InvalidOtpException;
+import com.blog.backend.identity.domain.exception.InvalidResetTokenException;
+import com.blog.backend.identity.domain.exception.PasswordMismatchException;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import java.security.Principal;
@@ -82,10 +82,11 @@ public class AuthServiceImpl implements AuthService {
         }
 
         User currentUser = user.get();
-        String tokenValue = jwtService.generateRefreshToken(currentUser.getId());
+        // Generate a single access token using expireRtDay to serve as a session token
+        String tokenValue = jwtService.generateAccessToken(currentUser.getId(), (List<GrantedAuthority>) currentUser.getAuthorities());
 
         long maxAgeInSeconds = expireRtDay * 24L * 60 * 60;
-        ResponseCookie springCookie = ResponseCookie.from("refreshToken", tokenValue)
+        ResponseCookie springCookie = ResponseCookie.from("token", tokenValue)
                 .httpOnly(true)
                 .secure(secureCookie)
                 .path("/")
@@ -95,8 +96,7 @@ public class AuthServiceImpl implements AuthService {
 
         response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
 
-        return AuthResponse.builder().accessToken(jwtService.generateAccessToken(currentUser.getId(),
-                (List<GrantedAuthority>) currentUser.getAuthorities())).build();
+        return AuthResponse.builder().accessToken(tokenValue).build();
     }
 
     @Override
@@ -276,13 +276,6 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public AuthResponse refreshToken(String token) {
-        if (token == null || !jwtService.isTokenValid(token)) {
-            return new AuthResponse();
-        }
-        Long userId = jwtService.getClaim(token, "sub", Long.class);
-        User user = userRepository.findUserById(userId)
-                .orElseThrow(() -> new UserNotFoundException("Tai khoan khong tim thay"));
-        return AuthResponse.builder().accessToken(jwtService
-                .generateAccessToken(userId, (List<GrantedAuthority>) user.getAuthorities())).build();
+        return new AuthResponse(); // Not used anymore
     }
 }

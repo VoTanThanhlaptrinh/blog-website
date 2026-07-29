@@ -1,7 +1,7 @@
-package com.blog.be.interaction.application;
+package com.blog.backend.interaction.application;
 
-import com.blog.be.interaction.domain.repository.LikeRepository;
-import com.blog.be.statistics.domain.event.GatherHomeStatsEvent;
+import com.blog.backend.interaction.domain.repository.LikeRepository;
+import com.blog.backend.statistics.domain.event.GatherHomeStatsEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

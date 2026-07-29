@@ -1,7 +1,7 @@
-package com.blog.be.identity.domain.event;
+package com.blog.backend.identity.domain.event;
 
-import com.blog.be.storage.api.dto.UploadPostResponse;
-import com.blog.be.storage.api.dto.UploadUrlRequest;
+import com.blog.backend.storage.api.dto.UploadPostResponse;
+import com.blog.backend.storage.api.dto.UploadUrlRequest;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.context.ApplicationEvent;

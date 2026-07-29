@@ -1,9 +1,9 @@
-package com.blog.be.storage.api;
+package com.blog.backend.storage.api;
 
-import com.blog.be.notification.api.ApiResponse;
-import com.blog.be.storage.api.dto.UploadPostResponse;
-import com.blog.be.storage.api.dto.UploadUrlRequest;
-import com.blog.be.storage.application.StorageService;
+import com.blog.backend.notification.api.ApiResponse;
+import com.blog.backend.storage.api.dto.UploadPostResponse;
+import com.blog.backend.storage.api.dto.UploadUrlRequest;
+import com.blog.backend.storage.application.StorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

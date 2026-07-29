@@ -1,8 +1,8 @@
-package com.blog.be.interaction.application;
+package com.blog.backend.interaction.application;
 
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.api.dto.RecordViewRequest;
-import com.blog.be.interaction.api.dto.ViewResponse;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.api.dto.RecordViewRequest;
+import com.blog.backend.interaction.api.dto.ViewResponse;
 
 public interface ViewService {
     ViewResponse recordView(User currentUser, String ipAddress, RecordViewRequest request);

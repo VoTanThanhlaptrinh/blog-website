@@ -1,4 +1,4 @@
-package com.blog.be.statistics.dto;
+package com.blog.backend.statistics.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

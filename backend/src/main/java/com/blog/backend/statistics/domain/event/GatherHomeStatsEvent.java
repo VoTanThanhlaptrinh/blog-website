@@ -1,4 +1,4 @@
-package com.blog.be.statistics.domain.event;
+package com.blog.backend.statistics.domain.event;
 
 import lombok.Getter;
 

@@ -1,7 +1,7 @@
-package com.blog.be.content.domain.repository;
+package com.blog.backend.content.domain.repository;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.enums.BlogStatus;
 import java.time.LocalDateTime;
 
 import org.springframework.data.domain.Page;

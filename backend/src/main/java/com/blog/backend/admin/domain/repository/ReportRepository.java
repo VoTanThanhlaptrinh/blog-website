@@ -1,7 +1,7 @@
-package com.blog.be.admin.domain.repository;
+package com.blog.backend.admin.domain.repository;
 
-import com.blog.be.admin.domain.entity.Report;
-import com.blog.be.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.entity.Report;
+import com.blog.backend.admin.domain.enums.ReportStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

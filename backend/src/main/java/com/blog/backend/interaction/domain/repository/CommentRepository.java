@@ -1,7 +1,7 @@
-package com.blog.be.interaction.domain.repository;
+package com.blog.backend.interaction.domain.repository;
 
-import com.blog.be.interaction.domain.entity.Comment;
-import com.blog.be.interaction.domain.enums.CommentStatus;
+import com.blog.backend.interaction.domain.entity.Comment;
+import com.blog.backend.interaction.domain.enums.CommentStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

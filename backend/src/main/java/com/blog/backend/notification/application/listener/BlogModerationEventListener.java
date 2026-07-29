@@ -1,11 +1,11 @@
-package com.blog.be.notification.application.listener;
+package com.blog.backend.notification.application.listener;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.content.domain.event.BlogModerationEvent;
-import com.blog.be.notification.application.service.MailService;
-import com.blog.be.notification.application.NotificationService;
-import com.blog.be.notification.domain.enums.NotificationType;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.event.BlogModerationEvent;
+import com.blog.backend.notification.application.service.MailService;
+import com.blog.backend.notification.application.NotificationService;
+import com.blog.backend.notification.domain.enums.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

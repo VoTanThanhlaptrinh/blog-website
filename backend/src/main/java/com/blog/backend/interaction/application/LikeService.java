@@ -1,10 +1,10 @@
-package com.blog.be.interaction.application;
+package com.blog.backend.interaction.application;
 
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.interaction.api.dto.CommentLikeResponse;
-import com.blog.be.interaction.api.dto.LikeResponse;
-import com.blog.be.interaction.api.dto.ToggleCommentLikeRequest;
-import com.blog.be.interaction.api.dto.ToggleLikeRequest;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.interaction.api.dto.CommentLikeResponse;
+import com.blog.backend.interaction.api.dto.LikeResponse;
+import com.blog.backend.interaction.api.dto.ToggleCommentLikeRequest;
+import com.blog.backend.interaction.api.dto.ToggleLikeRequest;
 
 public interface LikeService {
     LikeResponse toggleLike(User currentUser, ToggleLikeRequest request);

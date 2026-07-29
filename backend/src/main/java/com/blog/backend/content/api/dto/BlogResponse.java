@@ -1,6 +1,6 @@
-package com.blog.be.content.api.dto;
+package com.blog.backend.content.api.dto;
 
-import com.blog.be.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.enums.BlogStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

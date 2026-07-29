@@ -1,4 +1,4 @@
-package com.blog.be.content.domain.enums;
+package com.blog.backend.content.domain.enums;
 
 public enum BlogStatus {
     DRAFT,

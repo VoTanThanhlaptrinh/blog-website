@@ -1,8 +1,8 @@
-package com.blog.be.storage.application;
+package com.blog.backend.storage.application;
 
-import com.blog.be.storage.api.dto.UpdateImagePrefixResponse;
-import com.blog.be.storage.api.dto.UploadPostResponse;
-import com.blog.be.storage.api.dto.UploadUrlRequest;
+import com.blog.backend.storage.api.dto.UpdateImagePrefixResponse;
+import com.blog.backend.storage.api.dto.UploadPostResponse;
+import com.blog.backend.storage.api.dto.UploadUrlRequest;
 import java.util.List;
 
 public interface StorageService {

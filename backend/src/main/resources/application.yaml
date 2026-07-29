@@ -1,6 +1,6 @@
 spring:
   application:
-    name: be
+    name: backend
   profiles:
     active: dev
   config:

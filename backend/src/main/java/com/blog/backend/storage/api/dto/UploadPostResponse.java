@@ -1,4 +1,4 @@
-package com.blog.be.storage.api.dto;
+package com.blog.backend.storage.api.dto;
 
 import lombok.Builder;
 import lombok.Data;
@@ -12,4 +12,4 @@ public class UploadPostResponse {
     private String objectKey;     // Key chính xác để backend biết file lưu ở đâu
     private Map<String, String> formData; // Các trường bảo mật frontend cần append vào form
     private String publicUrl;     // Link CDN hiển thị công khai
-}
+}

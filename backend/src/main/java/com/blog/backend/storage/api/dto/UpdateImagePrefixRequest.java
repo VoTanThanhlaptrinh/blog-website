@@ -1,4 +1,4 @@
-package com.blog.be.storage.api.dto;
+package com.blog.backend.storage.api.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;

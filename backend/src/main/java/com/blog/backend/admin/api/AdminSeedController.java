@@ -1,7 +1,7 @@
-package com.blog.be.admin.api;
+package com.blog.backend.admin.api;
 
-import com.blog.be.infrastructure.seeder.DataSeeder;
-import com.blog.be.notification.api.ApiResponse;
+import com.blog.backend.infrastructure.seeder.DataSeeder;
+import com.blog.backend.notification.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

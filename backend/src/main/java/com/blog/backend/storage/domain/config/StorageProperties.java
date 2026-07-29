@@ -1,4 +1,4 @@
-package com.blog.be.storage.domain.config;
+package com.blog.backend.storage.domain.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

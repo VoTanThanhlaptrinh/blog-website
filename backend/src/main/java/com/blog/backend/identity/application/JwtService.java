@@ -1,4 +1,4 @@
-package com.blog.be.identity.application;
+package com.blog.backend.identity.application;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.SignedJWT;
 import lombok.RequiredArgsConstructor;
@@ -126,7 +126,7 @@ public class JwtService {
                 .issuer(issuerUri)
                 .subject(String.valueOf(userId))
                 .issuedAt(now)
-                .expiresAt(now.plus(expireAtMinute, ChronoUnit.MINUTES))
+                .expiresAt(now.plus(expireRtDay, ChronoUnit.DAYS))
                 .claim("userId", userId)
                 .claim("roles", roles)
                 .claim("type", "access_token") // Đánh dấu loại token

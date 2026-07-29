@@ -1,6 +1,6 @@
-package com.blog.be.notification.domain.repository;
+package com.blog.backend.notification.domain.repository;
 
-import com.blog.be.notification.domain.entity.Notification;
+import com.blog.backend.notification.domain.entity.Notification;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package com.blog.be.storage.domain.constant;
+package com.blog.backend.storage.domain.constant;
 
 import java.util.List;
 

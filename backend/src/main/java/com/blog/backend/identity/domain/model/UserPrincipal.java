@@ -1,4 +1,4 @@
-package com.blog.be.identity.domain.model;
+package com.blog.backend.identity.domain.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

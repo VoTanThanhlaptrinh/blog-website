@@ -1,4 +1,4 @@
-package com.blog.be.interaction.domain.enums;
+package com.blog.backend.interaction.domain.enums;
 
 public enum BookmarkStatus {
     ACTIVE,

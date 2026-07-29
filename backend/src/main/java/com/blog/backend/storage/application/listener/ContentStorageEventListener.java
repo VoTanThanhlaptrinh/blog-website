@@ -1,7 +1,7 @@
-package com.blog.be.storage.application.listener;
+package com.blog.backend.storage.application.listener;
 
-import com.blog.be.content.domain.event.BlogImagesActivatedEvent;
-import com.blog.be.storage.application.StorageService;
+import com.blog.backend.content.domain.event.BlogImagesActivatedEvent;
+import com.blog.backend.storage.application.StorageService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;

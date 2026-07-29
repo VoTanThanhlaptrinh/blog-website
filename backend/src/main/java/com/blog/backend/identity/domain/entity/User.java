@@ -1,8 +1,8 @@
-package com.blog.be.identity.domain.entity;
+package com.blog.backend.identity.domain.entity;
 
-import com.blog.be.storage.domain.entity.Image;
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.interaction.domain.entity.Bookmark;
+import com.blog.backend.storage.domain.entity.Image;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.interaction.domain.entity.Bookmark;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.blog.be.identity.domain.enums.UserStatus;
+import com.blog.backend.identity.domain.enums.UserStatus;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -64,7 +64,7 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (this.userRoles == null) return List.of();
         return this.userRoles.stream()
-                .filter(ur -> ur.getStatus() == com.blog.be.identity.domain.enums.UserRoleStatus.ACTIVE)
+                .filter(ur -> ur.getStatus() == com.blog.backend.identity.domain.enums.UserRoleStatus.ACTIVE)
                 .map(UserRole::getRole)
                 .collect(Collectors.toList());
     }

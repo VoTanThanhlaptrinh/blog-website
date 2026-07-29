@@ -1,7 +1,7 @@
-package com.blog.be.identity.infrastructure.oauth2;
+package com.blog.backend.identity.infrastructure.oauth2;
 
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.identity.domain.repository.UserRepository;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.identity.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -30,25 +30,16 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
             throw new OAuth2AuthenticationException("Email not found from OAuth2 provider");
         }
 
-        Optional<User> userOptional = userRepository.findUserByEmail(email);
-        User user;
-        if (userOptional.isPresent()) {
-            user = userOptional.get();
-        } else {
-            // Auto create new user if not exists
-            user = User.builder()
+        // GỌI DB LẦN 1 VÀ DUY NHẤT Ở ĐÂY
+        User user = userRepository.findUserByEmail(email).orElseGet(() -> {
+            User newUser = User.builder()
                     .email(email)
-                    // Generate a random password since they use OAuth2
                     .password(UUID.randomUUID().toString())
                     .enabled(true)
                     .build();
-            user = userRepository.saveAndFlush(user);
-        }
+            return userRepository.save(newUser);
+        });
 
-        // Add our DB userId to the attributes so the success handler can use it
-        Map<String, Object> attributes = new HashMap<>(oAuth2User.getAttributes());
-        attributes.put("db_user_id", user.getId());
-
-        return new DefaultOAuth2User(oAuth2User.getAuthorities(), attributes, "email");
+        return new CustomUserDetails(user, oAuth2User.getAttributes());
     }
 }

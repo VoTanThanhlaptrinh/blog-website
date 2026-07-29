@@ -1,6 +1,6 @@
-package com.blog.be.identity.domain.repository;
+package com.blog.backend.identity.domain.repository;
 
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.identity.domain.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,8 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, finalize, catchError, of } from 'rxjs';
-import { TokenService } from './token.service';
+import { Observable, tap, finalize } from 'rxjs';
 import {
   AccountLoginRequest,
   ApiResponse,
@@ -24,7 +23,6 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService {
   private readonly http = inject(HttpClient);
-  private readonly tokenService = inject(TokenService);
   private readonly router = inject(Router);
 
   private readonly apiUrl = '/api/v1/auth';
@@ -50,11 +48,8 @@ export class AuthService {
       })
       .pipe(
         tap((res) => {
-          if (res && res.data?.accessToken) {
-            this.tokenService.saveToken(res.data.accessToken);
-            if (res.data.user) {
-              this.currentUser.set(res.data.user);
-            }
+          if (res && res.data?.user) {
+            this.currentUser.set(res.data.user);
           }
         }),
       );
@@ -75,31 +70,8 @@ export class AuthService {
   }
 
   /**
-   * Gọi API Refresh Token với Cookie refreshToken.
-   * Nếu thành công, lưu lại accessToken mới vào TokenService.
-   */
-  refreshToken(): Observable<ApiResponse<AuthResponse>> {
-    return this.http
-      .post<ApiResponse<AuthResponse>>(
-        `${this.apiUrl}/refresh`,
-        {},
-        { withCredentials: true },
-      )
-      .pipe(
-        tap((res) => {
-          if (res && res.data?.accessToken) {
-            this.tokenService.saveToken(res.data.accessToken);
-            if (res.data.user) {
-              this.currentUser.set(res.data.user);
-            }
-          }
-        }),
-      );
-  }
-
-  /**
-   * Lấy thông tin người dùng hiện tại (profile)
-   */
+  * Lấy thông tin người dùng hiện tại(profile)
+  */
   getProfile(): Observable<ApiResponse<UserProfileResponse>> {
     return this.http.get<ApiResponse<UserProfileResponse>>(`${this.apiUrl}/profile`).pipe(
       tap((res) => {
@@ -187,7 +159,6 @@ export class AuthService {
    * 3. Chuyển hướng về trang /login kèm returnUrl
    */
   handleAuthError(): void {
-    this.tokenService.removeToken();
     this.currentUser.set(null);
 
     const currentUrl = this.router.url;

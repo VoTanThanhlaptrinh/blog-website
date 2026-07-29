@@ -1,4 +1,4 @@
-package com.blog.be.identity.domain.event;
+package com.blog.backend.identity.domain.event;
 
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;

@@ -1,12 +1,12 @@
-package com.blog.be.admin.application;
+package com.blog.backend.admin.application;
 
-import com.blog.be.admin.api.dto.*;
-import com.blog.be.admin.domain.enums.ReportStatus;
-import com.blog.be.admin.domain.enums.ReportTargetType;
-import com.blog.be.content.api.dto.BlogResponse;
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.content.domain.enums.BlogStatus;
-import com.blog.be.identity.domain.entity.User;
+import com.blog.backend.admin.api.dto.*;
+import com.blog.backend.admin.domain.enums.ReportStatus;
+import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.content.api.dto.BlogResponse;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.identity.domain.entity.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

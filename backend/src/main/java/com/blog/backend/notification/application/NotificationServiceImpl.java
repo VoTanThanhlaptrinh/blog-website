@@ -1,11 +1,11 @@
-package com.blog.be.notification.application;
+package com.blog.backend.notification.application;
 
-import com.blog.be.content.api.dto.PageResponse;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.notification.api.dto.NotificationResponse;
-import com.blog.be.notification.domain.entity.Notification;
-import com.blog.be.notification.domain.enums.NotificationType;
-import com.blog.be.notification.domain.repository.NotificationRepository;
+import com.blog.backend.content.api.dto.PageResponse;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.notification.api.dto.NotificationResponse;
+import com.blog.backend.notification.domain.entity.Notification;
+import com.blog.backend.notification.domain.enums.NotificationType;
+import com.blog.backend.notification.domain.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

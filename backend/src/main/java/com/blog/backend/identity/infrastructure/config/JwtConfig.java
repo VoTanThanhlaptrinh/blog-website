@@ -1,4 +1,4 @@
-package com.blog.be.identity.infrastructure.config;
+package com.blog.backend.identity.infrastructure.config;
 
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.OctetSequenceKey;

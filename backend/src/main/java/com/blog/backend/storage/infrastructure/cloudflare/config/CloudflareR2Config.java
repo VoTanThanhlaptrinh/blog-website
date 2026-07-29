@@ -1,4 +1,4 @@
-package com.blog.be.storage.infrastructure.cloudflare.config;
+package com.blog.backend.storage.infrastructure.cloudflare.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

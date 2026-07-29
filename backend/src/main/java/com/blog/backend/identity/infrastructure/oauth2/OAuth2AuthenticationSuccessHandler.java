@@ -1,8 +1,8 @@
-package com.blog.be.identity.infrastructure.oauth2;
+package com.blog.backend.identity.infrastructure.oauth2;
 
-import com.blog.be.identity.application.JwtService;
-import com.blog.be.identity.domain.entity.User;
-import com.blog.be.identity.domain.repository.UserRepository;
+import com.blog.backend.identity.application.JwtService;
+import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.identity.domain.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,63 +26,58 @@ import java.util.List;
  * 1. Lấy thông tin User đã được lưu/đồng bộ từ CustomOAuth2UserService.
  * 2. Tạo Refresh Token và ghi vào HttpOnly Cookie an toàn để chống XSS.
  * 3. Tạo Access Token tạm thời.
- * 4. Chuyển hướng (Redirect) về Client Frontend kèm Access Token trên Query Parameter để Client lưu phiên.
+ * 4. Chuyển hướng (Redirect) về Client Frontend kèm Access Token trên Query
+ * Parameter để Client lưu phiên.
  */
 @Component
 @RequiredArgsConstructor
 public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private final JwtService jwtService;
-    private final UserRepository userRepository;
-    private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
+        private final JwtService jwtService;
+        private final UserRepository userRepository;
+        private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
 
-    @Value("${identity.expire-rt-day}")
-    private Integer expireRtDay;
+        @Value("${identity.expire-rt-day}")
+        private Integer expireRtDay;
 
-    @Value("${app.cookie.secure}")
-    private boolean secureCookie;
+        @Value("${app.cookie.secure}")
+        private boolean secureCookie;
 
-    @Value("${app.cookie.same-site}")
-    private String sameSite;
+        @Value("${app.cookie.same-site}")
+        private String sameSite;
 
-    @Value("${app.frontend.url}")
-    private String frontendUrl;
+        @Value("${app.frontend.url}")
+        private String frontendUrl;
 
-    @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) throws IOException, ServletException {
+        @Override
+        public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                        Authentication authentication) throws IOException, ServletException {
 
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        Long userId = oAuth2User.getAttribute("db_user_id");
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        // Clear the OAuth2 cookies
-        httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
+                // Clear the OAuth2 cookies
+                httpCookieOAuth2AuthorizationRequestRepository.removeAuthorizationRequestCookies(request, response);
 
-        User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found after OAuth2 login"));
+                User currentUser = userDetails.getUser();
 
-        String refreshToken = jwtService.generateRefreshToken(currentUser.getId());
+                String tokenValue = jwtService.generateAccessToken(currentUser.getId(),
+                                (List<GrantedAuthority>) currentUser.getAuthorities());
 
-        long maxAgeInSeconds = expireRtDay * 24L * 60 * 60;
-        ResponseCookie springCookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(secureCookie)
-                .path("/")
-                .maxAge(maxAgeInSeconds)
-                .sameSite(sameSite)
-                .build();
+                long maxAgeInSeconds = expireRtDay * 24L * 60 * 60;
+                ResponseCookie springCookie = ResponseCookie.from("token", tokenValue)
+                                .httpOnly(true)
+                                .secure(secureCookie)
+                                .path("/")
+                                .maxAge(maxAgeInSeconds)
+                                .sameSite(sameSite)
+                                .build();
 
-        response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
+                response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
 
-        String accessToken = jwtService.generateAccessToken(currentUser.getId(), 
-                (List<GrantedAuthority>) currentUser.getAuthorities());
+                // We redirect to frontend. The token is in the HttpOnly cookie.
+                String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth2/redirect")
+                                .build().toUriString();
 
-        // We redirect to frontend and pass the access token in URL
-        // (Refresh token is in HttpOnly cookie)
-        String targetUrl = UriComponentsBuilder.fromUriString(frontendUrl + "/oauth2/redirect")
-                .queryParam("accessToken", accessToken)
-                .build().toUriString();
-
-        getRedirectStrategy().sendRedirect(request, response, targetUrl);
-    }
+                getRedirectStrategy().sendRedirect(request, response, targetUrl);
+        }
 }

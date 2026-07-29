@@ -1,4 +1,4 @@
-package com.blog.be.identity.api.dto;
+package com.blog.backend.identity.api.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

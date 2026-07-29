@@ -1,4 +1,4 @@
-package com.blog.be.storage.application.util;
+package com.blog.backend.storage.application.util;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;

@@ -1,6 +1,6 @@
-package com.blog.be.content.domain.exception;
+package com.blog.backend.content.domain.exception;
 
-import com.blog.be.notification.domain.exception.ErrorCode;
+import com.blog.backend.notification.domain.exception.ErrorCode;
 
 public enum ContentErrorCode implements ErrorCode {
     BLOG_NOT_FOUND(404, "Không tìm thấy bài viết"),

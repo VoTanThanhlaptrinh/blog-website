@@ -1,6 +1,6 @@
-package com.blog.be.notification.api.dto;
+package com.blog.backend.notification.api.dto;
 
-import com.blog.be.notification.domain.enums.NotificationType;
+import com.blog.backend.notification.domain.enums.NotificationType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

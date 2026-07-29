@@ -1,6 +1,6 @@
-package com.blog.be.identity.domain.repository;
+package com.blog.backend.identity.domain.repository;
 
-import com.blog.be.identity.domain.entity.Role;
+import com.blog.backend.identity.domain.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

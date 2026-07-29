@@ -1,4 +1,4 @@
-package com.blog.be.notification.domain.enums;
+package com.blog.backend.notification.domain.enums;
 
 public enum NotificationType {
     SYSTEM,

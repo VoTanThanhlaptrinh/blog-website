@@ -1,10 +1,10 @@
-package com.blog.be.interaction.domain.repository;
+package com.blog.backend.interaction.domain.repository;
 
-import com.blog.be.interaction.domain.entity.Bookmark;
+import com.blog.backend.interaction.domain.entity.Bookmark;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.blog.be.interaction.domain.enums.BookmarkStatus;
+import com.blog.backend.interaction.domain.enums.BookmarkStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

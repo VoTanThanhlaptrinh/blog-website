@@ -1,4 +1,4 @@
-package com.blog.be.identity.infrastructure.utils;
+package com.blog.backend.identity.infrastructure.utils;
 
 public class StringHelper {
     public static String mailBodyForActivingAccount() {

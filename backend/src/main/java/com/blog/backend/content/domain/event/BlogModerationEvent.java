@@ -1,7 +1,7 @@
-package com.blog.be.content.domain.event;
+package com.blog.backend.content.domain.event;
 
-import com.blog.be.content.domain.entity.Blog;
-import com.blog.be.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.content.domain.enums.BlogStatus;
 import lombok.Getter;
 import org.springframework.context.ApplicationEvent;
 
