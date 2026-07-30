@@ -6,6 +6,7 @@ import { MarkdownComponent } from 'ngx-markdown';
 import { BlogService } from '../../../core/services/blog.service';
 import { InteractionService } from '../../../core/services/interaction.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { BlogResponse } from '../../../core/models/blog.model';
 import { CommentResponse } from '../../../core/models/interaction.model';
 import { CommentItemComponent } from '../../../components/comment-item/comment-item.component';
@@ -30,6 +31,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   private readonly blogService = inject(BlogService);
   private readonly interactionService = inject(InteractionService);
   readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   readonly blog = signal<BlogResponse | null>(null);
   readonly loading = signal<boolean>(true);
@@ -41,6 +43,10 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   readonly isBookmarked = signal<boolean>(false);
   readonly sharesCount = signal<number>(0);
   readonly viewsCount = signal<number>(0);
+  
+  // Follow Signals
+  readonly isFollowing = signal<boolean>(false);
+  readonly followersCount = signal<number>(0);
 
   // Comments Signals
   readonly comments = signal<CommentResponse[]>([]);
@@ -52,6 +58,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   newCommentContent = signal<string>('');
   replyingTo = signal<{ parentId: number; authorEmail: string } | null>(null);
   showShareModal = signal<boolean>(false);
+  showMobileToc = signal<boolean>(false);
 
   toc: TocItem[] = [];
   private viewTimer: any = null;
@@ -86,6 +93,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     this.blogService.getBlogById(id).subscribe({
       next: (res) => {
         this.blog.set(res);
+        this.isLiked.set(!!res.likedByCurrentUser);
         this.likesCount.set(res.likesCount || 0);
         this.sharesCount.set(res.sharesCount || 0);
         this.viewsCount.set(res.viewsCount || 0);
@@ -97,6 +105,17 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
 
         // Fetch initial page of comments
         this.fetchComments(res.id, 0);
+
+        // Fetch follow status
+        if (res.author && res.author.id) {
+          this.interactionService.getFollowStatus(res.author.id).subscribe({
+            next: (followRes) => {
+              this.isFollowing.set(followRes.following);
+              this.followersCount.set(followRes.followersCount);
+            },
+            error: () => {}
+          });
+        }
       },
       error: (err) => {
         this.error.set(err?.error?.message || 'Không thể lấy nội dung bài viết này.');
@@ -150,6 +169,32 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     });
   }
 
+  /** Optimistic UI for Toggle Follow */
+  toggleFollow(): void {
+    const authorId = this.blog()?.author?.id;
+    if (!authorId) return;
+
+    // Prevent self-follow in UI if needed (though HTML will also hide the button)
+    if (this.authService.currentUser()?.id === authorId) return;
+
+    const prevFollowing = this.isFollowing();
+    const prevCount = this.followersCount();
+    
+    this.isFollowing.set(!prevFollowing);
+    this.followersCount.set(!prevFollowing ? prevCount + 1 : Math.max(0, prevCount - 1));
+
+    this.interactionService.toggleFollow(authorId).subscribe({
+      next: (res) => {
+        this.isFollowing.set(res.following);
+        this.followersCount.set(res.followersCount);
+      },
+      error: () => {
+        this.isFollowing.set(prevFollowing);
+        this.followersCount.set(prevCount);
+      }
+    });
+  }
+
   /** Optimistic UI for Toggle Bookmark */
   toggleBookmark(): void {
     const b = this.blog();
@@ -188,7 +233,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(b.title)}`, '_blank');
       } else if (provider === 'link') {
         navigator.clipboard.writeText(url);
-        alert('Đã sao chép liên kết bài viết!');
+        this.toastService.success('Đã sao chép liên kết bài viết!');
       }
     }
     this.showShareModal.set(false);
@@ -253,7 +298,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         }
       },
       error: (err) => {
-        alert(err?.error?.message || 'Gửi bình luận thất bại');
+        this.toastService.error(err?.error?.message || 'Gửi bình luận thất bại');
       },
     });
   }
@@ -288,7 +333,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         this.comments.update((list) => [...list]);
       },
       error: (err) => {
-        alert(err?.error?.message || 'Cập nhật bình luận thất bại');
+        this.toastService.error(err?.error?.message || 'Cập nhật bình luận thất bại');
       },
     });
   }
@@ -301,7 +346,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         this.totalComments.update((c) => Math.max(0, c - 1));
       },
       error: (err) => {
-        alert(err?.error?.message || 'Xóa bình luận thất bại');
+        this.toastService.error(err?.error?.message || 'Xóa bình luận thất bại');
       },
     });
   }
@@ -405,7 +450,12 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  toggleMobileToc(): void {
+    this.showMobileToc.update((v) => !v);
+  }
+
   scrollTo(id: string): void {
+    this.showMobileToc.set(false);
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }

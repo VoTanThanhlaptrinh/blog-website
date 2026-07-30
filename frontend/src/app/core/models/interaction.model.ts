@@ -59,6 +59,11 @@ export interface ShareResponse {
   sharesCount: number;
 }
 
+export interface FollowStatusResponse {
+  following: boolean;
+  followersCount: number;
+}
+
 export interface RecordViewRequest {
   blogId: number;
 }

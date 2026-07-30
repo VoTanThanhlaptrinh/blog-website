@@ -9,6 +9,7 @@ import {
   CreateCommentRequest,
   CreateShareRequest,
   LikeResponse,
+  FollowStatusResponse,
   RecordViewRequest,
   ShareResponse,
   ToggleBookmarkRequest,
@@ -129,5 +130,23 @@ export class InteractionService {
     return this.http
       .delete<ApiResponse<void>>(`${this.commentsUrl}/${id}`)
       .pipe(map(() => void 0));
+  }
+
+  /**
+   * Toggle follow a user (author)
+   */
+  toggleFollow(userId: number): Observable<FollowStatusResponse> {
+    return this.http
+      .post<ApiResponse<FollowStatusResponse>>(`/api/v1/users/${userId}/follow`, {})
+      .pipe(map((res) => res.data));
+  }
+
+  /**
+   * Get follow status for a user (author)
+   */
+  getFollowStatus(userId: number): Observable<FollowStatusResponse> {
+    return this.http
+      .get<ApiResponse<FollowStatusResponse>>(`/api/v1/users/${userId}/follow-status`)
+      .pipe(map((res) => res.data));
   }
 }

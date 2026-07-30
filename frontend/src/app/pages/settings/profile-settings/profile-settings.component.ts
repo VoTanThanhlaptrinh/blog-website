@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
+import { FileService } from '../../../core/services/file.service';
 import { UpdateProfileRequest } from '../../../core/models/auth.model';
 
 @Component({
@@ -13,9 +14,12 @@ import { UpdateProfileRequest } from '../../../core/models/auth.model';
 export class ProfileSettingsComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly authService = inject(AuthService);
+  private readonly fileService = inject(FileService);
 
   profileForm!: FormGroup;
   loading = signal(false);
+  uploadingAvatar = signal(false);
+  avatarUrl = signal<string | null>(null);
   message = signal<string | null>(null);
   isError = signal(false);
 
@@ -34,6 +38,7 @@ export class ProfileSettingsComponent implements OnInit {
     this.authService.getProfile().subscribe({
       next: (res) => {
         if (res.data) {
+          this.avatarUrl.set(res.data.avatarUrl || null);
           this.profileForm.patchValue({
             phone: res.data.phone || '',
             bio: res.data.bio || '',
@@ -43,6 +48,31 @@ export class ProfileSettingsComponent implements OnInit {
         }
       }
     });
+  }
+
+  onAvatarSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+
+    this.uploadingAvatar.set(true);
+    this.message.set(null);
+    this.isError.set(false);
+
+    this.fileService.uploadFileToR2(file, 'profile/avatar').subscribe({
+      next: (publicUrl: string) => {
+        this.uploadingAvatar.set(false);
+        this.avatarUrl.set(publicUrl);
+        this.profileForm.patchValue({ avatarUrl: publicUrl });
+      },
+      error: (err) => {
+        this.uploadingAvatar.set(false);
+        this.isError.set(true);
+        this.message.set(err?.error?.message || 'Không thể upload ảnh avatar. Vui lòng thử lại.');
+      }
+    });
+
+    input.value = '';
   }
 
   onSubmit(): void {

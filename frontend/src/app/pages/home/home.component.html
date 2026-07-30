@@ -129,42 +129,27 @@
           }
         </div>
 
-        <!-- Numeric Pagination UI -->
-        @if (pageMeta$ | async; as meta) {
-          @if (meta.totalPages > 1) {
-            <div class="mt-12 flex items-center justify-center gap-2">
-              <button
-                [disabled]="meta.pageNumber === 0"
-                (click)="onPageChange(meta.pageNumber - 1)"
-                class="flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 bg-white font-medium text-stone-600 transition hover:border-clay-400 hover:text-clay-600 disabled:opacity-40 disabled:hover:border-stone-200"
+        <!-- Explore More CTA Section -->
+        <div class="mt-14 rounded-2xl border border-stone-200/80 bg-linear-to-b from-stone-50 to-stone-100/60 p-8 sm:p-10 text-center shadow-xs">
+          <div class="mx-auto max-w-md">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-clay-600/10 text-clay-600 mb-3">
+              <span class="material-symbols-outlined text-2xl">explore</span>
+            </span>
+            <h3 class="text-xl font-bold text-stone-900">Muốn tìm thêm nhiều bài viết hấp dẫn khác?</h3>
+            <p class="mt-2 text-sm text-stone-600">
+              Khám phá toàn bộ kho bài viết đa dạng về Công nghệ, Lập trình và Thiết kế hệ thống trên BlogHub.
+            </p>
+            <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+              <a
+                routerLink="/search"
+                class="group inline-flex items-center gap-2 rounded-xl bg-clay-600 px-6 py-3 text-sm font-semibold text-white shadow-md shadow-clay-600/20 transition-all hover:bg-clay-500 hover:shadow-lg hover:shadow-clay-500/30 active:scale-95"
               >
-                ←
-              </button>
-
-              @for (p of getPagesArray(meta.totalPages); track p) {
-                <button
-                  (click)="onPageChange(p)"
-                  [class.bg-clay-600]="p === meta.pageNumber"
-                  [class.text-white]="p === meta.pageNumber"
-                  [class.border-clay-600]="p === meta.pageNumber"
-                  [class.bg-white]="p !== meta.pageNumber"
-                  [class.text-stone-700]="p !== meta.pageNumber"
-                  class="flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 font-semibold transition hover:border-clay-400 hover:text-clay-600"
-                >
-                  {{ p + 1 }}
-                </button>
-              }
-
-              <button
-                [disabled]="meta.last || meta.pageNumber >= meta.totalPages - 1"
-                (click)="onPageChange(meta.pageNumber + 1)"
-                class="flex h-10 w-10 items-center justify-center rounded-lg border border-stone-200 bg-white font-medium text-stone-600 transition hover:border-clay-400 hover:text-clay-600 disabled:opacity-40 disabled:hover:border-stone-200"
-              >
-                →
-              </button>
+                <span>Khám phá tất cả bài viết</span>
+                <span class="material-symbols-outlined text-[18px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+              </a>
             </div>
-          }
-        }
+          </div>
+        </div>
       }
     }
   }

@@ -25,14 +25,14 @@ export class FileService {
 
     return this.getPresignedUrl(request).pipe(
       switchMap((res) => {
-        const { uploadUrl, formData, publicUrl } = res.data;
-        const form = new FormData();
-        Object.entries(formData).forEach(([key, value]) => {
-          form.append(key, value);
-        });
-        form.append('file', file);
+        const { uploadUrl, publicUrl } = res.data;
 
-        return this.http.post(uploadUrl, form, { responseType: 'text' }).pipe(
+        return this.http.put(uploadUrl, file, { 
+          headers: {
+            'Content-Type': file.type || 'application/octet-stream'
+          },
+          responseType: 'text' 
+        }).pipe(
           switchMap(() => [publicUrl])
         );
       })

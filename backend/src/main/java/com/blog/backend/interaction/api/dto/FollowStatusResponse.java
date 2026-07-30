@@ -9,8 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LikeResponse {
-    private Long blogId;
-    private boolean liked;
-    private long likesCount;
+public class FollowStatusResponse {
+    private boolean isFollowing;
+    private long followersCount;
 }

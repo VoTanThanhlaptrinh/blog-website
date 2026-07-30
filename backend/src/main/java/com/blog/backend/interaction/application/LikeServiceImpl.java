@@ -73,7 +73,7 @@ public class LikeServiceImpl implements LikeService {
         return LikeResponse.builder()
                 .blogId(blog.getId())
                 .liked(isLiked)
-                .totalLikes(totalLikes)
+                .likesCount(totalLikes)
                 .build();
     }
 

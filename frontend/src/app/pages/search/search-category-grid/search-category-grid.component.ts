@@ -1,6 +1,7 @@
 import { Component, signal, computed, HostListener, OnInit, Inject, PLATFORM_ID, inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CategoryService } from '../../../core/services/category.service';
+import { BlogService } from '../../../core/services/blog.service';
 import { CategoryResponse, BlogResponse, BlogStatus } from '../../../core/models/blog.model';
 import { BlogCardComponent } from '../../../shared/components/blog-card/blog-card.component';
 
@@ -30,10 +31,20 @@ export class SearchCategoryGridComponent implements OnInit {
   constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   private readonly categoryService = inject(CategoryService);
+  private readonly blogService = inject(BlogService);
+
+  // Pagination & Data Signals
+  blogs = signal<BlogResponse[]>([]);
+  loading = signal(false);
+  hasMore = signal(false);
+  nextCursor = signal<number | undefined>(undefined);
+
+  keywordSearchQuery = signal('');
 
   ngOnInit() {
     this.checkResponsiveFilter();
     this.loadCategories();
+    this.search();
   }
 
   private loadCategories() {
@@ -144,6 +155,7 @@ export class SearchCategoryGridComponent implements OnInit {
     }
     this.categorySearchQuery.set('');
     this.isCategoryDropdownOpen.set(false);
+    this.search();
   }
 
   @HostListener('document:click', ['$event'])
@@ -208,98 +220,53 @@ export class SearchCategoryGridComponent implements OnInit {
 
   applyFilters() {
     this.filterOpen.set(false);
+    this.search();
   }
 
-  articles: BlogResponse[] = [
-    {
-      id: 1,
-      title: 'Khám phá các tính năng mới trong TypeScript 5.4 và cách áp dụng vào dự án lớn',
-      description: 'Tìm hiểu về NoInfer utility type, cải tiến trong việc xác định kiểu dữ liệu trong closure và những thay đổi quan trọng giúp code an toàn hơn.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 1, name: 'TypeScript', slug: 'typescript' },
-      createdDate: new Date('2024-05-24').toISOString(),
-      modifiedDate: new Date('2024-05-24').toISOString(),
-      author: { id: 1, email: 'linh@example.com', avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 142,
-      commentsCount: 28,
-      viewsCount: 1520,
-      sharesCount: 12
-    },
-    {
-      id: 2,
-      title: 'Tối ưu hóa hiệu năng ứng dụng với Angular 18 Zoneless và Signals',
-      description: 'Hướng dẫn chi tiết từng bước chuyển đổi ứng dụng Angular truyền thống sang mô hình Zoneless, kết hợp với Signals để đạt hiệu năng tối đa.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 2, name: 'Angular', slug: 'angular' },
-      createdDate: new Date('2024-05-22').toISOString(),
-      modifiedDate: new Date('2024-05-22').toISOString(),
-      author: { id: 2, email: 'hoang@example.com', avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 385,
-      commentsCount: 64,
-      viewsCount: 4100,
-      sharesCount: 34
-    },
-    {
-      id: 3,
-      title: 'Xây dựng RESTful API bảo mật cao với Spring Boot 3 và Spring Security 6',
-      description: 'Thiết lập xác thực JWT, Role-based Access Control (RBAC) và bảo vệ ứng dụng khỏi các lỗ hổng bảo mật phổ biến theo chuẩn OWASP Top 10.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 3, name: 'Spring Boot', slug: 'spring-boot' },
-      createdDate: new Date('2024-05-18').toISOString(),
-      modifiedDate: new Date('2024-05-18').toISOString(),
-      author: { id: 3, email: 'tuan@example.com', avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 210,
-      commentsCount: 45,
-      viewsCount: 2010,
-      sharesCount: 18
-    },
-    {
-      id: 4,
-      title: 'Làm chủ CSS Grid và Flexbox để thiết kế giao diện Responsive hiện đại',
-      description: 'Khi nào nên dùng Grid và khi nào dùng Flexbox? Các kỹ năng bố trí layout phức tạp mà không cần phụ thuộc quá nhiều vào CSS frameworks.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 4, name: 'CSS', slug: 'css' },
-      createdDate: new Date('2024-05-15').toISOString(),
-      modifiedDate: new Date('2024-05-15').toISOString(),
-      author: { id: 4, email: 'mai@example.com', avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 198,
-      commentsCount: 32,
-      viewsCount: 1800,
-      sharesCount: 22
-    },
-    {
-      id: 5,
-      title: 'So sánh chi tiết PostgreSQL và MySQL trong các hệ thống phân tán quy mô lớn',
-      description: 'Phân tích hiệu suất đọc/ghi, hỗ trợ JSON, khả năng mở rộng và ACID compliance để giúp bạn đưa ra lựa chọn đúng đắn cho hệ thống.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 5, name: 'Database', slug: 'database' },
-      createdDate: new Date('2024-05-10').toISOString(),
-      modifiedDate: new Date('2024-05-10').toISOString(),
-      author: { id: 5, email: 'duc@example.com', avatarUrl: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 276,
-      commentsCount: 51,
-      viewsCount: 3100,
-      sharesCount: 40
-    },
-    {
-      id: 6,
-      title: 'Tự động hóa triển khai ứng dụng với Docker, Kubernetes và GitHub Actions CI/CD',
-      description: 'Xây dựng luồng CI/CD hoàn chỉnh từ viết test, build container image đến tự động deploy lên cụm Kubernetes trên cloud.',
-      content: '',
-      status: BlogStatus.PUBLISHED,
-      category: { id: 6, name: 'DevOps', slug: 'devops' },
-      createdDate: new Date('2024-05-05').toISOString(),
-      modifiedDate: new Date('2024-05-05').toISOString(),
-      author: { id: 6, email: 'hai@example.com', avatarUrl: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=100' },
-      likesCount: 412,
-      commentsCount: 89,
-      viewsCount: 5200,
-      sharesCount: 65
+  onKeywordSearchInput(event: Event) {
+    const target = event.target as HTMLInputElement;
+    this.keywordSearchQuery.set(target.value);
+  }
+
+  onKeywordSearchEnter() {
+    this.search();
+  }
+
+  search(isLoadMore = false) {
+    if (this.loading()) return;
+    
+    this.loading.set(true);
+    const keyword = this.keywordSearchQuery().trim();
+    const categories = this.selectedCategories().length > 0 ? this.selectedCategories() : undefined;
+    const lastId = isLoadMore ? this.nextCursor() : undefined;
+
+    this.blogService.searchBlogsCursor({
+      keyword: keyword || undefined,
+      categories: categories,
+      lastId: lastId,
+      limit: 6
+    }).subscribe({
+      next: (res) => {
+        if (isLoadMore) {
+          this.blogs.update(current => [...current, ...res.content]);
+        } else {
+          this.blogs.set(res.content);
+        }
+        this.hasMore.set(res.hasMore);
+        this.nextCursor.set(res.nextCursor);
+        this.loading.set(false);
+      },
+      error: (err) => {
+        console.error('Lỗi khi tìm kiếm bài viết', err);
+        this.loading.set(false);
+      }
+    });
+  }
+
+  loadMore() {
+    if (this.hasMore()) {
+      this.search(true);
     }
-  ];
+  }
+
 }

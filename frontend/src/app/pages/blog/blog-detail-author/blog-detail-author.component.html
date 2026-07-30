@@ -1,4 +1,4 @@
-<main class="mt-20 max-w-[1100px] mx-auto overflow-hidden flex relative">
+<main class="mt-20 mb-24 max-w-[1100px] mx-auto flex relative px-4 md:px-0">
   <!-- Loading state -->
   @if (loading()) {
     <div class="w-full py-24 flex flex-col items-center justify-center">
@@ -43,38 +43,72 @@
       </nav>
     </aside>
 
-    <!-- Mobile Sticky Side Rail -->
-    <aside
-      class="md:hidden sticky top-20 left-0 h-[calc(100vh-5rem)] w-12 border-r border-text-ink/5 flex flex-col items-center py-8 gap-8 z-40 bg-surface-paper/50 backdrop-blur-sm"
-    >
-      @for (item of toc; track item.id) {
-        <a
-          class="text-text-muted hover:text-accent-rust transition-colors cursor-pointer"
-          (click)="scrollTo(item.id)"
-          [title]="item.text"
+    <!-- Mobile Floating Table of Contents Button & Modal -->
+    <div class="md:hidden fixed bottom-6 right-6 z-50">
+      <button
+        (click)="toggleMobileToc()"
+        class="w-12 h-12 bg-accent-rust text-white rounded-full shadow-lg flex items-center justify-center active:scale-95 transition-transform"
+        aria-label="Mục lục"
+      >
+        <span class="material-symbols-outlined">{{ showMobileToc() ? 'close' : 'list' }}</span>
+      </button>
+
+      @if (showMobileToc()) {
+        <div
+          class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+          (click)="toggleMobileToc()"
+        ></div>
+        <div
+          class="fixed bottom-20 right-6 left-6 max-h-[60vh] overflow-y-auto bg-pure-white border border-text-ink/10 rounded-2xl p-5 shadow-2xl z-50"
         >
-          <span class="material-symbols-outlined text-[20px]">{{ item.level === 1 ? 'bolt' : 'subdirectory_arrow_right' }}</span>
-        </a>
+          <div class="flex items-center justify-between pb-3 border-b border-text-ink/10 mb-3">
+            <h4 class="font-bold text-text-ink flex items-center gap-2 text-sm">
+              <span class="material-symbols-outlined text-accent-rust">list</span>
+              Nội dung bài viết
+            </h4>
+            <button (click)="toggleMobileToc()" class="text-text-muted">
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+          <ul class="space-y-3 font-body-md text-sm text-text-ink">
+            @for (item of toc; track item.id) {
+              <li [style.padding-left.px]="(item.level - 1) * 12">
+                <a
+                  class="hover:text-accent-rust transition-colors flex items-center gap-2 group cursor-pointer py-1"
+                  (click)="scrollTo(item.id)"
+                >
+                  <span class="material-symbols-outlined text-[16px] text-accent-rust"
+                    >{{ item.level === 1 ? 'list' : 'subdirectory_arrow_right' }}</span
+                  >
+                  {{ item.text }}
+                </a>
+              </li>
+            } @empty {
+              <li class="text-caption text-text-muted italic">Chưa có mục nào.</li>
+            }
+          </ul>
+        </div>
       }
-    </aside>
+    </div>
 
     <!-- Main Article Content Area -->
-    <div class="flex-1 max-w-[720px] mx-auto md:mx-0">
-      <article class="pt-8">
-        <div class="px-5">
+    <div class="flex-1 max-w-[720px] mx-auto md:mx-0 bg-pure-white rounded-xl shadow-sm border border-text-ink/5">
+      <article class="pt-2 md:pt-4">
+        <!-- Header Section Card -->
+        <div class="p-5 md:p-6 m-3 md:m-5 bg-surface-paper/70 rounded-2xl border border-text-ink/10 shadow-sm">
           <span
-            class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-2"
+            class="inline-block px-3 py-1 bg-accent-rust/10 text-accent-rust font-label-md text-label-md rounded-full mb-3"
           >{{ blog()?.status || 'BLOG' }}</span>
-          <h2
-            class="font-headline-lg-mobile text-headline-lg-mobile leading-tight mb-4 text-text-ink font-bold text-3xl"
+          <h1
+            class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg leading-tight mb-4 text-text-ink font-bold text-2xl md:text-3xl"
           >
             {{ blog()?.title || 'Không có tiêu đề' }}
-          </h2>
+          </h1>
 
           <!-- Author Info & Quick Actions -->
-          <div class="flex flex-wrap items-center justify-between gap-4 py-4 my-6 border-y border-text-ink/10">
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-4 mt-4 border-t border-text-ink/10">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full overflow-hidden border border-accent-rust/20 p-0.5 bg-surface-container flex items-center justify-center font-bold text-accent-rust">
+              <div class="w-10 h-10 rounded-full overflow-hidden border border-accent-rust/20 p-0.5 bg-pure-white flex items-center justify-center font-bold text-accent-rust shadow-sm">
                 @if (blog()?.author?.avatarUrl) {
                   <img title="Avatar" class="w-full h-full object-cover rounded-full" [src]="blog()?.author?.avatarUrl" />
                 } @else {
@@ -98,7 +132,7 @@
             <div class="flex items-center gap-2 relative">
               <button
                 (click)="toggleShareModal()"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-text-ink/10 bg-pure-white text-text-muted hover:text-accent-rust hover:border-accent-rust/30 transition-all text-xs font-medium active:scale-95 shadow-sm"
               >
                 <span class="material-symbols-outlined text-[16px]">share</span>
                 <span>Chia sẻ ({{ sharesCount() }})</span>
@@ -122,8 +156,8 @@
               <!-- Bookmark Button (Optimistic UI) -->
               <button
                 (click)="toggleBookmark()"
-                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold active:scale-95"
-                [ngClass]="isBookmarked() ? 'bg-accent-rust text-white' : 'bg-accent-rust/10 text-accent-rust'"
+                class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold active:scale-95 shadow-sm"
+                [ngClass]="isBookmarked() ? 'bg-accent-rust text-white' : 'bg-pure-white border border-accent-rust/30 text-accent-rust'"
               >
                 <span class="material-symbols-outlined text-[16px]">
                   {{ isBookmarked() ? 'bookmark' : 'bookmark_add' }}
@@ -171,14 +205,6 @@
             </a>
           </div>
 
-          <div class="flex gap-3">
-            <button
-              (click)="toggleLike()"
-              class="px-4 py-2 text-white font-medium text-xs active:scale-95 transition-transform bg-accent-rust rounded-lg shadow"
-            >
-              {{ isLiked() ? 'Đã thích' : 'Thích bài viết' }}
-            </button>
-          </div>
         </div>
       </section>
 
@@ -268,10 +294,10 @@
           Tác giả
         </h4>
         <div
-          class="flex flex-col items-center text-center gap-4 p-6 bg-surface-container/30 rounded-xl"
+          class="flex flex-col items-center text-center gap-4 p-6 bg-pure-white border border-text-ink/10 shadow-sm rounded-2xl"
         >
           <div
-            class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1 flex items-center justify-center bg-stone-100 text-2xl font-bold text-stone-600"
+            class="w-20 h-20 rounded-full overflow-hidden border-2 border-accent-rust/20 p-1 flex items-center justify-center bg-surface-paper text-2xl font-bold text-accent-rust shadow-sm"
           >
             @if (blog()?.author?.avatarUrl) {
               <img class="w-full h-full object-cover rounded-full" [src]="blog()?.author?.avatarUrl" />
@@ -283,15 +309,23 @@
             <span class="font-headline-md text-[16px] font-bold text-text-ink break-all"
               >{{ blog()?.author?.email || 'Tác giả' }}</span
             >
-            <span class="text-caption text-text-muted italic"
+            <span class="text-caption text-text-muted italic mt-1"
               >{{ blog()?.author?.bio || 'Tác giả bài viết' }}</span
             >
           </div>
-          <button
-            class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-white transition-all rounded-lg"
-          >
-            Theo dõi
-          </button>
+          @if (blog()?.author?.id !== authService.currentUser()?.id) {
+            <button
+              (click)="toggleFollow()"
+              class="w-full mt-2 py-2 border font-label-md text-[12px] transition-all rounded-lg active:scale-95 flex items-center justify-center gap-1.5"
+              [ngClass]="isFollowing() ? 'bg-stone-100 border-stone-200 text-stone-600 hover:bg-stone-200' : 'border-accent-rust text-accent-rust hover:bg-accent-rust hover:text-white'"
+            >
+              @if (isFollowing()) {
+                <span class="material-symbols-outlined text-[14px]">check</span> Đang theo dõi
+              } @else {
+                Theo dõi
+              }
+            </button>
+          }
         </div>
       </div>
     </aside>

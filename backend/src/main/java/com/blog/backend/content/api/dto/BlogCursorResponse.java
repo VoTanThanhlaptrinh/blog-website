@@ -1,0 +1,18 @@
+package com.blog.backend.content.api.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BlogCursorResponse {
+    private List<BlogResponse> content;
+    private boolean hasMore;
+    private Long nextCursor;
+}

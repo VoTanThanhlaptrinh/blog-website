@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
+import { ToastService } from '../../../core/services/toast.service';
 
 @Component({
   selector: 'app-account-settings',
@@ -10,6 +11,7 @@ import { AuthService } from '../../../core/services/auth.service';
 })
 export class AccountSettingsComponent implements OnInit {
   private readonly authService = inject(AuthService);
+  private readonly toastService = inject(ToastService);
 
   email = signal<string>('');
   loading = signal(false);
@@ -34,7 +36,7 @@ export class AccountSettingsComponent implements OnInit {
     this.authService.deactivateAccount().subscribe({
       next: () => {
         this.loading.set(false);
-        alert('Tài khoản của bạn đã được vô hiệu hóa thành công.');
+        this.toastService.success('Tài khoản của bạn đã được vô hiệu hóa thành công.');
         this.authService.logout().subscribe();
       },
       error: (err) => {

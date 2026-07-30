@@ -19,6 +19,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/blogs")
@@ -57,6 +58,18 @@ public class BlogController {
 
         PageResponse<BlogResponse> res = blogService.getBlogs(keyword, status, userId, categoryId, pageable, currentUser);
         return ResponseEntity.ok(new ApiResponse<>(res, "Lấy danh sách bài viết thành công", 200));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<BlogCursorResponse>> searchBlogsCursor(
+            @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) List<String> categories,
+            @RequestParam(required = false) Long lastId,
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal User currentUser) {
+
+        BlogCursorResponse res = blogService.searchBlogsCursor(keyword, categories, lastId, limit, currentUser);
+        return ResponseEntity.ok(new ApiResponse<>(res, "Tìm kiếm bài viết thành công", 200));
     }
 
     @PutMapping("/{id}")
