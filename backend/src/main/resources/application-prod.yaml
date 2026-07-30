@@ -19,7 +19,7 @@ spring:
       url: ${REDIS_URL}
 app:
   frontend:
-    url: https://my-frontend.com
+    url: https://blog-web-two-bay.vercel.app
   cookie:
     secure: true
     same-site: None
