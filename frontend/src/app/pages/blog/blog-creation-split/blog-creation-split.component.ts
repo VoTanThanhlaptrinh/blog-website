@@ -250,8 +250,9 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     this.wrapSelection('[', '](https://)', 'liên kết');
   }
 
-  heading(): void {
-    this.prefixLines('# ');
+  heading(level: number): void {
+    const prefix = '#'.repeat(level) + ' ';
+    this.prefixLines(prefix);
   }
 
   blockquote(): void {

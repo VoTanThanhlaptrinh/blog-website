@@ -52,6 +52,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   newCommentContent = signal<string>('');
   replyingTo = signal<{ parentId: number; authorEmail: string } | null>(null);
   showShareModal = signal<boolean>(false);
+  showMobileToc = signal<boolean>(false);
 
   toc: TocItem[] = [];
   private viewTimer: any = null;
@@ -405,7 +406,12 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     }, 100);
   }
 
+  toggleMobileToc(): void {
+    this.showMobileToc.update((v) => !v);
+  }
+
   scrollTo(id: string): void {
+    this.showMobileToc.set(false);
     if (!isPlatformBrowser(this.platformId)) {
       return;
     }
