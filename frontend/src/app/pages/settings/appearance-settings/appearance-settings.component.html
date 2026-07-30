@@ -1,0 +1,66 @@
+<div class="space-y-6">
+  <div>
+    <h2 class="text-xl font-bold text-stone-900">Giao diện</h2>
+    <p class="text-sm text-stone-500">Tùy chọn chế độ hiển thị màu sắc trên ứng dụng.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Light mode card -->
+    <div
+      (click)="setTheme('light')"
+      [ngClass]="{
+        'border-accent-rust ring-2 ring-accent-rust/20': selectedTheme() === 'light',
+        'border-stone-200': selectedTheme() !== 'light'
+      }"
+      class="cursor-pointer p-4 rounded-xl border bg-white hover:border-stone-300 transition-all flex flex-col items-center gap-3 text-center"
+    >
+      <div class="w-full h-24 rounded-lg bg-stone-100 border border-stone-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-amber-500 text-3xl">light_mode</span>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-stone-900">Sáng (Light)</p>
+        <p class="text-xs text-stone-500">Giao diện màu sáng tiêu chuẩn</p>
+      </div>
+    </div>
+
+    <!-- Dark mode card -->
+    <div
+      (click)="setTheme('dark')"
+      [ngClass]="{
+        'border-accent-rust ring-2 ring-accent-rust/20': selectedTheme() === 'dark',
+        'border-stone-200': selectedTheme() !== 'dark'
+      }"
+      class="cursor-pointer p-4 rounded-xl border bg-white hover:border-stone-300 transition-all flex flex-col items-center gap-3 text-center"
+    >
+      <div class="w-full h-24 rounded-lg bg-stone-900 border border-stone-800 flex items-center justify-center">
+        <span class="material-symbols-outlined text-indigo-400 text-3xl">dark_mode</span>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-stone-900">Tối (Dark)</p>
+        <p class="text-xs text-stone-500">Giao diện màu tối dịu mắt</p>
+      </div>
+    </div>
+
+    <!-- System mode card -->
+    <div
+      (click)="setTheme('system')"
+      [ngClass]="{
+        'border-accent-rust ring-2 ring-accent-rust/20': selectedTheme() === 'system',
+        'border-stone-200': selectedTheme() !== 'system'
+      }"
+      class="cursor-pointer p-4 rounded-xl border bg-white hover:border-stone-300 transition-all flex flex-col items-center gap-3 text-center"
+    >
+      <div class="w-full h-24 rounded-lg bg-gradient-to-r from-stone-100 to-stone-900 border border-stone-200 flex items-center justify-center">
+        <span class="material-symbols-outlined text-stone-600 text-3xl">desktop_windows</span>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-stone-900">Theo hệ thống</p>
+        <p class="text-xs text-stone-500">Tự động chuyển theo HĐH</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="p-4 rounded-lg bg-stone-50 border border-stone-200 text-xs text-stone-500">
+    Tùy chọn giao diện sẽ được lưu trực tiếp trên thiết bị của bạn.
+  </div>
+</div>

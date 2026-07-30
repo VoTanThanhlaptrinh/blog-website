@@ -168,5 +168,12 @@ export class AuthService {
       this.router.navigate(['/login']);
     }
   }
+
+  /**
+   * Vô hiệu hóa tài khoản
+   */
+  deactivateAccount(): Observable<ApiResponse<void>> {
+    return this.http.put<ApiResponse<void>>(`${this.apiUrl}/deactivate`, {});
+  }
 }
 

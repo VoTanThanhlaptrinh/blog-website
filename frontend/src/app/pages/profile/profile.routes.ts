@@ -1,11 +1,20 @@
 import { Routes } from '@angular/router';
-import { ProfileFiltersComponent } from './profile-filters/profile-filters.component';
-import { ProfileSplitComponent } from './profile-split/profile-split.component';
+import { ProfileLayoutComponent } from './profile-layout/profile-layout.component';
+import { ProfilePostsComponent } from './profile-posts/profile-posts.component';
+import { ProfileSavedComponent } from './profile-saved/profile-saved.component';
+import { ProfileDraftsComponent } from './profile-drafts/profile-drafts.component';
 import { UpdateProfileComponent } from './update-profile/update-profile.component';
 
 export const PROFILE_ROUTES: Routes = [
-  { path: 'filters', component: ProfileFiltersComponent },
-  { path: 'split', component: ProfileSplitComponent },
-  { path: 'update', component: UpdateProfileComponent },
-  { path: '', redirectTo: 'split', pathMatch: 'full' }
+  {
+    path: '',
+    component: ProfileLayoutComponent,
+    children: [
+      { path: '', redirectTo: 'posts', pathMatch: 'full' },
+      { path: 'posts', component: ProfilePostsComponent },
+      { path: 'saved', component: ProfileSavedComponent },
+      { path: 'drafts', component: ProfileDraftsComponent },
+    ]
+  },
+  { path: 'update', component: UpdateProfileComponent }
 ];

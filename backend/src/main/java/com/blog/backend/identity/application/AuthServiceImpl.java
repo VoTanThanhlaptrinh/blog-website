@@ -293,4 +293,14 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse refreshToken(String token) {
         return new AuthResponse(); // Not used anymore
     }
+
+    @Override
+    @Transactional
+    public void deactivateAccount(Long userId) {
+        User user = userRepository.findUserById(userId)
+                .orElseThrow(() -> new UserNotFoundException("Tài khoản không tồn tại!"));
+        user.setEnabled(false);
+        user.setStatus(com.blog.backend.identity.domain.enums.UserStatus.INACTIVE);
+        userRepository.save(user);
+    }
 }

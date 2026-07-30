@@ -38,4 +38,6 @@ public interface AuthService {
      UserProfileResponse profile(User currentUser);
 
      AuthResponse refreshToken(String token);
+
+     void deactivateAccount(Long userId);
 }

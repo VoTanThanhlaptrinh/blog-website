@@ -156,4 +156,11 @@ public class AuthController {
         authService.activeAccount(token);
         return ResponseEntity.ok(new ApiResponse<>(null, "Kích hoạt thành công", 200));
     }
+
+    @PutMapping("/deactivate")
+    public ResponseEntity<ApiResponse<Void>> deactivateAccount(Principal principal) {
+        Long userId = Long.valueOf(principal.getName());
+        authService.deactivateAccount(userId);
+        return ResponseEntity.ok(new ApiResponse<>(null, "Vô hiệu hóa tài khoản thành công", 200));
+    }
 }
