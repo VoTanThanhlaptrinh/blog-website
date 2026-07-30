@@ -1,0 +1,44 @@
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-5 md:px-10 h-16 bg-pure-white border-b border-text-ink/5">
+    <div class="flex items-center gap-4">
+        <span class="font-headline-md text-headline-md font-bold text-text-ink">BBlogHub</span>
+    </div>
+</header>
+
+<main class="flex-grow flex items-center justify-center pt-16 px-5 min-h-[calc(100vh-4rem)]">
+    <div class="max-w-[480px] w-full py-16 text-center">
+        @if (loading()) {
+            <div class="mb-8 flex justify-center opacity-80">
+                <div class="relative w-24 h-24">
+                    <div class="absolute inset-0 bg-accent-rust/10 rounded-full animate-ping"></div>
+                    <div class="absolute inset-4 bg-pure-white border border-text-ink/5 rounded-full flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-accent-rust text-4xl animate-spin">sync</span>
+                    </div>
+                </div>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg mb-4">Đang kích hoạt...</h1>
+            <p class="font-body-md text-text-muted mb-8">{{ message() }}</p>
+        } @else if (success()) {
+            <div class="mb-8 flex justify-center">
+                <div class="w-24 h-24 bg-emerald-100 rounded-full flex items-center justify-center text-emerald-600 shadow-sm">
+                    <span class="material-symbols-outlined text-5xl">check_circle</span>
+                </div>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg mb-4 text-emerald-800">Thành công!</h1>
+            <p class="font-body-md text-text-muted mb-8 px-4">{{ message() }}</p>
+            <a routerLink="/login" class="inline-block bg-accent-rust text-pure-white font-label-md py-3.5 px-8 rounded-lg hover:brightness-110 active:scale-95 transition-all shadow-md">
+                Chuyển đến trang Đăng nhập
+            </a>
+        } @else {
+            <div class="mb-8 flex justify-center">
+                <div class="w-24 h-24 bg-rose-100 rounded-full flex items-center justify-center text-rose-600 shadow-sm">
+                    <span class="material-symbols-outlined text-5xl">error</span>
+                </div>
+            </div>
+            <h1 class="font-headline-lg text-headline-lg mb-4 text-rose-800">Kích hoạt thất bại</h1>
+            <p class="font-body-md text-text-muted mb-8 px-4">{{ message() }}</p>
+            <a routerLink="/login" class="inline-block border border-text-ink/20 text-text-ink font-label-md py-3.5 px-8 rounded-lg hover:bg-surface-container transition-all">
+                Quay lại Đăng nhập
+            </a>
+        }
+    </div>
+</main>

@@ -1,0 +1,124 @@
+<!-- TopAppBar -->
+<!-- <header class="fixed top-0 w-full z-50 bg-pure-white dark:bg-surface-container border-b border-outline-variant">
+    <div class="flex justify-between items-center h-16 px-5 md:px-10 max-w-275 mx-auto">
+        <div class="flex items-center gap-4">
+            <button class="active:scale-95 transition-transform hover:bg-surface-container-low p-2 rounded-full">
+                <span class="material-symbols-outlined text-primary dark:text-primary-fixed">arrow_back</span>
+            </button>
+            <h1 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">Settings</h1>
+        </div>
+        <button
+            class="font-label-md text-label-md text-accent-rust font-bold hover:bg-surface-container-low px-4 py-2 rounded transition-all active:scale-95">
+            Save
+        </button>
+    </div>
+</header> -->
+<main class="pt-24 max-w-180 mx-auto px-5">
+    <!-- Hidden file input for avatar -->
+    <input #avatarInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
+
+    <!-- Avatar Management -->
+    <section class="flex flex-col items-center mb-12">
+        <div class="relative group cursor-pointer" (click)="triggerAvatarPicker()">
+            <div
+                class="w-32 h-32 md:w-40 md:h-40 rounded-full border border-outline-variant overflow-hidden bg-surface-container-low editorial-shadow flex items-center justify-center">
+                @if (avatarUrl()) {
+                    <img class="w-full h-full object-cover" [src]="avatarUrl()" alt="Avatar">
+                } @else {
+                    <span class="material-symbols-outlined text-6xl text-text-muted">account_circle</span>
+                }
+            </div>
+            <button type="button" (click)="triggerAvatarPicker(); $event.stopPropagation()"
+                class="absolute bottom-1 right-1 bg-accent-rust text-pure-white p-3 rounded-full border-2 border-pure-white shadow-lg active:scale-95 transition-transform hover:bg-primary-container">
+                <span class="material-symbols-outlined text-sm">{{ uploadingAvatar() ? 'sync' : 'edit' }}</span>
+            </button>
+        </div>
+        <p class="mt-4 font-label-md text-label-md text-text-muted uppercase tracking-wider">
+            {{ uploadingAvatar() ? 'Đang tải ảnh lên...' : 'Ảnh đại diện' }}
+        </p>
+    </section>
+
+    @if (errorMessage()) {
+    <div class="mb-6 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-sm">
+        {{ errorMessage() }}
+    </div>
+    }
+
+    @if (successMessage()) {
+    <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded-lg text-sm">
+        {{ successMessage() }}
+    </div>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="space-y-12">
+        <!-- Personal Information -->
+        <fieldset class="space-y-6">
+            <legend
+                class="font-headline-md text-headline-md text-text-ink border-b border-outline-variant w-full pb-2 mb-6">
+                Thông tin cá nhân</legend>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-md text-label-md text-text-muted" for="phone">Số điện thoại</label>
+                    <input formControlName="phone"
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink focus:border-accent-rust transition-all"
+                        id="phone" type="text" placeholder="0901234567">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="font-label-md text-label-md text-text-muted" for="birthDate">Ngày sinh</label>
+                    <input formControlName="birthDate"
+                        class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink focus:border-accent-rust transition-all"
+                        id="birthDate" type="date">
+                </div>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="font-label-md text-label-md text-text-muted" for="bio">Tiểu sử (Giới thiệu)</label>
+                <textarea formControlName="bio"
+                    class="bg-pure-white border border-outline-variant rounded px-4 py-3 font-body-md text-text-ink transition-all resize-none"
+                    id="bio" rows="4" placeholder="Chia sẻ đôi điều về bản thân bạn..."></textarea>
+            </div>
+        </fieldset>
+
+        <!-- Account Settings Links -->
+        <div class="flex flex-col md:flex-row justify-between gap-4 pt-8 border-t border-outline-variant">
+            <a routerLink="/auth/change-password"
+                class="text-left font-label-md text-label-md text-text-muted hover:text-accent-rust transition-colors flex items-center gap-2">
+                <span class="material-symbols-outlined text-[18px]">lock_reset</span>
+                Đổi mật khẩu
+            </a>
+        </div>
+
+        <div class="flex justify-end pt-4">
+            <button type="submit" [disabled]="submitting() || uploadingAvatar()"
+                class="bg-accent-rust text-pure-white px-8 py-4 rounded-full font-label-md text-label-md shadow-lg active:scale-95 transition-all hover:bg-primary-container hover:shadow-xl flex items-center gap-3 disabled:opacity-50">
+                <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+                {{ submitting() ? 'Đang lưu...' : 'Lưu thay đổi' }}
+            </button>
+        </div>
+    </form>
+
+    <div class="h-16"></div>
+</main>
+<!-- BottomNavBar -->
+<script>
+    // Micro-interaction for feedback on save
+    document.querySelector('button:contains("Save Changes")')?.addEventListener('click', function () {
+        this.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Saving...';
+        setTimeout(() => {
+            this.innerHTML = '<span class="material-symbols-outlined">check_circle</span> Saved';
+            this.classList.add('bg-tertiary-container');
+            setTimeout(() => {
+                this.innerHTML = '<span class="material-symbols-outlined" style="font-variation-settings: \'FILL\' 1;">check_circle</span> Save Changes';
+                this.classList.remove('bg-tertiary-container');
+            }, 2000);
+        }, 1200);
+    });
+
+    // Simple helper for button detection in this demo environment
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            if (btn.textContent.includes('Save')) {
+                console.log('Saving profile...');
+            }
+        });
+    });
+</script>

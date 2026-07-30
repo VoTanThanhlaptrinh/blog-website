@@ -1,0 +1,49 @@
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between items-center mb-2">
+    <h3 class="text-xl font-bold text-text-ink">Bài viết nháp</h3>
+    <a routerLink="/blog/create" class="inline-flex items-center gap-1 text-sm font-medium text-accent-rust hover:underline">
+      <span class="material-symbols-outlined text-[18px]">add</span> Viết bài mới
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="py-12 text-center text-text-muted">Đang tải bài viết nháp...</div>
+  } @else if (error()) {
+    <div class="p-4 bg-red-50 text-red-600 rounded-xl text-sm">{{ error() }}</div>
+  } @else if (blogs().length === 0) {
+    <div class="p-12 text-center bg-pure-white border border-on-surface/5 rounded-xl">
+      <span class="material-symbols-outlined text-4xl text-text-muted mb-2">drafts</span>
+      <p class="text-text-muted">Bạn không có bản nháp nào.</p>
+    </div>
+  } @else {
+    @for (blog of blogs(); track blog.id) {
+      <article class="bg-pure-white border border-on-surface/5 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group">
+        <div class="flex justify-between items-start mb-2">
+          <span class="text-caption text-text-muted">
+            Cập nhật lần cuối: {{ blog.modifiedDate ? (blog.modifiedDate | date:'medium') : (blog.createdDate | date:'medium') }}
+          </span>
+          <button 
+            (click)="deleteDraft(blog.id, $event)"
+            title="Xóa bản nháp"
+            class="text-text-muted hover:text-red-600 transition-colors p-1"
+          >
+            <span class="material-symbols-outlined text-lg">delete</span>
+          </button>
+        </div>
+        <a [routerLink]="['/blog/edit', blog.id]">
+          <h4 class="text-lg font-bold text-text-ink group-hover:text-accent-rust transition-colors mb-2">
+            {{ blog.title || '(Chưa có tiêu đề)' }}
+          </h4>
+        </a>
+        <p class="text-text-muted text-sm line-clamp-2 mb-4">
+          {{ blog.description || 'Bản nháp chưa có mô tả.' }}
+        </p>
+        <div class="flex justify-end">
+          <a [routerLink]="['/blog/edit', blog.id]" class="inline-flex items-center gap-1 text-sm text-accent-rust font-medium hover:underline">
+            Chỉnh sửa nháp <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </article>
+    }
+  }
+</section>

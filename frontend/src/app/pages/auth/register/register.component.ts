@@ -7,6 +7,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
+
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -24,6 +26,8 @@ function passwordsMatch(group: AbstractControl): ValidationErrors | null {
 })
 export class RegisterComponent {
   private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+
 
   readonly benefits = [
     'Miễn phí trọn đời, không giới hạn số bài viết',
@@ -40,6 +44,7 @@ export class RegisterComponent {
   readonly showConfirm = signal(false);
   readonly submitting = signal(false);
   readonly errorMessage = signal<string | null>(null);
+  readonly successMessage = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group(
     {
@@ -67,10 +72,11 @@ export class RegisterComponent {
   );
 
   constructor() {
-    this.form.controls.password.valueChanges.subscribe((v) =>
+    this.form.controls.password.valueChanges.subscribe((v: string) =>
       this.passwordValue.set(v ?? ''),
     );
   }
+
 
   togglePassword() {
     this.showPassword.update((v) => !v);
@@ -92,16 +98,37 @@ export class RegisterComponent {
     );
   }
 
+  loginWithGoogle() {
+    this.authService.loginWithSocial('google');
+  }
+
+  loginWithFacebook() {
+    this.authService.loginWithSocial('facebook');
+  }
+
   submit() {
     this.errorMessage.set(null);
+    this.successMessage.set(null);
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
+
     this.submitting.set(true);
-    // TODO: gọi AuthService.register() tới POST /api/v1/auth/register
-    setTimeout(() => {
-      this.submitting.set(false);
-    }, 800);
+    const { email, password, confirmPassword } = this.form.getRawValue();
+
+    this.authService.register({ email, password, confirmPassword }).subscribe({
+      next: (res) => {
+        this.submitting.set(false);
+        this.successMessage.set(res?.message || 'Đăng ký tài khoản thành công! Vui lòng kiểm tra email để kích hoạt.');
+        this.form.reset();
+      },
+      error: (err) => {
+        this.submitting.set(false);
+        this.errorMessage.set(err?.error?.message || 'Đăng ký không thành công. Vui lòng thử lại.');
+      },
+    });
   }
 }
+

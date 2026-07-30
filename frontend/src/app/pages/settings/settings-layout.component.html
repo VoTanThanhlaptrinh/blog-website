@@ -1,0 +1,64 @@
+<div class="min-h-screen bg-stone-50/50 pt-20 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+  <!-- Top Title -->
+  <div class="mb-8 border-b border-stone-200 pb-5">
+    <h1 class="text-3xl font-bold tracking-tight text-stone-900">Cài đặt hệ thống</h1>
+    <p class="mt-1 text-sm text-stone-500">Quản lý các thiết lập tài khoản, bảo mật, thông báo và giao diện cá nhân.</p>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <!-- Sidebar Navigation Tabs (Router Buttons) -->
+    <aside class="lg:col-span-3">
+      <nav class="flex flex-col space-y-1 bg-white p-3 rounded-xl border border-stone-200/80 shadow-xs sticky top-24">
+        <a
+          routerLink="/settings/profile"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">person</span>
+          <span>Trang cá nhân</span>
+        </a>
+
+        <a
+          routerLink="/settings/account"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">manage_accounts</span>
+          <span>Tài khoản</span>
+        </a>
+
+        <a
+          routerLink="/settings/security"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">security</span>
+          <span>Bảo mật</span>
+        </a>
+
+        <a
+          routerLink="/settings/notifications"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">notifications</span>
+          <span>Thông báo</span>
+        </a>
+
+        <a
+          routerLink="/settings/appearance"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 px-4 py-3 text-sm font-medium rounded-lg text-stone-600 hover:bg-stone-100 hover:text-stone-900 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[20px]">palette</span>
+          <span>Giao diện</span>
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Dynamic Settings Content View -->
+    <main class="lg:col-span-9 bg-white p-6 sm:p-8 rounded-xl border border-stone-200/80 shadow-xs min-h-[500px]">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

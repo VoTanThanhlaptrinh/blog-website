@@ -1,0 +1,45 @@
+package com.blog.backend.interaction.domain.entity;
+
+import com.blog.backend.content.domain.entity.Blog;
+import com.blog.backend.identity.domain.entity.User;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
+@Entity
+@Table(name = "likes", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"blog_id", "user_id"})
+})
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+@Setter
+@EntityListeners(AuditingEntityListener.class)
+public class Like {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private boolean liked;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "blog_id")
+    private Blog blog;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @CreatedDate
+    private LocalDateTime createdDate;
+    @LastModifiedDate
+    private LocalDateTime modifiedDate;
+}
+

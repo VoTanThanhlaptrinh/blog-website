@@ -1,0 +1,73 @@
+<main class="pt-8 pb-20 mx-auto min-h-screen w-[90%] md:w-[80%]">
+  <!-- Profile Header Card -->
+  <div class="mb-8 p-6 bg-pure-white border border-on-surface/5 rounded-2xl shadow-sm flex flex-col md:flex-row items-center md:items-start gap-6">
+    <div class="relative">
+      <img
+        [src]="user()?.avatarUrl || 'assets/images/default-avatar.png'"
+        alt="Avatar"
+        class="w-24 h-24 rounded-full object-cover border-2 border-accent-rust/20"
+      />
+    </div>
+    <div class="flex-1 text-center md:text-left">
+      <h2 class="font-headline-md text-2xl font-bold text-text-ink">
+        {{ user()?.email ? (user()?.email?.split('@')?.[0] || 'User') : 'Người dùng' }}
+      </h2>
+      <p class="text-text-muted text-sm mt-1">{{ user()?.email }}</p>
+      <p class="text-body-md text-text-ink mt-3 line-clamp-2 max-w-2xl">
+        {{ user()?.bio || 'Chưa có tiểu sử.' }}
+      </p>
+    </div>
+    <div>
+      <a
+        routerLink="/settings/profile"
+        class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-accent-rust border border-accent-rust/30 hover:bg-accent-rust/10 rounded-xl transition-colors"
+      >
+        <span class="material-symbols-outlined text-[18px]">edit</span>
+        Chỉnh sửa trang cá nhân
+      </a>
+    </div>
+  </div>
+
+  <!-- Main Content Grid with Sidebar Nav -->
+  <div class="grid grid-cols-1 md:grid-cols-10 gap-8 items-start">
+    <aside class="sticky top-20 md:col-span-3">
+      <nav class="flex flex-col gap-1 p-2 bg-pure-white border border-on-surface/5 rounded-2xl shadow-sm">
+        <a
+          routerLink="/profile/posts"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 py-3 px-4 text-sm text-secondary hover:text-accent-rust hover:bg-surface-container-low rounded-xl transition-all"
+        >
+          <span class="material-symbols-outlined">article</span>
+          Bài viết
+        </a>
+        <a
+          routerLink="/profile/saved"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 py-3 px-4 text-sm text-secondary hover:text-accent-rust hover:bg-surface-container-low rounded-xl transition-all"
+        >
+          <span class="material-symbols-outlined">bookmark</span>
+          Đã lưu
+        </a>
+        <a
+          routerLink="/profile/drafts"
+          routerLinkActive="bg-accent-rust/10 text-accent-rust font-semibold"
+          class="flex items-center gap-3 py-3 px-4 text-sm text-secondary hover:text-accent-rust hover:bg-surface-container-low rounded-xl transition-all"
+        >
+          <span class="material-symbols-outlined">drafts</span>
+          Nháp
+        </a>
+        <a
+          routerLink="/settings/profile"
+          class="flex items-center gap-3 py-3 px-4 text-sm text-secondary hover:text-accent-rust hover:bg-surface-container-low rounded-xl transition-all"
+        >
+          <span class="material-symbols-outlined">settings</span>
+          Cài đặt
+        </a>
+      </nav>
+    </aside>
+
+    <div class="md:col-span-7">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</main>

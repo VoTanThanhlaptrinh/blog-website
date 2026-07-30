@@ -1,0 +1,44 @@
+<nav class="fixed bottom-0 left-0 w-full z-50 bg-surface-paper dark:bg-inverse-surface border-t border-outline-variant/20 shadow-lg md:hidden">
+    <div class="flex justify-around items-center pt-2 pb-safe h-16">
+        <!-- Feed / Home -->
+        <a routerLink="/"
+           routerLinkActive
+           #rlaHome="routerLinkActive"
+           [routerLinkActiveOptions]="{exact: true}"
+           class="flex flex-col items-center justify-center transition-all active:translate-y-0.5 duration-150"
+           [class]="rlaHome.isActive ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1' : 'text-on-surface-variant dark:text-surface-variant hover:opacity-80'">
+            <span class="material-symbols-outlined text-[20px]" [style.font-variation-settings]="rlaHome.isActive ? '\'FILL\' 1' : '\'FILL\' 0'">auto_stories</span>
+            <span class="font-label-md text-[10px]">Feed</span>
+        </a>
+
+        <!-- Explore / Search -->
+        <a routerLink="/search"
+           routerLinkActive
+           #rlaSearch="routerLinkActive"
+           class="flex flex-col items-center justify-center transition-all active:translate-y-0.5 duration-150"
+           [class]="rlaSearch.isActive ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1' : 'text-on-surface-variant dark:text-surface-variant hover:opacity-80'">
+            <span class="material-symbols-outlined text-[20px]" [style.font-variation-settings]="rlaSearch.isActive ? '\'FILL\' 1' : '\'FILL\' 0'">explore</span>
+            <span class="font-label-md text-[10px]">Explore</span>
+        </a>
+
+        <!-- Create Post -->
+        <a routerLink="/blog/creation"
+           routerLinkActive
+           #rlaCreate="routerLinkActive"
+           class="flex flex-col items-center justify-center transition-all active:translate-y-0.5 duration-150"
+           [class]="rlaCreate.isActive ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1' : 'text-on-surface-variant dark:text-surface-variant hover:opacity-80'">
+            <span class="material-symbols-outlined text-[20px]" [style.font-variation-settings]="rlaCreate.isActive ? '\'FILL\' 1' : '\'FILL\' 0'">add_circle</span>
+            <span class="font-label-md text-[10px]">Viết bài</span>
+        </a>
+
+        <!-- Profile -->
+        <a routerLink="/profile"
+           routerLinkActive
+           #rlaProfile="routerLinkActive"
+           class="flex flex-col items-center justify-center transition-all active:translate-y-0.5 duration-150"
+           [class]="rlaProfile.isActive ? 'bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1' : 'text-on-surface-variant dark:text-surface-variant hover:opacity-80'">
+            <span class="material-symbols-outlined text-[20px]" [style.font-variation-settings]="rlaProfile.isActive ? '\'FILL\' 1' : '\'FILL\' 0'">person</span>
+            <span class="font-label-md text-[10px]">Profile</span>
+        </a>
+    </div>
+</nav>

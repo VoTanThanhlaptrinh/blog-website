@@ -1,0 +1,44 @@
+<div class="space-y-8">
+  <div>
+    <h2 class="text-xl font-bold text-stone-900">Tài khoản</h2>
+    <p class="text-sm text-stone-500">Quản lý thông tin tài khoản và trạng thái hoạt động.</p>
+  </div>
+
+  <!-- User Email Info -->
+  <div class="p-4 rounded-lg border border-stone-200 bg-stone-50/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div>
+      <p class="text-sm font-semibold text-stone-900">Địa chỉ Email</p>
+      <p class="text-sm text-stone-500">{{ email() || 'Đang tải...' }}</p>
+    </div>
+    <span class="inline-flex items-center rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-medium text-emerald-700 w-max">
+      Đã xác minh
+    </span>
+  </div>
+
+  <!-- Danger Zone -->
+  <div class="pt-6 border-t border-stone-200 space-y-4">
+    <h3 class="text-base font-bold text-red-600">Vùng nguy hiểm</h3>
+
+    <div class="p-5 rounded-xl border border-red-200 bg-red-50/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div>
+        <p class="text-sm font-semibold text-stone-900">Vô hiệu hóa tài khoản</p>
+        <p class="text-xs text-stone-500 mt-0.5">Tài khoản của bạn sẽ tạm thời không hoạt động. Bạn có thể kích hoạt lại sau.</p>
+      </div>
+
+      <button
+        type="button"
+        (click)="onDeactivate()"
+        [disabled]="loading()"
+        class="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-50 transition-colors shrink-0"
+      >
+        {{ loading() ? 'Đang xử lý...' : 'Vô hiệu hóa' }}
+      </button>
+    </div>
+
+    @if (message()) {
+      <div class="p-3.5 rounded-lg text-sm font-medium bg-red-50 text-red-700">
+        {{ message() }}
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,118 @@
+<div class="space-y-6">
+  <div>
+    <h2 class="text-xl font-bold text-stone-900">Thông báo</h2>
+    <p class="text-sm text-stone-500">Quản lý cách bạn nhận thông tin về hoạt động bài viết và cập nhật từ ứng dụng.</p>
+  </div>
+
+  @if (loading()) {
+    <div class="py-12 text-center text-sm text-stone-500">Đang tải cài đặt thông báo...</div>
+  } @else {
+    <form [formGroup]="settingsForm" (ngSubmit)="onSubmit()" class="space-y-6">
+      <!-- Category: Activity -->
+      <section class="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-xs">
+        <div class="p-4 border-b border-stone-200 bg-stone-50/50">
+          <h3 class="font-semibold text-stone-900 text-sm">Hoạt động mạng xã hội</h3>
+        </div>
+        <div class="divide-y divide-stone-100">
+          <!-- Item: Followers -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Người theo dõi mới</p>
+              <p class="text-xs text-stone-500">Nhận thông báo khi có độc giả mới theo dõi bạn.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="followers" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+
+          <!-- Item: Comments -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Bình luận mới</p>
+              <p class="text-xs text-stone-500">Thông báo khi có thảo luận trên bài viết của bạn.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="comments" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+
+          <!-- Item: Likes -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Lượt thích mới</p>
+              <p class="text-xs text-stone-500">Thông báo lượt thích các bài viết của bạn.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="likes" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+
+          <!-- Item: Mentions -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Nhắc đến (Mentions)</p>
+              <p class="text-xs text-stone-500">Khi ai đó nhắc tên bạn trong bài viết hoặc bình luận.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="mentions" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Category: System Updates -->
+      <section class="bg-white rounded-xl border border-stone-200 overflow-hidden shadow-xs">
+        <div class="p-4 border-b border-stone-200 bg-stone-50/50">
+          <h3 class="font-semibold text-stone-900 text-sm">Cập nhật hệ thống</h3>
+        </div>
+        <div class="divide-y divide-stone-100">
+          <!-- Item: Newsletter -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Bản tin hàng tuần</p>
+              <p class="text-xs text-stone-500">Nhận tổng hợp bài viết hay nhất qua email.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="newsletter" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+
+          <!-- Item: Features -->
+          <div class="p-4 flex items-center justify-between hover:bg-stone-50/50 transition-colors">
+            <div>
+              <p class="text-sm font-medium text-stone-900">Tính năng mới</p>
+              <p class="text-xs text-stone-500">Cập nhật các công cụ và tính năng vừa ra mắt.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" formControlName="features" class="sr-only peer">
+              <div class="w-11 h-6 bg-stone-200 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-stone-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-accent-rust"></div>
+            </label>
+          </div>
+        </div>
+      </section>
+
+      <!-- Message feedback -->
+      @if (message()) {
+        <div class="p-3.5 rounded-lg text-sm font-medium" [ngClass]="isError() ? 'bg-red-50 text-red-700' : 'bg-emerald-50 text-emerald-700'">
+          {{ message() }}
+        </div>
+      }
+
+      <!-- Submit Action -->
+      <div class="flex justify-end pt-2">
+        <button
+          type="submit"
+          [disabled]="saving()"
+          class="rounded-lg bg-accent-rust px-6 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-accent-rust/90 disabled:opacity-50 transition-colors"
+        >
+          {{ saving() ? 'Đang lưu...' : 'Lưu thay đổi' }}
+        </button>
+      </div>
+    </form>
+  }
+</div>

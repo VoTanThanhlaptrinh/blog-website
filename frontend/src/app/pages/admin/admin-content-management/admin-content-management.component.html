@@ -1,0 +1,229 @@
+<!-- Main Content Canvas -->
+<main class="">
+    <div class="w-full md:w-[90%] lg:w-[80%] max-w-[1200px] mx-auto px-10 py-8">
+        <!-- Header Section -->
+        <div class="mb-8">
+            <h2 class="font-headline-lg text-headline-lg text-text-ink mb-1">Content Management</h2>
+            <p class="text-text-muted font-body-md">Manage, review, and moderate all community articles.</p>
+        </div>
+
+        <!-- Error Banner -->
+        <div *ngIf="error$ | async as error" class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-md">
+            {{ error }}
+        </div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="loading$ | async" class="mb-4 text-sm text-secondary flex items-center gap-2">
+            <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
+            Đang tải dữ liệu bài viết...
+        </div>
+
+        <!-- Toolbar: Filters & Search -->
+        <div class="bg-pure-white rounded-xl border border-on-surface/5 mb-4">
+            <div class="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
+                <!-- Filters -->
+                <div class="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <button
+                        (click)="onFilterStatus('')"
+                        [class.bg-accent-rust]="selectedStatus === ''"
+                        [class.text-pure-white]="selectedStatus === ''"
+                        [class.text-secondary]="selectedStatus !== ''"
+                        class="px-4 py-2 font-bold rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Tất cả
+                    </button>
+                    <button
+                        (click)="onFilterStatus(BlogStatus.PENDING)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PENDING"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.PENDING"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.PENDING"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Chờ duyệt (Pending)
+                    </button>
+                    <button
+                        (click)="onFilterStatus(BlogStatus.PUBLISHED)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PUBLISHED"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.PUBLISHED"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.PUBLISHED"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Đã xuất bản (Published)
+                    </button>
+                    <button
+                        (click)="onFilterStatus(BlogStatus.DRAFT)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.DRAFT"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.DRAFT"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.DRAFT"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Nháp (Draft)
+                    </button>
+                    <button
+                        (click)="onFilterStatus(BlogStatus.REJECTED)"
+                        [class.bg-accent-rust]="selectedStatus === BlogStatus.REJECTED"
+                        [class.text-pure-white]="selectedStatus === BlogStatus.REJECTED"
+                        [class.text-secondary]="selectedStatus !== BlogStatus.REJECTED"
+                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
+                        Từ chối (Rejected)
+                    </button>
+                </div>
+                <!-- Search Bar -->
+                <div class="relative w-full md:w-80 flex items-center gap-2">
+                    <div class="relative flex-1">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+                        <input
+                            [(ngModel)]="searchKeyword"
+                            (keyup.enter)="onSearch()"
+                            class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md"
+                            placeholder="Tìm theo tiêu đề hoặc từ khóa..." type="text">
+                    </div>
+                    <button (click)="onSearch()" class="px-3 py-2 bg-accent-rust text-white text-label-md font-bold rounded-lg hover:opacity-90">
+                        Tìm
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reject Reason Dialog Overlay -->
+        <div *ngIf="rejectingBlogId !== null" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+                <h3 class="text-headline-md font-headline-md text-text-ink">Từ chối xuất bản bài viết</h3>
+                <p class="text-body-md text-secondary">Vui lòng nhập lý do từ chối bài viết (ID: {{ rejectingBlogId }}):</p>
+                <textarea
+                    [(ngModel)]="rejectReason"
+                    rows="4"
+                    class="w-full p-3 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust text-body-md"
+                    placeholder="Nhập lý do chi tiết..."></textarea>
+                <div class="flex justify-end gap-3">
+                    <button (click)="cancelReject()" class="px-4 py-2 border border-gray-300 text-secondary rounded-lg font-label-md hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button (click)="confirmReject()" class="px-4 py-2 bg-red-600 text-white rounded-lg font-label-md hover:bg-red-700">
+                        Xác nhận từ chối
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Table Container -->
+        <div class="bg-pure-white rounded-xl border border-on-surface/5 overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="-container border-b border-outline-variant">
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Tiêu đề bài viết</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Tác giả</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Trạng thái</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Ngày tạo</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Thống kê</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-on-surface/5">
+                        <ng-container *ngIf="blogs$ | async as blogs">
+                            <tr *ngIf="blogs.length === 0">
+                                <td colspan="6" class="px-6 py-8 text-center text-secondary font-body-md">
+                                    Không tìm thấy bài viết nào.
+                                </td>
+                            </tr>
+                            <tr *ngFor="let blog of blogs" class="hover:-bright transition-colors group">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <span class="text-body-md font-bold text-text-ink leading-tight line-clamp-2">
+                                            {{ blog.title }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="text-label-md text-text-ink">{{ blog.author.email || 'N/A' }}</span>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span
+                                        [ngClass]="{
+                                            'bg-amber-100 text-amber-800': blog.status === BlogStatus.PENDING,
+                                            'bg-green-100 text-green-800': blog.status === BlogStatus.PUBLISHED,
+                                            'bg-gray-100 text-gray-800': blog.status === BlogStatus.DRAFT,
+                                            'bg-red-100 text-red-800': blog.status === BlogStatus.REJECTED
+                                        }"
+                                        class="px-2.5 py-1 text-[11px] font-bold rounded-full uppercase tracking-wider">
+                                        {{ blog.status }}
+                                    </span>
+                                    <p *ngIf="blog.status === BlogStatus.REJECTED && blog.rejectionReason" class="text-xs text-red-600 mt-1 italic">
+                                        Lý do: {{ blog.rejectionReason }}
+                                    </p>
+                                </td>
+                                <td class="px-6 py-4 text-text-muted text-label-md">
+                                    {{ blog.createdDate | date:'dd/MM/yyyy HH:mm' }}
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex flex-col gap-0.5 text-caption text-secondary">
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">visibility</span> {{ blog.viewsCount | number }}
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">thumb_up</span> {{ blog.likesCount | number }}
+                                        </span>
+                                        <span class="flex items-center gap-1">
+                                            <span class="material-symbols-outlined text-[14px]">comment</span> {{ blog.commentsCount | number }}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <button
+                                            *ngIf="blog.status === BlogStatus.PENDING"
+                                            (click)="onApprove(blog.id)"
+                                            class="px-3 py-1.5 bg-green-600 text-white font-bold text-xs rounded hover:bg-green-700 transition-colors">
+                                            Duyệt
+                                        </button>
+                                        <button
+                                            *ngIf="blog.status === BlogStatus.PENDING"
+                                            (click)="openRejectDialog(blog.id)"
+                                            class="px-3 py-1.5 bg-red-600 text-white font-bold text-xs rounded hover:bg-red-700 transition-colors">
+                                            Từ chối
+                                        </button>
+                                        <span *ngIf="blog.status !== BlogStatus.PENDING" class="text-xs text-secondary italic">
+                                            Đã xử lý
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Footer -->
+            <ng-container *ngIf="pageMeta$ | async as pageMeta">
+                <div *ngIf="pageMeta.totalPages > 0" class="px-6 py-4 border-t border-on-surface/5 flex items-center justify-between -container-low">
+                    <span class="text-caption text-secondary">
+                        Trang <span class="font-bold">{{ pageMeta.pageNumber + 1 }}</span> / <span class="font-bold">{{ pageMeta.totalPages }}</span>
+                        (Tổng {{ pageMeta.totalElements }} kết quả)
+                    </span>
+                    <div class="flex items-center gap-2">
+                        <button
+                            (click)="goToPage(currentPage - 1)"
+                            [disabled]="currentPage === 0"
+                            class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                            <span class="material-symbols-outlined">chevron_left</span>
+                        </button>
+
+                        <button
+                            *ngFor="let page of [].constructor(pageMeta.totalPages); let i = index"
+                            (click)="goToPage(i)"
+                            [class.bg-accent-rust]="currentPage === i"
+                            [class.text-pure-white]="currentPage === i"
+                            [class.text-secondary]="currentPage !== i"
+                            class="w-8 h-8 flex items-center justify-center rounded font-bold text-caption transition-colors">
+                            {{ i + 1 }}
+                        </button>
+
+                        <button
+                            (click)="goToPage(currentPage + 1)"
+                            [disabled]="pageMeta.last || currentPage >= pageMeta.totalPages - 1"
+                            class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                            <span class="material-symbols-outlined">chevron_right</span>
+                        </button>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+</main>

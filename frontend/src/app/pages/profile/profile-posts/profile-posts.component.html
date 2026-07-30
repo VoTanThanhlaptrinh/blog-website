@@ -1,0 +1,54 @@
+<section class="flex flex-col gap-4">
+  <div class="flex justify-between items-center mb-2">
+    <h3 class="text-xl font-bold text-text-ink">Bài viết đã xuất bản</h3>
+    <a routerLink="/blog/create" class="inline-flex items-center gap-1 text-sm font-medium text-accent-rust hover:underline">
+      <span class="material-symbols-outlined text-[18px]">add</span> Viết bài mới
+    </a>
+  </div>
+
+  @if (loading()) {
+    <div class="py-12 text-center text-text-muted">Đang tải danh sách bài viết...</div>
+  } @else if (error()) {
+    <div class="p-4 bg-red-50 text-red-600 rounded-xl text-sm">{{ error() }}</div>
+  } @else if (blogs().length === 0) {
+    <div class="p-12 text-center bg-pure-white border border-on-surface/5 rounded-xl">
+      <span class="material-symbols-outlined text-4xl text-text-muted mb-2">article</span>
+      <p class="text-text-muted">Bạn chưa xuất bản bài viết nào.</p>
+    </div>
+  } @else {
+    @for (blog of blogs(); track blog.id) {
+      <article class="bg-pure-white border border-on-surface/5 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group">
+        <div class="flex justify-between items-start mb-2">
+          <span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+            {{ blog.category?.name || 'General' }}
+          </span>
+          <span class="text-xs text-text-muted">
+            {{ blog.createdDate ? (blog.createdDate | date:'mediumDate') : '' }}
+          </span>
+        </div>
+        <a [routerLink]="['/blog', blog.id]">
+          <h4 class="text-lg font-bold text-text-ink group-hover:text-accent-rust transition-colors mb-2">
+            {{ blog.title }}
+          </h4>
+        </a>
+        <p class="text-text-muted text-sm line-clamp-2 mb-4">
+          {{ blog.description }}
+        </p>
+        <div class="flex items-center gap-6 text-xs text-text-muted">
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">visibility</span>
+            {{ blog.viewsCount || 0 }}
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">favorite</span>
+            {{ blog.likesCount || 0 }}
+          </span>
+          <span class="flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">chat_bubble</span>
+            {{ blog.commentsCount || 0 }}
+          </span>
+        </div>
+      </article>
+    }
+  }
+</section>

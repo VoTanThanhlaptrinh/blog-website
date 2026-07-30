@@ -1,0 +1,254 @@
+<main class="pt-20 pb-32 max-w-[1200px] mx-auto px-5 md:px-10">
+    <!-- Main Content Layout (2 Columns on Desktop lg:, Vertical Accordion on Mobile & Tablet md:) -->
+    <div class="flex flex-col lg:flex-row gap-8 w-full">
+        <!-- Left Column: Filters Sidebar (w-full lg:w-80 flex-none) -->
+        <aside class="w-full lg:w-80 flex-none transition-all duration-300"
+            [class.hidden]="!filterOpen() && !isDesktop()">
+            <section class="filter-panel-card p-6 rounded-2xl sticky top-20 transition-all duration-300"
+                id="detailed-filter-panel">
+
+                <!-- Internal Grid: 2 Columns on Tablet (md:grid-cols-2), 1 Column on Mobile & Desktop (lg:grid-cols-1) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-1 gap-6">
+                    <!-- Column 1: Search & Categories -->
+                    <div class="space-y-6">
+                        <!-- Title & Author Search -->
+                        <div class="space-y-2">
+                            <h3 class="font-label-md text-label-md text-accent-rust uppercase tracking-wider">Tìm kiếm
+                                từ khóa</h3>
+                            <div class="relative group">
+                                <span
+                                    class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent-rust text-[20px] transition-colors">search</span>
+                                <input
+                                    class="w-full h-11 pl-10 pr-4 bg-pure-white dark:bg-inverse-surface border-2 border-outline-variant/40 hover:border-accent-rust/50 rounded-xl font-body-md text-body-md text-text-ink focus:outline-none focus:border-accent-rust focus:ring-1 focus:ring-accent-rust placeholder:text-text-muted/60 transition-all shadow-sm"
+                                    placeholder="Bài viết, tác giả..." type="text">
+                            </div>
+                        </div>
+
+                        <!-- Category Autocomplete Search -->
+                        <div class="space-y-2">
+                            <h3 class="font-label-md text-label-md text-accent-rust uppercase tracking-wider">Chủ đề bài
+                                viết</h3>
+                            <div class="category-search-container relative w-full">
+                                <div class="relative flex items-center group">
+                                    <span
+                                        class="material-symbols-outlined absolute left-3.5 text-text-muted group-focus-within:text-accent-rust text-[20px] transition-colors">category</span>
+                                    <input type="text" placeholder="Tìm chủ đề (ví dụ: AI...)"
+                                        [value]="categorySearchQuery()" (input)="onCategorySearchInput($event)"
+                                        (focus)="isCategoryDropdownOpen.set(true)"
+                                        class="w-full pl-10 pr-9 h-11 bg-pure-white dark:bg-inverse-surface border-2 border-outline-variant/40 hover:border-accent-rust/50 rounded-xl font-body-md text-body-md text-text-ink placeholder:text-text-muted/60 focus:outline-none focus:border-accent-rust focus:ring-1 focus:ring-accent-rust transition-all shadow-sm">
+                                    @if (categorySearchQuery()) {
+                                    <button (click)="categorySearchQuery.set(''); isCategoryDropdownOpen.set(true)"
+                                        class="absolute right-2.5 text-text-muted hover:text-text-ink flex items-center justify-center p-1">
+                                        <span class="material-symbols-outlined text-[16px]">close</span>
+                                    </button>
+                                    } @else {
+                                    <button (click)="toggleCategoryDropdown()"
+                                        class="absolute right-2.5 text-text-muted hover:text-text-ink flex items-center justify-center p-1">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] transition-transform duration-200"
+                                            [class.rotate-180]="isCategoryDropdownOpen()">expand_more</span>
+                                    </button>
+                                    }
+                                </div>
+
+                                <!-- Autocomplete Dropdown List -->
+                                @if (isCategoryDropdownOpen()) {
+                                <div
+                                    class="absolute left-0 top-full mt-1.5 w-full max-h-60 overflow-y-auto bg-pure-white dark:bg-inverse-surface rounded-xl border-2 border-outline-variant/40 shadow-2xl py-1.5 z-50">
+                                    <div
+                                        class="px-3 py-1.5 text-[11px] font-bold text-accent-rust uppercase tracking-wider border-b border-outline-variant/10">
+                                        Danh sách chủ đề ({{ filteredCategories().length }})
+                                    </div>
+                                    @for (cat of filteredCategories(); track cat) {
+                                    <button (click)="selectCategoryFromSearch(cat)"
+                                        class="w-full flex items-center justify-between px-3.5 py-2 text-left font-label-md text-label-md transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant/30"
+                                        [class.text-accent-rust]="isCategorySelected(cat)"
+                                        [class.font-bold]="isCategorySelected(cat)">
+                                        <span>{{ cat }}</span>
+                                        @if (isCategorySelected(cat)) {
+                                        <span
+                                            class="material-symbols-outlined text-[16px] text-accent-rust">check_box</span>
+                                        } @else {
+                                        <span
+                                            class="material-symbols-outlined text-[16px] text-text-muted/40">check_box_outline_blank</span>
+                                        }
+                                    </button>
+                                    }
+                                    @if (filteredCategories().length === 0) {
+                                    <div class="px-4 py-3 text-center text-caption text-text-muted">
+                                        Không tìm thấy chủ đề nào khớp
+                                    </div>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <!-- Selected Categories Tags/Chips List -->
+                            @if (selectedCategories().length > 0) {
+                            <div class="flex flex-wrap gap-1.5 pt-2">
+                                @for (cat of selectedCategories(); track cat) {
+                                <span
+                                    class="inline-flex items-center gap-1.5 px-3 py-1 bg-accent-rust/10 border border-accent-rust/30 text-accent-rust rounded-lg font-label-md text-caption animate-fadeIn">
+                                    <span>{{ cat }}</span>
+                                    <button (click)="removeCategory(cat, $event)"
+                                        class="hover:bg-accent-rust/20 rounded-full p-0.5 flex items-center justify-center transition-colors">
+                                        <span class="material-symbols-outlined text-[14px]">close</span>
+                                    </button>
+                                </span>
+                                }
+                            </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Time & Interaction Filters & Action Buttons -->
+                    <div class="space-y-6 flex flex-col justify-between">
+                        <div class="space-y-6">
+                            <!-- Time Filter -->
+                            <div class="space-y-3 md:pt-0 lg:pt-2 md:border-t-0 lg:border-t border-outline-variant/15">
+                                <h3 class="font-label-md text-label-md text-accent-rust uppercase tracking-wider">Thời
+                                    gian đăng</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    @for (time of timeFilters; track time) {
+                                    <button (click)="selectTimeFilter(time)"
+                                        class="px-3.5 py-1.5 rounded-xl text-caption font-label-md transition-all select-none"
+                                        [class]="selectedTimeFilter() === time ? 'bg-accent-rust text-pure-white font-medium shadow-md' : 'bg-pure-white dark:bg-inverse-surface border-2 border-outline-variant/40 text-text-ink hover:border-accent-rust shadow-2xs'">
+                                        {{ time }}
+                                    </button>
+                                    }
+                                </div>
+                            </div>
+
+                            <!-- Interaction Filter -->
+                            <div class="space-y-3 pt-2 border-t border-outline-variant/10">
+                                <h3 class="font-label-md text-label-md text-accent-rust uppercase tracking-wider">Tương
+                                    tác &amp; Phổ biến</h3>
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2.5">
+                                    @for (option of interactionFilterOptions; track option.key) {
+                                    <label class="flex items-center gap-2.5 cursor-pointer group select-none">
+                                        <input
+                                            class="rounded border-outline-variant/30 text-accent-rust focus:ring-accent-rust/20 w-4 h-4 transition-colors"
+                                            type="checkbox" [checked]="interactionFilters()[option.key]"
+                                            (change)="toggleInteractionFilter(option.key, $event)">
+                                        <span
+                                            class="text-caption font-label-md text-text-ink group-hover:text-accent-rust transition-colors">{{
+                                            option.label }}</span>
+                                    </label>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div
+                            class="pt-4 border-t border-outline-variant/15 flex items-center justify-between gap-3 mt-auto">
+                            <button (click)="resetFilters()"
+                                class="text-caption font-label-md text-text-muted hover:text-accent-rust transition-colors py-2 px-3">Xóa
+                                bộ lọc</button>
+                            <button (click)="applyFilters()"
+                                class="flex-1 py-2.5 bg-accent-rust text-pure-white rounded-xl text-caption font-label-md hover:opacity-95 transition-all shadow-sm active:scale-95 text-center font-medium">Áp
+                                dụng</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+        <!-- Right Column: Main Content (flex-1 w-full) -->
+        <div class="flex-1 w-full flex flex-col gap-6 min-w-0">
+            <!-- Header Section: Title on Left, Grouped Controls (Filter & Sort) on Right -->
+            <section class="flex flex-wrap items-center justify-between gap-4 w-full relative z-20 py-1">
+                <!-- Left Side: Title -->
+                <h2 class="text-2xl md:text-3xl font-bold text-text-ink tracking-tight">Danh sách bài viết</h2>
+
+                <!-- Right Side: Grouped Action Controls (Filter Toggle & Sort Dropdown) -->
+                <div class="flex items-center gap-3">
+                    <!-- Mobile & Tablet Filter Toggle Button (Hidden on Desktop lg:) -->
+                    <button
+                        class="flex items-center gap-2 px-4 py-2.5 bg-accent-rust text-pure-white rounded-xl font-label-md text-label-md hover:opacity-90 transition-all shadow-sm active:scale-95 lg:hidden"
+                        (click)="toggleFilter()" id="filter-toggle-btn">
+                        <span class="material-symbols-outlined text-[20px]">tune</span>
+                        <span>{{ filterOpen() ? 'Ẩn bộ lọc' : 'Bộ lọc' }}</span>
+                        @if (selectedCategories().length > 0) {
+                        <span class="px-1.5 py-0.2 bg-pure-white text-accent-rust rounded-full text-[11px] font-bold">{{
+                            selectedCategories().length }}</span>
+                        }
+                    </button>
+
+                    <!-- Sort Dropdown ("Mới nhất") -->
+                    <div class="relative">
+                        <button (click)="toggleSort()"
+                            class="sort-dropdown-btn flex items-center gap-2 px-4 py-2.5 bg-pure-white dark:bg-inverse-surface rounded-xl font-label-md text-label-md text-text-ink transition-all active:scale-95">
+                            <span class="material-symbols-outlined text-[18px] text-accent-rust">{{ selectedSort().icon
+                                }}</span>
+                            <span class="font-medium">{{ selectedSort().label }}</span>
+                            <span class="material-symbols-outlined text-[18px] transition-transform duration-200"
+                                [class.rotate-180]="sortOpen()">expand_more</span>
+                        </button>
+
+                        <!-- Dropdown Menu with Exact Filter Border & Deep Shadow -->
+                        <div [class.hidden]="!sortOpen()"
+                            class="sort-dropdown-menu absolute right-0 top-full mt-2 w-64 bg-pure-white dark:bg-inverse-surface rounded-xl py-2 z-50 transition-all">
+                            @for (option of sortOptions; track option.value) {
+                            <button (click)="selectSort(option)"
+                                class="w-full flex items-center gap-3 px-4 py-2.5 text-left font-label-md text-label-md transition-colors hover:bg-surface-container-low dark:hover:bg-surface-variant/30"
+                                [class.text-accent-rust]="selectedSort().value === option.value"
+                                [class.font-bold]="selectedSort().value === option.value">
+                                <span class="material-symbols-outlined text-[18px]"
+                                    [class.text-accent-rust]="selectedSort().value === option.value">{{ option.icon
+                                    }}</span>
+                                <span>{{ option.label }}</span>
+                                @if (selectedSort().value === option.value) {
+                                <span
+                                    class="material-symbols-outlined text-[18px] ml-auto text-accent-rust">check</span>
+                                }
+                            </button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Articles Grid (1 Col Mobile, 2 Cols Tablet md: & Desktop lg:) -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                @for (article of articles; track article.id) {
+                    <app-blog-card [post]="article"></app-blog-card>
+                }
+            </section>
+
+            <!-- Pagination / Load More -->
+            <div class="mt-10 flex justify-center">
+                <button
+                    class="px-8 py-3.5 bg-accent-rust text-pure-white rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all shadow-md font-medium">
+                    Tải thêm bài viết
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+<!-- BottomNavBar (Mobile only) -->
+<nav
+    class="fixed bottom-0 left-0 w-full z-50 bg-surface-paper dark:bg-inverse-surface border-t border-outline-variant/20 shadow-lg md:hidden">
+    <div class="flex justify-around items-center pt-2 pb-safe h-16">
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:opacity-80 transition-opacity active:translate-y-0.5 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">auto_stories</span>
+            <span class="font-label-md text-[10px]">Feed</span>
+        </a>
+        <a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1 hover:opacity-80 transition-opacity active:translate-y-0.5 duration-150"
+            href="#">
+            <span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">explore</span>
+            <span class="font-label-md text-[10px]">Explore</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:opacity-80 transition-opacity active:translate-y-0.5 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">bookmark</span>
+            <span class="font-label-md text-[10px]">Saved</span>
+        </a>
+        <a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:opacity-80 transition-opacity active:translate-y-0.5 duration-150"
+            href="#">
+            <span class="material-symbols-outlined">person</span>
+            <span class="font-label-md text-[10px]">Profile</span>
+        </a>
+    </div>
+</nav>
