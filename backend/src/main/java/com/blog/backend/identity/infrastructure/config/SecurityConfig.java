@@ -69,7 +69,8 @@ public class SecurityConfig {
                                                                 "/api/v1/auth/forgot-password",
                                                                 "/api/v1/auth/verify-otp",
                                                                 "/api/v1/auth/reset-password",
-                                                                "/api/v1/auth/login/social")
+                                                                "/api/v1/auth/login/social",
+                                                                "/api/v1/healthcheck")
                                                 .permitAll()
                                                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
                                                 .requestMatchers(HttpMethod.GET, "/api/v1/blogs", "/api/v1/blogs/**")
