@@ -62,6 +62,8 @@ public class AuthServiceImpl implements AuthService {
     private boolean secureCookie;
     @Value("${app.cookie.same-site}")
     private String sameSite;
+    @Value("${app.domain}")
+    private String domain;
     private final ApplicationEventPublisher publisher;
     private final RedisTemplate<String, String> redisTemplate;
 
@@ -83,7 +85,8 @@ public class AuthServiceImpl implements AuthService {
 
         User currentUser = user.get();
         // Generate a single access token using expireRtDay to serve as a session token
-        String tokenValue = jwtService.generateAccessToken(currentUser.getId(), (List<GrantedAuthority>) currentUser.getAuthorities());
+        String tokenValue = jwtService.generateAccessToken(currentUser.getId(),
+                (List<GrantedAuthority>) currentUser.getAuthorities());
 
         long maxAgeInSeconds = expireRtDay * 24L * 60 * 60;
         ResponseCookie springCookie = ResponseCookie.from("token", tokenValue)
@@ -91,7 +94,8 @@ public class AuthServiceImpl implements AuthService {
                 .secure(secureCookie)
                 .path("/")
                 .maxAge(maxAgeInSeconds)
-                .sameSite(sameSite) // Hoặc "Lax", "None" tùy nhu cầu
+                .sameSite(sameSite)
+                .domain(domain)
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
