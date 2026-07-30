@@ -49,6 +49,9 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         @Value("${app.frontend.url}")
         private String frontendUrl;
 
+        @Value("${app.domain}")
+        private String domain;
+
         @Override
         public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                         Authentication authentication) throws IOException, ServletException {
@@ -70,6 +73,7 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
                                 .path("/")
                                 .maxAge(maxAgeInSeconds)
                                 .sameSite(sameSite)
+                                .domain(domain)
                                 .build();
 
                 response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());

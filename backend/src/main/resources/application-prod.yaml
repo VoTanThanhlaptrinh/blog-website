@@ -19,7 +19,8 @@ spring:
       url: ${REDIS_URL}
 app:
   frontend:
-    url: https://blog-web-two-bay.vercel.app
+    url: https://thanhblog.online
   cookie:
     secure: true
-    same-site: None
+    same-site: LAX
+  domain: thanhblog.online
