@@ -2,7 +2,7 @@ spring:
   application:
     name: backend
   profiles:
-    active: dev
+    active: prod
   config:
     import: "optional:file:.env[.properties]"
   security:
@@ -35,9 +35,9 @@ spring:
   task:
     execution:
       pool:
-        core-size: 5           # Số lượng thread tối thiểu
-        max-size: 20           # Số lượng thread tối đa
-        queue-capacity: 100    # Hàng đợi chờ xử lý
+        core-size: 5 # Số lượng thread tối thiểu
+        max-size: 20 # Số lượng thread tối đa
+        queue-capacity: 100 # Hàng đợi chờ xử lý
       thread-name-prefix: "MyAsync-Task-" # Tiền tố để dễ debug
 identity:
   expire-at-minute: 30
