@@ -12,6 +12,11 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.S3Presigner;
+import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
+import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
+import java.time.Duration;
 
 import com.blog.backend.storage.application.util.AwsSignatureUtils;
 import com.blog.backend.storage.application.util.StorageUtils;
@@ -27,6 +32,7 @@ public class CloudflareStorageServiceImpl implements StorageService {
 
     private final S3Client s3Client;
     private final CloudflareR2Properties properties;
+    private final S3Presigner s3Presigner;
 
     /**
      * Di chuyển file từ vùng temp ra thư mục gốc chính thức bằng cách loại bỏ tiền tố "temp/"
@@ -82,57 +88,27 @@ public class CloudflareStorageServiceImpl implements StorageService {
             throw new IllegalArgumentException("Loại file không hợp lệ");
         }
 
-        // Chuẩn bị định dạng thời gian chuẩn AWS
-        StorageUtils.AwsTimeInfo timeInfo = StorageUtils.prepareAwsTimeFormat();
-
         // Định nghĩa Object Key
         String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(), StorageConstants.TEMP_FOLDER_PREFIX);
 
-        // Lấy Access Key từ đối tượng properties
-        String accessKey = properties.getAccessKey();
+        // Tạo PutObjectRequest
+        PutObjectRequest putObjectRequest = PutObjectRequest.builder()
+                .bucket(properties.getBucket())
+                .key(objectKey)
+                .contentType(request.getContentType())
+                .build();
 
-        // Tạo credential string dùng chung
-        String credential = String.format("%s/%s/%s/%s/aws4_request",
-                accessKey, timeInfo.dateStamp(), StorageConstants.REGION, StorageConstants.SERVICE);
+        // Tạo yêu cầu Pre-sign cho PUT object (Hết hạn sau 15 phút)
+        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(15))
+                .putObjectRequest(putObjectRequest)
+                .build();
 
-        // Xây dựng Policy JSON
-        String policyJson = StorageUtils.buildPolicyJson(
-                timeInfo.expiration(), objectKey, request.getContentType(), credential, timeInfo.amzDate()
-                , properties.getBucket(), StorageConstants.MAX_FILE_SIZE_BYTES, StorageConstants.ALGORITHM
-        );
+        // Sinh URL
+        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
+        String presignedUrl = presignedRequest.url().toString();
 
-        // Encode Policy bằng Base64
-        String base64Policy = StorageUtils.encodePolicyToBase64(policyJson);
-
-        // Tính toán chữ ký Signature V4
-        String signature = AwsSignatureUtils.calculateSignatureV4(
-                base64Policy, timeInfo.dateStamp(), properties.getSecretKey(),
-                StorageConstants.REGION, StorageConstants.SERVICE
-        );
-
-        // Đóng gói các trường để trả về cho Frontend
-        return buildFinalResponse(
-                objectKey, request.getContentType(), credential, timeInfo.amzDate(), base64Policy, signature
-        );
-    }
-
-    private UploadPostResponse buildFinalResponse(
-            String objectKey, String contentType, String credential,
-            String amzDate, String base64Policy, String signature) {
-
-        Map<String, String> formData = new HashMap<>();
-        formData.put("key", objectKey);
-        formData.put("Content-Type", contentType);
-        formData.put("x-amz-credential", credential);
-        formData.put("x-amz-algorithm", StorageConstants.ALGORITHM);
-        formData.put("x-amz-date", amzDate);
-        formData.put("Policy", base64Policy);
-        formData.put("x-amz-signature", signature);
-
-        // Lấy Account ID từ properties để build URL
-        String endpointUrl = String.format("https://%s.r2.cloudflarestorage.com/%s",
-                properties.getAccountId(), properties.getBucket());
-
+        // Xây dựng URL công khai
         String baseUrl = properties.getPublicUrl();
         if (baseUrl != null && baseUrl.endsWith("/")) {
             baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
@@ -140,9 +116,9 @@ public class CloudflareStorageServiceImpl implements StorageService {
         String publicUrl = String.format("%s/%s", baseUrl, objectKey);
 
         return UploadPostResponse.builder()
-                .uploadUrl(endpointUrl)
+                .uploadUrl(presignedUrl)
                 .objectKey(objectKey)
-                .formData(formData)
+                .formData(new HashMap<>())
                 .publicUrl(publicUrl)
                 .build();
     }
