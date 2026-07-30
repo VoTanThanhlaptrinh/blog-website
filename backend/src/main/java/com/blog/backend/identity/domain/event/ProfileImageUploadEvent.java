@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 public class ProfileImageUploadEvent extends ApplicationEvent {
     private final UploadUrlRequest request;
-    
+
     @Setter
     private UploadPostResponse response;
 

@@ -41,8 +41,8 @@ public class SecurityConfig {
         private final HttpCookieOAuth2AuthorizationRequestRepository httpCookieOAuth2AuthorizationRequestRepository;
         private final com.blog.backend.identity.api.filter.CookieJwtAuthenticationFilter cookieJwtAuthenticationFilter;
 
-        @Value("${app.frontend.url:http://localhost:4200}")
-        private String frontendUrl;
+        @Value("#{'${app.cors.allowed-origins:${app.frontend.url:http://localhost:4200}}'.split(',')}")
+        private List<String> allowedOrigins;
 
         /**
          * Cấu hình Chuỗi lọc Bảo mật (Security Filter Chain):
@@ -96,7 +96,7 @@ public class SecurityConfig {
         @Bean
         public CorsConfigurationSource corsConfigurationSource() {
                 CorsConfiguration configuration = new CorsConfiguration();
-                configuration.setAllowedOriginPatterns(List.of(frontendUrl));
+                configuration.setAllowedOriginPatterns(allowedOrigins);
                 configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
                 configuration.setAllowedHeaders(List.of("*"));
                 configuration.setExposedHeaders(List.of("Authorization", "Set-Cookie", "Location"));
