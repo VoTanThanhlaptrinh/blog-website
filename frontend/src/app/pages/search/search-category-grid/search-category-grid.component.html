@@ -19,6 +19,9 @@
                                 <span
                                     class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent-rust text-[20px] transition-colors">search</span>
                                 <input
+                                    (input)="onKeywordSearchInput($event)"
+                                    (keyup.enter)="onKeywordSearchEnter()"
+                                    [value]="keywordSearchQuery()"
                                     class="w-full h-11 pl-10 pr-4 bg-pure-white dark:bg-inverse-surface border-2 border-outline-variant/40 hover:border-accent-rust/50 rounded-xl font-body-md text-body-md text-text-ink focus:outline-none focus:border-accent-rust focus:ring-1 focus:ring-accent-rust placeholder:text-text-muted/60 transition-all shadow-sm"
                                     placeholder="Bài viết, tác giả..." type="text">
                             </div>
@@ -210,19 +213,42 @@
             </section>
 
             <!-- Articles Grid (1 Col Mobile, 2 Cols Tablet md: & Desktop lg:) -->
-            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                @for (article of articles; track article.id) {
-                    <app-blog-card [post]="article"></app-blog-card>
-                }
-            </section>
+            @if (!loading() && blogs().length === 0) {
+                <div class="rounded-2xl border border-dashed border-outline-variant p-12 text-center mt-6">
+                    <p class="text-text-muted font-body-md">Không tìm thấy bài viết nào phù hợp.</p>
+                </div>
+            } @else {
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    @for (article of blogs(); track article.id) {
+                        <app-blog-card [post]="article"></app-blog-card>
+                    }
+                </section>
+            }
+
+            @if (loading()) {
+                <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                    @for (item of [1,2,3,4]; track item) {
+                        <div class="animate-pulse flex flex-col rounded-xl border border-outline-variant bg-surface p-6">
+                            <div class="h-40 w-full rounded-lg bg-outline-variant/50 mb-4"></div>
+                            <div class="h-6 w-3/4 rounded bg-outline-variant/50 mb-2"></div>
+                            <div class="h-4 w-full rounded bg-outline-variant/50 mb-4"></div>
+                            <div class="h-4 w-1/2 rounded bg-outline-variant/50"></div>
+                        </div>
+                    }
+                </section>
+            }
 
             <!-- Pagination / Load More -->
-            <div class="mt-10 flex justify-center">
-                <button
-                    class="px-8 py-3.5 bg-accent-rust text-pure-white rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all shadow-md font-medium">
-                    Tải thêm bài viết
-                </button>
-            </div>
+            @if (hasMore()) {
+                <div class="mt-10 flex justify-center">
+                    <button
+                        (click)="loadMore()"
+                        [disabled]="loading()"
+                        class="px-8 py-3.5 bg-accent-rust text-pure-white rounded-xl font-label-md text-label-md hover:opacity-90 active:scale-95 transition-all shadow-md font-medium disabled:opacity-50">
+                        {{ loading() ? 'Đang tải...' : 'Tải thêm bài viết' }}
+                    </button>
+                </div>
+            }
         </div>
     </div>
 </main>

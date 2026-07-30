@@ -4,7 +4,44 @@
     <p class="text-sm text-stone-500">Cập nhật thông tin công khai và hồ sơ cá nhân của bạn.</p>
   </div>
 
+  <!-- Hidden file input for avatar -->
+  <input #avatarInput type="file" accept="image/*" class="hidden" (change)="onAvatarSelected($event)" />
+
   <form [formGroup]="profileForm" (ngSubmit)="onSubmit()" class="space-y-6">
+    <!-- Avatar Section -->
+    <div class="flex items-center gap-6 pb-6 border-b border-stone-200">
+      <div class="relative group cursor-pointer" (click)="avatarInput.click()">
+        <div class="w-24 h-24 rounded-full border border-stone-200 overflow-hidden bg-stone-100 flex items-center justify-center shadow-xs">
+          @if (avatarUrl()) {
+            <img class="w-full h-full object-cover" [src]="avatarUrl()" alt="Avatar">
+          } @else {
+            <span class="material-symbols-outlined text-5xl text-stone-400">account_circle</span>
+          }
+        </div>
+        <button
+          type="button"
+          (click)="avatarInput.click(); $event.stopPropagation()"
+          class="absolute bottom-0 right-0 bg-accent-rust text-white p-2 rounded-full border-2 border-white shadow-sm active:scale-95 transition-transform hover:bg-accent-rust/90 flex items-center justify-center"
+        >
+          <span class="material-symbols-outlined text-sm">{{ uploadingAvatar() ? 'sync' : 'photo_camera' }}</span>
+        </button>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-stone-900">Ảnh đại diện</h3>
+        <p class="text-xs text-stone-500 mt-1">
+          {{ uploadingAvatar() ? 'Đang tải ảnh lên...' : 'Khuyến nghị ảnh định dạng JPG, PNG hoặc WEBP.' }}
+        </p>
+        <button
+          type="button"
+          (click)="avatarInput.click()"
+          [disabled]="uploadingAvatar()"
+          class="mt-2.5 inline-flex items-center gap-1.5 px-3 py-1.5 border border-stone-300 rounded-lg text-xs font-medium text-stone-700 hover:bg-stone-50 transition-colors"
+        >
+          <span class="material-symbols-outlined text-[16px]">upload</span>
+          Tải ảnh lên
+        </button>
+      </div>
+    </div>
     <!-- Phone -->
     <div>
       <label class="block text-sm font-medium text-stone-700 mb-1">Số điện thoại</label>

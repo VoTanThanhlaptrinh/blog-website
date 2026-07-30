@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminBlogService } from '../../../core/services/admin-blog.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { BlogStatus } from '../../../core/models/blog.model';
 
 @Component({
@@ -13,6 +14,7 @@ import { BlogStatus } from '../../../core/models/blog.model';
 })
 export class AdminContentManagementComponent implements OnInit {
   protected readonly adminBlogService = inject(AdminBlogService);
+  private readonly toastService = inject(ToastService);
 
   readonly blogs$ = this.adminBlogService.blogs$;
   readonly pageMeta$ = this.adminBlogService.pageMeta$;
@@ -57,8 +59,11 @@ export class AdminContentManagementComponent implements OnInit {
   onApprove(id: number): void {
     if (confirm('Bạn có chắc chắn muốn phê duyệt bài viết này không?')) {
       this.adminBlogService.approveBlog(id).subscribe({
-        next: () => this.loadBlogs(),
-        error: (err) => alert(err?.error?.message || 'Có lỗi xảy ra khi phê duyệt bài viết.')
+        next: () => {
+          this.toastService.success('Đã phê duyệt bài viết thành công.');
+          this.loadBlogs();
+        },
+        error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi phê duyệt bài viết.')
       });
     }
   }
@@ -76,7 +81,7 @@ export class AdminContentManagementComponent implements OnInit {
   confirmReject(): void {
     if (!this.rejectingBlogId) return;
     if (!this.rejectReason.trim()) {
-      alert('Vui lòng nhập lý do từ chối.');
+      this.toastService.warning('Vui lòng nhập lý do từ chối.');
       return;
     }
 
@@ -84,9 +89,10 @@ export class AdminContentManagementComponent implements OnInit {
       next: () => {
         this.rejectingBlogId = null;
         this.rejectReason = '';
+        this.toastService.success('Đã từ chối bài viết.');
         this.loadBlogs();
       },
-      error: (err) => alert(err?.error?.message || 'Có lỗi xảy ra khi từ chối bài viết.')
+      error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi từ chối bài viết.')
     });
   }
 

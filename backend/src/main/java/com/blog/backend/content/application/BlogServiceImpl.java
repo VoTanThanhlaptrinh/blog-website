@@ -16,6 +16,8 @@ import com.blog.backend.interaction.domain.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -62,7 +64,7 @@ public class BlogServiceImpl implements BlogService {
                 .build();
 
         blog = blogRepository.save(blog);
-        return mapToResponse(blog);
+        return mapToResponse(blog, currentUser);
     }
 
     @Override
@@ -77,7 +79,7 @@ public class BlogServiceImpl implements BlogService {
             }
         }
 
-        return mapToResponse(blog);
+        return mapToResponse(blog, currentUser);
     }
 
     @Override
@@ -140,7 +142,7 @@ public class BlogServiceImpl implements BlogService {
 
         Page<Blog> pageResult = blogRepository.findAll(spec, pageable);
         List<BlogResponse> content = pageResult.getContent().stream()
-                .map(this::mapToResponse)
+                .map(b -> mapToResponse(b, currentUser))
                 .collect(Collectors.toList());
 
         return PageResponse.<BlogResponse>builder()
@@ -173,7 +175,7 @@ public class BlogServiceImpl implements BlogService {
         if (request.getStatus() != null) blog.setStatus(request.getStatus());
 
         blog = blogRepository.save(blog);
-        return mapToResponse(blog);
+        return mapToResponse(blog, currentUser);
     }
 
     @Override
@@ -194,6 +196,53 @@ public class BlogServiceImpl implements BlogService {
         blogRepository.save(blog);
     }
 
+    @Override
+    public BlogCursorResponse searchBlogsCursor(String keyword, List<String> categoryNames, Long lastId, int limit, User currentUser) {
+        Specification<Blog> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("status"), BlogStatus.PUBLISHED));
+
+            if (categoryNames != null && !categoryNames.isEmpty()) {
+                Predicate[] categoryPredicates = categoryNames.stream()
+                        .map(name -> cb.like(cb.lower(root.get("category").get("name")), "%" + name.toLowerCase() + "%"))
+                        .toArray(Predicate[]::new);
+                predicates.add(cb.or(categoryPredicates));
+            }
+
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String likePattern = "%" + keyword.trim().toLowerCase() + "%";
+                Predicate titlePredicate = cb.like(cb.lower(root.get("title")), likePattern);
+                Predicate descPredicate = cb.like(cb.lower(root.get("description")), likePattern);
+                predicates.add(cb.or(titlePredicate, descPredicate));
+            }
+
+            if (lastId != null) {
+                predicates.add(cb.lessThan(root.get("id"), lastId));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Blog> pageResult = blogRepository.findAll(spec, pageRequest);
+
+        List<BlogResponse> content = pageResult.getContent().stream()
+                .map(b -> mapToResponse(b, currentUser))
+                .collect(Collectors.toList());
+
+        boolean hasMore = content.size() == limit && pageResult.hasNext();
+        Long nextCursor = null;
+        if (!content.isEmpty()) {
+            nextCursor = content.get(content.size() - 1).getId();
+        }
+
+        return BlogCursorResponse.builder()
+                .content(content)
+                .hasMore(hasMore)
+                .nextCursor(nextCursor)
+                .build();
+    }
+
     private boolean isAuthorOrAdmin(User currentUser, Blog blog) {
         if (currentUser == null || currentUser.getId() == null) return false;
         boolean isAuthor = blog.getUser() != null && blog.getUser().getId().equals(currentUser.getId());
@@ -206,7 +255,7 @@ public class BlogServiceImpl implements BlogService {
                 .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()) || "ADMIN".equals(auth.getAuthority()));
     }
 
-    private BlogResponse mapToResponse(Blog blog) {
+    private BlogResponse mapToResponse(Blog blog, User currentUser) {
         AuthorResponse authorResponse = null;
         if (blog.getUser() != null) {
             User u = blog.getUser();
@@ -231,6 +280,13 @@ public class BlogServiceImpl implements BlogService {
         int likesCount = (int) likeRepository.countByBlogIdAndLikedTrue(blog.getId());
         int commentsCount = (int) commentRepository.countByBlogIdAndStatusNot(blog.getId(), CommentStatus.DELETED);
 
+        boolean likedByCurrentUser = false;
+        if (currentUser != null && currentUser.getId() != null) {
+            likedByCurrentUser = likeRepository.findByBlogIdAndUserId(blog.getId(), currentUser.getId())
+                    .map(com.blog.backend.interaction.domain.entity.Like::isLiked)
+                    .orElse(false);
+        }
+
         return BlogResponse.builder()
                 .id(blog.getId())
                 .title(blog.getTitle())
@@ -241,6 +297,7 @@ public class BlogServiceImpl implements BlogService {
                 .author(authorResponse)
                 .category(categoryResponse)
                 .likesCount(likesCount)
+                .likedByCurrentUser(likedByCurrentUser)
                 .commentsCount(commentsCount)
                 .viewsCount(blog.getViewCount())
                 .sharesCount(blog.getShareCount())

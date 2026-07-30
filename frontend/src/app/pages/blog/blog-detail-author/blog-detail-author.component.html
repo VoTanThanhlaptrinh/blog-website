@@ -205,14 +205,6 @@
             </a>
           </div>
 
-          <div class="flex gap-3">
-            <button
-              (click)="toggleLike()"
-              class="px-4 py-2 text-white font-medium text-xs active:scale-95 transition-transform bg-accent-rust rounded-lg shadow"
-            >
-              {{ isLiked() ? 'Đã thích' : 'Thích bài viết' }}
-            </button>
-          </div>
         </div>
       </section>
 
@@ -321,11 +313,19 @@
               >{{ blog()?.author?.bio || 'Tác giả bài viết' }}</span
             >
           </div>
-          <button
-            class="w-full mt-2 py-2 border border-accent-rust text-accent-rust font-label-md text-[12px] hover:bg-accent-rust hover:text-white transition-all rounded-lg active:scale-95"
-          >
-            Theo dõi
-          </button>
+          @if (blog()?.author?.id !== authService.currentUser()?.id) {
+            <button
+              (click)="toggleFollow()"
+              class="w-full mt-2 py-2 border font-label-md text-[12px] transition-all rounded-lg active:scale-95 flex items-center justify-center gap-1.5"
+              [ngClass]="isFollowing() ? 'bg-stone-100 border-stone-200 text-stone-600 hover:bg-stone-200' : 'border-accent-rust text-accent-rust hover:bg-accent-rust hover:text-white'"
+            >
+              @if (isFollowing()) {
+                <span class="material-symbols-outlined text-[14px]">check</span> Đang theo dõi
+              } @else {
+                Theo dõi
+              }
+            </button>
+          }
         </div>
       </div>
     </aside>

@@ -13,6 +13,12 @@ export interface PageResponse<T> {
   last: boolean;
 }
 
+export interface BlogCursorResponse {
+  content: BlogResponse[];
+  hasMore: boolean;
+  nextCursor?: number;
+}
+
 export interface AuthorResponse {
   id: number;
   email: string;
@@ -44,6 +50,7 @@ export interface BlogResponse {
   author: AuthorResponse;
   category?: CategoryResponse;
   likesCount: number;
+  likedByCurrentUser?: boolean;
   commentsCount: number;
   viewsCount: number;
   sharesCount: number;

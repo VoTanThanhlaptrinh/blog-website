@@ -8,6 +8,7 @@ import {
   CreateBlogRequest,
   HomeStatsResponse,
   PageResponse,
+  BlogCursorResponse,
   UpdateBlogRequest,
 } from '../models/blog.model';
 
@@ -56,6 +57,33 @@ export class BlogService {
       }),
       catchError((err) => {
         const errorMessage = err?.error?.message || 'Không thể tải danh sách bài viết';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Search blogs using cursor pagination
+   */
+  searchBlogsCursor(params: { keyword?: string; categories?: string[]; lastId?: number; limit?: number }): Observable<BlogCursorResponse> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    let httpParams = new HttpParams();
+    if (params.keyword) httpParams = httpParams.set('keyword', params.keyword);
+    if (params.categories && params.categories.length > 0) {
+      httpParams = httpParams.set('categories', params.categories.join(','));
+    }
+    if (params.lastId !== undefined) httpParams = httpParams.set('lastId', params.lastId.toString());
+    if (params.limit !== undefined) httpParams = httpParams.set('limit', params.limit.toString());
+
+    return this.http.get<ApiResponse<BlogCursorResponse>>(`${this.apiUrl}/search`, { params: httpParams }).pipe(
+      map((res) => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể tìm kiếm bài viết';
         this.errorSubject.next(errorMessage);
         this.loadingSubject.next(false);
         return throwError(() => err);

@@ -22,6 +22,7 @@ public class BlogResponse {
     private AuthorResponse author;
     private CategoryResponse category;
     private int likesCount;
+    private boolean likedByCurrentUser;
     private int commentsCount;
     private int viewsCount;
     private int sharesCount;

@@ -4,6 +4,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { FileService } from '../../../core/services/file.service';
 import { BlogService } from '../../../core/services/blog.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { BlogStatus } from '../../../core/models/blog.model';
 
 interface HistoryState {
@@ -21,6 +22,7 @@ interface HistoryState {
 export class BlogCreationSplitComponent implements OnInit {
   private readonly fileService = inject(FileService);
   private readonly blogService = inject(BlogService);
+  private readonly toastService = inject(ToastService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
 
@@ -52,7 +54,7 @@ export class BlogCreationSplitComponent implements OnInit {
         },
         error: (err) => {
           console.error('Lỗi khi tải thông tin bài viết:', err);
-          alert('Không thể tải bài viết để chỉnh sửa.');
+          this.toastService.error('Không thể tải bài viết để chỉnh sửa.');
         }
       });
     }
@@ -284,7 +286,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
       },
       error: (err: unknown) => {
         console.error('Lỗi upload ảnh lên Cloudflare R2:', err);
-        alert(`Không thể upload ảnh "${file.name}". Vui lòng thử lại.`);
+        this.toastService.error(`Không thể upload ảnh "${file.name}". Vui lòng thử lại.`);
         this.body = this.body.replace(`\n![${file.name}](${tempKey})\n`, '');
         this.recordHistory(this.body);
       },
@@ -312,11 +314,11 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
 
   submit(status: BlogStatus): void {
     if (!this.title.trim()) {
-      alert('Vui lòng nhập tiêu đề bài viết.');
+      this.toastService.warning('Vui lòng nhập tiêu đề bài viết.');
       return;
     }
     if (!this.body.trim()) {
-      alert('Vui lòng nhập nội dung bài viết.');
+      this.toastService.warning('Vui lòng nhập nội dung bài viết.');
       return;
     }
 
@@ -337,7 +339,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
         error: (err) => {
           console.error('Lỗi khi cập nhật bài viết:', err);
           this.submitting.set(false);
-          alert(err?.error?.message || 'Có lỗi xảy ra khi cập nhật bài viết.');
+          this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi cập nhật bài viết.');
         }
       });
     } else {
@@ -354,7 +356,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
         error: (err) => {
           console.error('Lỗi khi tạo bài viết:', err);
           this.submitting.set(false);
-          alert(err?.error?.message || 'Có lỗi xảy ra khi tạo bài viết.');
+          this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi tạo bài viết.');
         }
       });
     }

@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminReportService } from '../../../core/services/admin-report.service';
+import { ToastService } from '../../../core/services/toast.service';
 import { ReportStatus, ReportTargetType } from '../../../core/models/admin.model';
 
 @Component({
@@ -13,6 +14,7 @@ import { ReportStatus, ReportTargetType } from '../../../core/models/admin.model
 })
 export class AdminReportsComponent implements OnInit {
   protected readonly adminReportService = inject(AdminReportService);
+  private readonly toastService = inject(ToastService);
 
   readonly reports$ = this.adminReportService.reports$;
   readonly pageMeta$ = this.adminReportService.pageMeta$;
@@ -78,9 +80,10 @@ export class AdminReportsComponent implements OnInit {
       next: () => {
         this.resolvingReportId = null;
         this.adminNotes = '';
+        this.toastService.success('Đã cập nhật báo cáo thành công.');
         this.loadReports();
       },
-      error: (err) => alert(err?.error?.message || 'Có lỗi xảy ra khi cập nhật báo cáo.')
+      error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi cập nhật báo cáo.')
     });
   }
 

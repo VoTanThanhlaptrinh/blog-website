@@ -8,9 +8,12 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch, withInterceptors } from '@angular/common/http';
 import { provideMarkdown, MARKED_OPTIONS, CLIPBOARD_OPTIONS } from 'ngx-markdown';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 import { CustomClipboardButtonComponent } from './components/custom-clipboard-button/custom-clipboard-button.component';
 import { AuthService } from './core/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
+import { provideAnimations } from '@angular/platform-browser/animations';
+import { provideToastr } from 'ngx-toastr';
 
 export function initializeApp() {
   const authService = inject(AuthService);
@@ -35,7 +38,13 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch(), withInterceptors([apiInterceptor])),
+    provideHttpClient(withFetch(), withInterceptors([apiInterceptor, errorInterceptor])),
+    provideAnimations(),
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true,
+    }),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

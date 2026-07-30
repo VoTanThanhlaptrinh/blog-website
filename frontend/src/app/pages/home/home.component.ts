@@ -81,14 +81,6 @@ export class HomeComponent implements OnInit {
     }).subscribe();
   }
 
-  onPageChange(page: number): void {
-    this.loadBlogs(page);
-    window.scrollTo({ top: 500, behavior: 'smooth' });
-  }
-
-  getPagesArray(totalPages: number): number[] {
-    return Array.from({ length: totalPages }, (_, i) => i);
-  }
 
   formatStat(stat: Stat): string {
     const v = stat.display();

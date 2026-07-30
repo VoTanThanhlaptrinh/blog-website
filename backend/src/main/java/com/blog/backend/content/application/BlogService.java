@@ -11,4 +11,5 @@ public interface BlogService {
     PageResponse<BlogResponse> getBlogs(String keyword, BlogStatus status, Long userId, Long categoryId, Pageable pageable, User currentUser);
     BlogResponse updateBlog(Long id, User currentUser, UpdateBlogRequest request);
     void deleteBlog(Long id, User currentUser);
+    BlogCursorResponse searchBlogsCursor(String keyword, java.util.List<String> categoryNames, Long lastId, int limit, User currentUser);
 }
