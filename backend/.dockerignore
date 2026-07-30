@@ -1,0 +1,23 @@
+# Build output
+target/
+*.jar
+*.war
+
+# IDE files
+.idea/
+.mvn/wrapper/maven-wrapper.jar
+*.iml
+.classpath
+.project
+.settings/
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs and environment
+*.log
+.env
+HELP.md
+Test.java
