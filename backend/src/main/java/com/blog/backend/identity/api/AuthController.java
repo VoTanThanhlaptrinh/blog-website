@@ -144,6 +144,7 @@ public class AuthController {
                 .httpOnly(true)
                 .path("/")
                 .maxAge(0)
+                .sameSite("Lax")
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, springCookie.toString());
         return ResponseEntity.ok().build();

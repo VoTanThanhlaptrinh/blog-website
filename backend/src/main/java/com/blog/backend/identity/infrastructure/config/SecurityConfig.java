@@ -87,7 +87,8 @@ public class SecurityConfig {
                                                 .userInfoEndpoint(userInfo -> userInfo
                                                                 .userService(customOAuth2UserService))
                                                 .successHandler(oAuth2AuthenticationSuccessHandler))
-                                .addFilterBefore(cookieJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                                .addFilterBefore(cookieJwtAuthenticationFilter,
+                                                UsernamePasswordAuthenticationFilter.class)
                                 .build();
         }
 

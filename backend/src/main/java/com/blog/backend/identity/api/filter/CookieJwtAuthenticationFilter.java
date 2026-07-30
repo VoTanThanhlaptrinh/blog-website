@@ -1,7 +1,6 @@
 package com.blog.backend.identity.api.filter;
 
 import com.blog.backend.identity.application.JwtService;
-import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.identity.domain.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -9,6 +8,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j // Thay thế System.out.println
 @Component
 @RequiredArgsConstructor
 public class CookieJwtAuthenticationFilter extends OncePerRequestFilter {
@@ -40,32 +41,45 @@ public class CookieJwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 if (jwtService.isTokenValid(token)) {
                     Object userIdClaim = jwtService.getClaim(token, "userId", Object.class);
+
                     if (userIdClaim != null) {
                         Long userId = userIdClaim instanceof Number
                                 ? ((Number) userIdClaim).longValue()
                                 : Long.valueOf(userIdClaim.toString());
 
-                        User userProxy = userRepository.getReferenceById(userId);
+                        // Dùng findUserByIdWithRoles thay vì findById để kéo kèm theo userRoles, tránh LazyInitializationException
+                        userRepository.findUserByIdWithRoles(userId).ifPresent(user -> {
 
-                        List<?> rolesList = jwtService.getClaim(token, "roles", List.class);
-                        List<SimpleGrantedAuthority> authorities = List.of();
-                        if (rolesList != null) {
-                            authorities = rolesList.stream()
-                                    .map(role -> new SimpleGrantedAuthority(role.toString()))
-                                    .collect(Collectors.toList());
-                        }
+                            List<?> rolesList = jwtService.getClaim(token, "roles", List.class);
+                            List<SimpleGrantedAuthority> authorities = List.of();
 
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                                userProxy,
-                                null,
-                                authorities
-                        );
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                            if (rolesList != null) {
+                                authorities = rolesList.stream()
+                                        // Đảm bảo role có prefix ROLE_ nếu hệ thống của bạn yêu cầu
+                                        .map(role -> {
+                                            String roleStr = role.toString();
+                                            if (!roleStr.startsWith("ROLE_")) {
+                                                roleStr = "ROLE_" + roleStr;
+                                            }
+                                            return new SimpleGrantedAuthority(roleStr);
+                                        })
+                                        .collect(Collectors.toList());
+                            }
+
+                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                                    user,
+                                    null,
+                                    authorities);
+
+                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            SecurityContextHolder.getContext().setAuthentication(authToken);
+                        });
                     }
                 }
             } catch (Exception e) {
-                System.out.println("Lỗi xác thực Cookie JWT trong Filter: " + e.getMessage());
+                // Ghi log lỗi thay vì in ra màn hình console
+                log.error("Lỗi xác thực Cookie JWT trong Filter: {}", e.getMessage());
+                throw e;
             }
         }
 

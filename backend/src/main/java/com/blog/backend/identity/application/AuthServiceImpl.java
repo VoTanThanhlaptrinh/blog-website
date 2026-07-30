@@ -106,7 +106,6 @@ public class AuthServiceImpl implements AuthService {
                 .build();
 
         return AuthResponse.builder()
-                .accessToken(tokenValue)
                 .user(userProfile)
                 .build();
     }
