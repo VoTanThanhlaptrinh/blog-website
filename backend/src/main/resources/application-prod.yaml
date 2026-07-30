@@ -20,6 +20,8 @@ spring:
 app:
   frontend:
     url: https://thanhblog.online
+  cors:
+    allowed-origins: https://thanhblog.online,https://www.thanhblog.online
   cookie:
     secure: true
     same-site: LAX

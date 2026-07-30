@@ -49,8 +49,15 @@ public class CloudflareStorageServiceImpl implements StorageService {
             throw new IllegalArgumentException("Đường dẫn file tạm không hợp lệ hoặc không thuộc vùng xử lý");
         }
 
-        // 2. Sử dụng Regex ^prefix để chỉ xóa chữ prefix ở đầu chuỗi
-        String permanentKey = tempKey.replaceFirst("^" + prefix, "");
+        // 2. Xóa thư mục "temp/" khỏi đường dẫn để chuyển thành file chính thức
+        // Ví dụ: "identity/temp/avatar/123.jpg" -> "identity/avatar/123.jpg"
+        String permanentKey;
+        if (prefix.contains("temp/")) {
+            permanentKey = tempKey.replaceFirst("temp/", "");
+        } else {
+            permanentKey = tempKey.replaceFirst("^" + prefix, "");
+        }
+        
         String bucketName = properties.getBucket();
 
         try {
