@@ -1,4 +1,4 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, tap, finalize } from 'rxjs';
@@ -27,7 +27,7 @@ export class AuthService {
 
   private readonly apiUrl = '/api/v1/auth';
 
-  readonly currentUser = signal<UserProfileResponse | null>(null);
+  readonly currentUser = signal<UserProfileResponse | null | undefined>(undefined);
 
   /**
    * Đăng nhập mạng xã hội (Google / Facebook).

@@ -1,5 +1,5 @@
-import { Component, HostListener, ElementRef, OnInit, inject, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, HostListener, ElementRef, OnInit, inject, signal, } from '@angular/core';
+import { CommonModule, } from '@angular/common';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NotificationService } from '../../core/services/notification.service';
 import { AuthService } from '../../core/services/auth.service';
@@ -27,6 +27,12 @@ export class HeaderComponent implements OnInit {
     { label: 'Khám phá', path: '/search' },
     { label: 'Viết bài', path: '/blog/creation' },
   ];
+
+  getUserDisplayName(user: any): string {
+    if (!user || !user.email) return 'Tài khoản';
+    const emailParts = user.email.split('@');
+    return emailParts[0] || user.email;
+  }
 
   ngOnInit(): void {
     if (this.authService.currentUser()) {

@@ -1,7 +1,7 @@
-import { ApplicationConfig, APP_INITIALIZER, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, APP_INITIALIZER, provideZoneChangeDetection, PLATFORM_ID, inject } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { of } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { catchError, tap } from 'rxjs/operators';
 
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
@@ -10,12 +10,23 @@ import { provideMarkdown, MARKED_OPTIONS, CLIPBOARD_OPTIONS } from 'ngx-markdown
 import { apiInterceptor } from './core/interceptors/api.interceptor';
 import { CustomClipboardButtonComponent } from './components/custom-clipboard-button/custom-clipboard-button.component';
 import { AuthService } from './core/services/auth.service';
+import { isPlatformBrowser } from '@angular/common';
 
-function initializeApp(authService: AuthService) {
+export function initializeApp() {
+  const authService = inject(AuthService);
+  const platformId = inject(PLATFORM_ID);
+
   return () => {
-    return authService.getProfile().pipe(
-      catchError(() => of(null))
-    );
+    if (isPlatformBrowser(platformId)) {
+      return authService.getProfile().pipe(
+        tap((res) => authService.currentUser.set(res.data)),
+        catchError(() => {
+          authService.currentUser.set(null);
+          return of(null);
+        })
+      );
+    }
+    return of(null);
   };
 }
 
