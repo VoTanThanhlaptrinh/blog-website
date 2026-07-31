@@ -5,6 +5,7 @@ import com.blog.backend.admin.domain.entity.Report;
 import com.blog.backend.admin.domain.enums.ReportStatus;
 import com.blog.backend.admin.domain.enums.ReportTargetType;
 import com.blog.backend.admin.domain.repository.ReportRepository;
+import com.blog.backend.admin.domain.repository.SystemSettingRepository;
 import com.blog.backend.content.api.dto.AuthorResponse;
 import com.blog.backend.content.api.dto.BlogResponse;
 import com.blog.backend.content.api.dto.PageResponse;
@@ -15,6 +16,8 @@ import com.blog.backend.content.domain.exception.BlogNotFoundException;
 import com.blog.backend.content.domain.exception.UnauthorizedBlogAccessException;
 import com.blog.backend.content.domain.repository.BlogRepository;
 import com.blog.backend.identity.domain.entity.User;
+import com.blog.backend.identity.domain.enums.UserStatus;
+import com.blog.backend.identity.domain.repository.RoleRepository;
 import com.blog.backend.identity.domain.repository.UserRepository;
 import com.blog.backend.interaction.domain.repository.CommentRepository;
 import jakarta.persistence.criteria.Predicate;
@@ -53,8 +56,8 @@ public class AdminServiceImpl implements AdminService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final ApplicationEventPublisher eventPublisher;
-    private final com.blog.backend.admin.domain.repository.SystemSettingRepository systemSettingRepository;
-    private final com.blog.backend.identity.domain.repository.RoleRepository roleRepository;
+    private final SystemSettingRepository systemSettingRepository;
+    private final RoleRepository roleRepository;
 
     /**
      * Lấy danh sách các bài viết cần duyệt (mặc định lấy trạng thái PENDING).
@@ -338,7 +341,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<AdminUserResponse> getUsers(String role, com.blog.backend.identity.domain.enums.UserStatus status, String keyword, Pageable pageable, User adminUser) {
+    public PageResponse<AdminUserResponse> getUsers(String role, UserStatus status, String keyword, Pageable pageable, User adminUser) {
         validateAdmin(adminUser);
 
         Specification<User> spec = (root, query, cb) -> {

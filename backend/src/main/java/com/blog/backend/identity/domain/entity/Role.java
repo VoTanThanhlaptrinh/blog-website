@@ -3,6 +3,7 @@ package com.blog.backend.identity.domain.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedBy;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @EntityListeners(AuditingEntityListener.class)
+@Getter
 public class Role implements GrantedAuthority{
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
