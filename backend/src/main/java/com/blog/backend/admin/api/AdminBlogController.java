@@ -48,4 +48,16 @@ public class AdminBlogController {
         BlogResponse response = adminService.rejectBlog(id, request, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã từ chối xuất bản bài viết", 200));
     }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportBlogs(
+            @RequestParam(required = false) BlogStatus status,
+            @RequestParam(required = false) String keyword,
+            @AuthenticationPrincipal User adminUser) {
+        byte[] csvData = adminService.exportBlogsCsv(status, keyword, adminUser);
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=blogs_export.csv")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(csvData);
+    }
 }

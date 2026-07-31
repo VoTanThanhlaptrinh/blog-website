@@ -59,82 +59,80 @@
             </div>
         </div>
 
-        <!-- Table & Filters Container -->
-        <div class="bg-pure-white rounded-lg editorial-border shadow-sm overflow-hidden flex flex-col">
-            <!-- Filters -->
-            <div class="flex flex-wrap items-center justify-between px-6 py-4 border-b border-outline-variant/30 gap-4">
-                <div class="flex gap-2 overflow-x-auto scrollbar-hide">
-                    <!-- Target Type Filter Buttons -->
-                    <button (click)="onFilterTargetType(undefined)"
-                        [class.bg-accent-rust]="selectedTargetType === undefined"
-                        [class.text-white]="selectedTargetType === undefined"
-                        [class.text-text-muted]="selectedTargetType !== undefined"
-                        class="px-4 py-1.5 rounded-full font-label-md text-sm whitespace-nowrap transition-colors">
-                        Tất cả đối tượng
-                    </button>
-                    <button (click)="onFilterTargetType(ReportTargetType.BLOG)"
-                        [class.bg-accent-rust]="selectedTargetType === ReportTargetType.BLOG"
-                        [class.text-white]="selectedTargetType === ReportTargetType.BLOG"
-                        [class.text-text-muted]="selectedTargetType !== ReportTargetType.BLOG"
-                        class="px-4 py-1.5 rounded-full hover:-container font-label-md text-sm whitespace-nowrap transition-colors">
-                        Bài viết (BLOG)
-                    </button>
-                    <button (click)="onFilterTargetType(ReportTargetType.COMMENT)"
-                        [class.bg-accent-rust]="selectedTargetType === ReportTargetType.COMMENT"
-                        [class.text-white]="selectedTargetType === ReportTargetType.COMMENT"
-                        [class.text-text-muted]="selectedTargetType !== ReportTargetType.COMMENT"
-                        class="px-4 py-1.5 rounded-full hover:-container font-label-md text-sm whitespace-nowrap transition-colors">
-                        Bình luận (COMMENT)
-                    </button>
-                    <button (click)="onFilterTargetType(ReportTargetType.USER)"
-                        [class.bg-accent-rust]="selectedTargetType === ReportTargetType.USER"
-                        [class.text-white]="selectedTargetType === ReportTargetType.USER"
-                        [class.text-text-muted]="selectedTargetType !== ReportTargetType.USER"
-                        class="px-4 py-1.5 rounded-full hover:-container font-label-md text-sm whitespace-nowrap transition-colors">
-                        Người dùng (USER)
-                    </button>
+        <!-- Filters and Search -->
+        <div class="flex flex-col gap-4 mb-8">
+            <div class="flex items-center border-b border-text-ink/10 overflow-x-auto hide-scrollbar">
+                <button (click)="onFilterTargetType(undefined)"
+                    [class]="selectedTargetType === undefined ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Tất cả đối tượng
+                </button>
+                <button (click)="onFilterTargetType(ReportTargetType.BLOG)"
+                    [class]="selectedTargetType === ReportTargetType.BLOG ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Bài viết (BLOG)
+                </button>
+                <button (click)="onFilterTargetType(ReportTargetType.COMMENT)"
+                    [class]="selectedTargetType === ReportTargetType.COMMENT ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Bình luận (COMMENT)
+                </button>
+                <button (click)="onFilterTargetType(ReportTargetType.USER)"
+                    [class]="selectedTargetType === ReportTargetType.USER ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Người dùng (USER)
+                </button>
+            </div>
+            <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div class="relative w-full sm:w-96">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary"
+                        data-icon="search">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust outline-none transition-all"
+                        placeholder="Tìm kiếm báo cáo..." type="text">
                 </div>
-
-                <div class="flex items-center gap-2">
-                    <span class="font-label-md text-xs text-text-muted uppercase">Trạng thái:</span>
-                    <select [ngModel]="selectedStatus" (ngModelChange)="onFilterStatus($event)"
-                        class="bg-transparent border border-outline-variant rounded px-2 py-1 font-label-md text-sm focus:ring-0 cursor-pointer">
-                        <option [ngValue]="undefined">Tất cả trạng thái</option>
-                        <option [ngValue]="ReportStatus.PENDING">Đang chờ (PENDING)</option>
-                        <option [ngValue]="ReportStatus.RESOLVED_ACCEPTED">Đã chấp nhận (RESOLVED_ACCEPTED)</option>
-                        <option [ngValue]="ReportStatus.RESOLVED_REJECTED">Đã từ chối (RESOLVED_REJECTED)</option>
-                    </select>
+                <div class="flex gap-2 w-full sm:w-auto items-center">
+                    <div class="relative flex-1 sm:flex-none">
+                        <select [ngModel]="selectedStatus" (ngModelChange)="onFilterStatus($event)"
+                            class="w-full px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container font-label-md text-label-md focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust outline-none transition-colors cursor-pointer">
+                            <option [ngValue]="undefined">Tất cả trạng thái</option>
+                            <option [ngValue]="ReportStatus.PENDING">Đang chờ (PENDING)</option>
+                            <option [ngValue]="ReportStatus.RESOLVED_ACCEPTED">Đã chấp nhận (ACCEPTED)</option>
+                            <option [ngValue]="ReportStatus.RESOLVED_REJECTED">Đã từ chối (REJECTED)</option>
+                        </select>
+                    </div>
+                    <button (click)="onExport()"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-stone-50 transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                        <span class="font-label-md text-label-md">Xuất</span>
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Reports Table -->
+        <!-- Table Card -->
+        <div class="bg-pure-white border border-text-ink/5 rounded-xl overflow-hidden shadow-sm">
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr
-                            class="bg-gray-50 border-b border-outline-variant/30 text-xs font-label-md text-text-muted uppercase tracking-wider">
-                            <th class="px-6 py-4">ID</th>
-                            <th class="px-6 py-4">Loại đối tượng</th>
-                            <th class="px-6 py-4">Target ID</th>
-                            <th class="px-6 py-4">Lý do báo cáo</th>
-                            <th class="px-6 py-4">Người báo cáo</th>
-                            <th class="px-6 py-4">Trạng thái</th>
-                            <th class="px-6 py-4">Ngày tạo</th>
-                            <th class="px-6 py-4 text-right">Thao tác</th>
+                        <tr class="bg-stone-50 border-b border-text-ink/5">
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Loại đối tượng</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Target ID</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Lý do báo cáo</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Người báo cáo</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Trạng thái</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Ngày tạo</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Thao tác</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-outline-variant/30 font-body-md text-sm">
+                    <tbody class="divide-y divide-text-ink/5 font-body-md text-sm">
                         <ng-container *ngIf="reports$ | async as reports">
                             <tr *ngIf="reports.length === 0">
                                 <td colspan="8" class="px-6 py-8 text-center text-secondary">
                                     Không có báo cáo nào.
                                 </td>
                             </tr>
-                            <tr *ngFor="let report of reports" class="hover:bg-gray-50 transition-colors">
+                            <tr *ngFor="let report of reports" class="hover:bg-stone-50 transition-colors">
                                 <td class="px-6 py-4 font-mono font-bold text-xs">#{{ report.id }}</td>
                                 <td class="px-6 py-4">
-                                    <span
-                                        class="px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider bg-gray-100 text-gray-800">
+                                    <span class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">
                                         {{ report.targetType }}
                                     </span>
                                 </td>
@@ -146,14 +144,18 @@
                                     {{ report.reporter.email || 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span [ngClass]="{
-                                            'bg-amber-100 text-amber-800': report.status === ReportStatus.PENDING,
-                                            'bg-green-100 text-green-800': report.status === ReportStatus.RESOLVED_ACCEPTED,
-                                            'bg-red-100 text-red-800': report.status === ReportStatus.RESOLVED_REJECTED
-                                        }"
-                                        class="px-2 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider">
-                                        {{ report.status }}
-                                    </span>
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2 h-2 rounded-full"
+                                            [ngClass]="{
+                                                'bg-amber-500': report.status === ReportStatus.PENDING,
+                                                'bg-emerald-500': report.status === ReportStatus.RESOLVED_ACCEPTED,
+                                                'bg-rose-500': report.status === ReportStatus.RESOLVED_REJECTED
+                                            }"></span>
+                                        <span class="font-body-md text-body-md text-on-surface">
+                                            {{ report.status === ReportStatus.PENDING ? 'Đang chờ' :
+                                               report.status === ReportStatus.RESOLVED_ACCEPTED ? 'Chấp nhận' : 'Từ chối' }}
+                                        </span>
+                                    </div>
                                     <p *ngIf="report.adminNotes" class="text-xs text-secondary mt-1 italic"
                                         [title]="report.adminNotes">
                                         Ghi chú: {{ report.adminNotes }}

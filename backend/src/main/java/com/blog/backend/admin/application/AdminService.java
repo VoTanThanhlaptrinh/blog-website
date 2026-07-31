@@ -26,4 +26,18 @@ public interface AdminService {
     AdminDashboardSummaryResponse getDashboardSummary(User adminUser);
     List<DailyGrowthResponse> getGrowthStats(int days, User adminUser);
     List<BlogResponse> getTopBlogs(int limit, User adminUser);
+
+    // User Management
+    PageResponse<AdminUserResponse> getUsers(String role, com.blog.backend.identity.domain.enums.UserStatus status, String keyword, Pageable pageable, User adminUser);
+    AdminUserResponse updateUserStatus(Long userId, UpdateUserStatusRequest request, User adminUser);
+    AdminUserResponse updateUserRole(Long userId, UpdateUserRoleRequest request, User adminUser);
+
+    // System Settings
+    java.util.Map<String, String> getSystemSettings(User adminUser);
+    java.util.Map<String, String> updateSystemSettings(java.util.Map<String, String> settings, User adminUser);
+
+    // CSV Exports
+    byte[] exportUsersCsv(String role, com.blog.backend.identity.domain.enums.UserStatus status, String keyword, User adminUser);
+    byte[] exportBlogsCsv(BlogStatus status, String keyword, User adminUser);
+    byte[] exportReportsCsv(ReportTargetType targetType, ReportStatus status, User adminUser);
 }

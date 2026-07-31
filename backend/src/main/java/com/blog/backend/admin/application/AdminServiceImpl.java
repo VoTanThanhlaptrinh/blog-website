@@ -53,6 +53,8 @@ public class AdminServiceImpl implements AdminService {
     private final CommentRepository commentRepository;
     private final LikeRepository likeRepository;
     private final ApplicationEventPublisher eventPublisher;
+    private final com.blog.backend.admin.domain.repository.SystemSettingRepository systemSettingRepository;
+    private final com.blog.backend.identity.domain.repository.RoleRepository roleRepository;
 
     /**
      * Lấy danh sách các bài viết cần duyệt (mặc định lấy trạng thái PENDING).
@@ -330,5 +332,205 @@ public class AdminServiceImpl implements AdminService {
                 .createdDate(report.getCreatedDate())
                 .modifiedDate(report.getModifiedDate())
                 .build();
+    }
+
+    // ================= USER MANAGEMENT =================
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<AdminUserResponse> getUsers(String role, com.blog.backend.identity.domain.enums.UserStatus status, String keyword, Pageable pageable, User adminUser) {
+        validateAdmin(adminUser);
+
+        Specification<User> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            if (status != null) {
+                predicates.add(cb.equal(root.get("status"), status));
+            }
+            if (keyword != null && !keyword.trim().isEmpty()) {
+                String pattern = "%" + keyword.trim().toLowerCase() + "%";
+                Predicate p1 = cb.like(cb.lower(root.get("email")), pattern);
+                Predicate p2 = cb.like(cb.lower(root.get("phone")), pattern);
+                predicates.add(cb.or(p1, p2));
+            }
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        Page<User> pageResult = userRepository.findAll(spec, pageable);
+        List<AdminUserResponse> content = pageResult.getContent().stream()
+                .map(this::mapToAdminUserResponse)
+                .collect(Collectors.toList());
+
+        return PageResponse.<AdminUserResponse>builder()
+                .content(content)
+                .pageNumber(pageResult.getNumber())
+                .pageSize(pageResult.getSize())
+                .totalElements(pageResult.getTotalElements())
+                .totalPages(pageResult.getTotalPages())
+                .last(pageResult.isLast())
+                .build();
+    }
+
+    @Override
+    @Transactional
+    public AdminUserResponse updateUserStatus(Long userId, UpdateUserStatusRequest request, User adminUser) {
+        validateAdmin(adminUser);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng với ID: " + userId));
+
+        user.setStatus(request.getStatus());
+        if (request.getStatus() == com.blog.backend.identity.domain.enums.UserStatus.ACTIVE) {
+            user.setEnabled(true);
+        } else if (request.getStatus() == com.blog.backend.identity.domain.enums.UserStatus.BANNED) {
+            user.setEnabled(false);
+        }
+        user = userRepository.save(user);
+
+        return mapToAdminUserResponse(user);
+    }
+
+    @Override
+    @Transactional
+    public AdminUserResponse updateUserRole(Long userId, UpdateUserRoleRequest request, User adminUser) {
+        validateAdmin(adminUser);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng với ID: " + userId));
+
+        String roleName = request.getRole();
+        if (!roleName.startsWith("ROLE_")) {
+            roleName = "ROLE_" + roleName.toUpperCase();
+        }
+
+        com.blog.backend.identity.domain.entity.Role role = roleRepository.findByName(roleName)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy role: " + request.getRole()));
+
+        if (user.getUserRoles() != null) {
+            user.getUserRoles().clear();
+        } else {
+            user.setUserRoles(new ArrayList<>());
+        }
+
+        user.getUserRoles().add(com.blog.backend.identity.domain.entity.UserRole.builder()
+                .user(user)
+                .role(role)
+                .status(com.blog.backend.identity.domain.enums.UserRoleStatus.ACTIVE)
+                .build());
+
+        user = userRepository.save(user);
+        return mapToAdminUserResponse(user);
+    }
+
+    private AdminUserResponse mapToAdminUserResponse(User user) {
+        List<String> roles = user.getUserRoles() == null ? List.of() :
+                user.getUserRoles().stream()
+                        .filter(ur -> ur.getStatus() == com.blog.backend.identity.domain.enums.UserRoleStatus.ACTIVE)
+                        .map(ur -> ur.getRole().getName().replace("ROLE_", ""))
+                        .collect(Collectors.toList());
+
+        long postsCount = blogRepository.countByUserIdAndStatusNot(user.getId(), BlogStatus.DRAFT);
+
+        return AdminUserResponse.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .phone(user.getPhone())
+                .bio(user.getBio())
+                .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
+                .status(user.getStatus())
+                .roles(roles)
+                .postsCount(postsCount)
+                .createdDate(user.getCreatedDate())
+                .build();
+    }
+
+    // ================= SYSTEM SETTINGS =================
+
+    @Override
+    @Transactional(readOnly = true)
+    public java.util.Map<String, String> getSystemSettings(User adminUser) {
+        validateAdmin(adminUser);
+        List<com.blog.backend.admin.domain.entity.SystemSetting> settingsList = systemSettingRepository.findAll();
+        java.util.Map<String, String> resultMap = new java.util.HashMap<>();
+
+        // Default values
+        resultMap.put("siteName", "B-BlogHub");
+        resultMap.put("siteDescription", "Nền tảng chia sẻ bài viết kỹ thuật & công nghệ");
+        resultMap.put("maintenanceMode", "false");
+        resultMap.put("maxUploadSizeMb", "10");
+
+        for (com.blog.backend.admin.domain.entity.SystemSetting setting : settingsList) {
+            resultMap.put(setting.getKey(), setting.getValue());
+        }
+
+        return resultMap;
+    }
+
+    @Override
+    @Transactional
+    public java.util.Map<String, String> updateSystemSettings(java.util.Map<String, String> settings, User adminUser) {
+        validateAdmin(adminUser);
+        for (java.util.Map.Entry<String, String> entry : settings.entrySet()) {
+            com.blog.backend.admin.domain.entity.SystemSetting setting = systemSettingRepository.findByKey(entry.getKey())
+                    .orElse(com.blog.backend.admin.domain.entity.SystemSetting.builder()
+                            .key(entry.getKey())
+                            .build());
+            setting.setValue(entry.getValue());
+            systemSettingRepository.save(setting);
+        }
+        return getSystemSettings(adminUser);
+    }
+
+    // ================= CSV EXPORTS =================
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] exportUsersCsv(String role, com.blog.backend.identity.domain.enums.UserStatus status, String keyword, User adminUser) {
+        validateAdmin(adminUser);
+        List<User> users = userRepository.findAll();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID,Email,Phone,Status,CreatedDate\n");
+        for (User u : users) {
+            sb.append(u.getId()).append(",")
+              .append(u.getEmail() != null ? u.getEmail() : "").append(",")
+              .append(u.getPhone() != null ? u.getPhone() : "").append(",")
+              .append(u.getStatus() != null ? u.getStatus() : "").append(",")
+              .append(u.getCreatedDate() != null ? u.getCreatedDate() : "").append("\n");
+        }
+        return sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] exportBlogsCsv(BlogStatus status, String keyword, User adminUser) {
+        validateAdmin(adminUser);
+        List<Blog> blogs = blogRepository.findAll();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID,Title,AuthorEmail,Status,ViewsCount,CreatedDate\n");
+        for (Blog b : blogs) {
+            sb.append(b.getId()).append(",")
+              .append("\"").append(b.getTitle() != null ? b.getTitle().replace("\"", "\"\"") : "").append("\",")
+              .append(b.getUser() != null ? b.getUser().getEmail() : "").append(",")
+              .append(b.getStatus() != null ? b.getStatus() : "").append(",")
+              .append(b.getViewCount()).append(",")
+              .append(b.getCreatedDate() != null ? b.getCreatedDate() : "").append("\n");
+        }
+        return sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public byte[] exportReportsCsv(ReportTargetType targetType, ReportStatus status, User adminUser) {
+        validateAdmin(adminUser);
+        List<Report> reports = reportRepository.findAll();
+        StringBuilder sb = new StringBuilder();
+        sb.append("ID,TargetType,TargetID,Reason,ReporterEmail,Status,CreatedDate\n");
+        for (Report r : reports) {
+            sb.append(r.getId()).append(",")
+              .append(r.getTargetType() != null ? r.getTargetType() : "").append(",")
+              .append(r.getTargetId() != null ? r.getTargetId() : "").append(",")
+              .append("\"").append(r.getReason() != null ? r.getReason().replace("\"", "\"\"") : "").append("\",")
+              .append(r.getReporter() != null ? r.getReporter().getEmail() : "").append(",")
+              .append(r.getStatus() != null ? r.getStatus() : "").append(",")
+              .append(r.getCreatedDate() != null ? r.getCreatedDate() : "").append("\n");
+        }
+        return sb.toString().getBytes(java.nio.charset.StandardCharsets.UTF_8);
     }
 }

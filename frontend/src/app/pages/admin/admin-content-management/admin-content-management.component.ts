@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminBlogService } from '../../../core/services/admin-blog.service';
@@ -23,16 +23,29 @@ export class AdminContentManagementComponent implements OnInit {
   readonly loading$ = this.adminBlogService.loading$;
   readonly error$ = this.adminBlogService.error$;
 
-  selectedStatus: string = '';
+  selectedStatus: string = BlogStatus.PENDING;
   searchKeyword: string = '';
   currentPage: number = 0;
   pageSize: number = 10;
+
+  // Dropdown state
+  activeDropdownBlogId: number | null = null;
 
   // Reject modal / inline state
   rejectingBlogId: number | null = null;
   rejectReason: string = '';
 
   readonly BlogStatus = BlogStatus;
+
+  @HostListener('document:click')
+  closeDropdown(): void {
+    this.activeDropdownBlogId = null;
+  }
+
+  toggleDropdown(blogId: number, event: Event): void {
+    event.stopPropagation();
+    this.activeDropdownBlogId = this.activeDropdownBlogId === blogId ? null : blogId;
+  }
 
   ngOnInit(): void {
     this.loadBlogs();
@@ -99,8 +112,21 @@ export class AdminContentManagementComponent implements OnInit {
     });
   }
 
+  showReason(reason?: string): void {
+    this.confirmService.confirm({
+      title: 'Lý do từ chối bài viết',
+      message: reason || 'Không có lý do chi tiết được cung cấp.',
+      confirmText: 'Đóng',
+      actionType: 'primary'
+    });
+  }
+
   goToPage(page: number): void {
     this.currentPage = page;
     this.loadBlogs();
+  }
+
+  onExport(): void {
+    this.adminBlogService.exportBlogs(this.selectedStatus || undefined, this.searchKeyword || undefined);
   }
 }

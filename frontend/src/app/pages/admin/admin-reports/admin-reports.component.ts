@@ -88,4 +88,8 @@ export class AdminReportsComponent implements OnInit {
     this.currentPage = page;
     this.loadReports();
   }
+
+  onExport(): void {
+    this.adminReportService.exportReports(this.selectedTargetType, this.selectedStatus);
+  }
 }

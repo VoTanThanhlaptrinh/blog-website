@@ -35,4 +35,6 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificat
 
     @Query("SELECT DISTINCT b.thumbnailUrl FROM Blog b WHERE b.user.id = :userId AND b.thumbnailUrl IS NOT NULL AND b.thumbnailUrl <> ''")
     java.util.List<String> findDistinctThumbnailUrlsByUserId(@Param("userId") Long userId);
+
+    long countByUserIdAndStatusNot(Long userId, BlogStatus status);
 }
