@@ -172,7 +172,13 @@ public class BlogServiceImpl implements BlogService {
         if (request.getTitle() != null) blog.setTitle(request.getTitle());
         if (request.getDescription() != null) blog.setDescription(request.getDescription());
         if (request.getContent() != null) blog.setContent(request.getContent());
-        if (request.getStatus() != null) blog.setStatus(request.getStatus());
+        if (request.getStatus() != null) {
+            BlogStatus targetStatus = request.getStatus();
+            if (targetStatus == BlogStatus.PUBLISHED && !isAdmin(currentUser)) {
+                targetStatus = BlogStatus.PENDING;
+            }
+            blog.setStatus(targetStatus);
+        }
 
         blog = blogRepository.save(blog);
         return mapToResponse(blog, currentUser);
