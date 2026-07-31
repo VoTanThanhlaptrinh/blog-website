@@ -5,7 +5,7 @@ import com.blog.backend.interaction.api.dto.CommentLikeResponse;
 import com.blog.backend.interaction.api.dto.LikeResponse;
 import com.blog.backend.interaction.api.dto.ToggleCommentLikeRequest;
 import com.blog.backend.interaction.api.dto.ToggleLikeRequest;
-import com.blog.backend.interaction.application.LikeService;
+import com.blog.backend.interaction.application.itf.LikeService;
 import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

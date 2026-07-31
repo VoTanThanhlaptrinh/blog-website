@@ -45,7 +45,8 @@ public class IdentityUploadEventListener {
             }
 
             StorageUtils.AwsTimeInfo timeInfo = StorageUtils.prepareAwsTimeFormat();
-            String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(), identityConfig.getTempFolderPrefix());
+            String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(),
+                    identityConfig.getTempFolderPrefix());
 
             String accessKey = cloudflareR2Properties.getAccessKey();
             String credential = String.format("%s/%s/%s/%s/aws4_request",
@@ -53,15 +54,14 @@ public class IdentityUploadEventListener {
 
             String policyJson = StorageUtils.buildPolicyJson(
                     timeInfo.expiration(), objectKey, request.getContentType(), credential, timeInfo.amzDate(),
-                    cloudflareR2Properties.getBucket(), identityConfig.getMaxFileSizeBytes(), identityConfig.getAlgorithm()
-            );
+                    cloudflareR2Properties.getBucket(), identityConfig.getMaxFileSizeBytes(),
+                    identityConfig.getAlgorithm());
 
             String base64Policy = StorageUtils.encodePolicyToBase64(policyJson);
 
             String signature = AwsSignatureUtils.calculateSignatureV4(
                     base64Policy, timeInfo.dateStamp(), cloudflareR2Properties.getSecretKey(),
-                    identityConfig.getRegion(), identityConfig.getService()
-            );
+                    identityConfig.getRegion(), identityConfig.getService());
 
             Map<String, String> formData = new HashMap<>();
             formData.put("key", objectKey);
@@ -88,7 +88,6 @@ public class IdentityUploadEventListener {
                     .publicUrl(publicUrl)
                     .build();
 
-
             event.setResponse(response);
         } catch (Exception e) {
             log.error("Error generating presigned url for identity upload", e);
@@ -107,13 +106,22 @@ public class IdentityUploadEventListener {
 
         String tempPrefix = storageProperties.getIdentity().getTempFolderPrefix();
         int index = tempUrl.indexOf(tempPrefix);
-        
+
         if (index >= 0) {
             try {
                 // Lấy phần object key thực sự từ URL (ví dụ: identity/temp/avatar/123.jpg)
-                String tempKey = tempUrl.substring(index);
-                String permanentUrl = storageService.confirmAndActivateFile(tempKey, tempPrefix);
+                String sourceKey = tempUrl.substring(index);
                 
+                // Tự xử lý phần đường dẫn đích, loại bỏ "temp/"
+                String destinationKey;
+                if (tempPrefix.contains("temp/")) {
+                    destinationKey = sourceKey.replaceFirst("temp/", "");
+                } else {
+                    destinationKey = sourceKey.replaceFirst("^" + tempPrefix, "");
+                }
+                
+                String permanentUrl = storageService.copyFile(sourceKey, destinationKey);
+
                 // Cập nhật lại Image entity trong database ở transaction mới
                 Image image = imageRepository.findById(event.getImageId()).orElse(null);
                 if (image != null) {

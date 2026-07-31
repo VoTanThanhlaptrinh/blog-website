@@ -1,8 +1,9 @@
-package com.blog.backend.interaction.application;
+package com.blog.backend.interaction.application.impl;
 
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.identity.domain.repository.UserRepository;
 import com.blog.backend.interaction.api.dto.FollowStatusResponse;
+import com.blog.backend.interaction.application.itf.FollowService;
 import com.blog.backend.interaction.domain.entity.Follow;
 import com.blog.backend.interaction.domain.repository.FollowRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,33 +22,40 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public FollowStatusResponse toggleFollow(User currentUser, Long followingId) {
+        // Kiểm tra quyền truy cập: Người dùng phải đăng nhập để theo dõi
         if (currentUser == null || currentUser.getId() == null) {
             throw new IllegalArgumentException("Người dùng chưa đăng nhập");
         }
+        // Không cho phép người dùng tự theo dõi chính mình
         if (currentUser.getId().equals(followingId)) {
             throw new IllegalArgumentException("Không thể tự theo dõi chính mình");
         }
 
+        // Lấy thông tin người dùng đang được theo dõi từ DB, nếu không tồn tại -> ném
+        // ngoại lệ
         User followingUser = userRepository.findById(followingId)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy tác giả"));
 
-        Optional<Follow> existingFollow = followRepository.findByFollowerIdAndFollowingId(currentUser.getId(), followingId);
+        // Kiểm tra xem người dùng hiện tại đã theo dõi người dùng này chưa
+        Optional<Follow> existingFollow = followRepository.findByFollowerIdAndFollowingId(currentUser.getId(),
+                followingId);
         boolean isFollowing;
 
-        if (existingFollow.isPresent()) {
-            followRepository.delete(existingFollow.get());
-            isFollowing = false;
-        } else {
+        long followersCount = followRepository.countByFollowingId(followingId);
+
+        if (existingFollow.isEmpty()) {
             Follow newFollow = Follow.builder()
                     .follower(currentUser)
                     .following(followingUser)
                     .build();
             followRepository.save(newFollow);
             isFollowing = true;
+            return new FollowStatusResponse(isFollowing, followersCount + 1);
         }
 
-        long followersCount = followRepository.countByFollowingId(followingId);
-        return new FollowStatusResponse(isFollowing, followersCount);
+        followRepository.delete(existingFollow.get());
+        isFollowing = false;
+        return new FollowStatusResponse(isFollowing, followersCount - 1);
     }
 
     @Override

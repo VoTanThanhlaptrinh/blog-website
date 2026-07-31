@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface StorageService {
     UploadPostResponse generatePresignedUrl(UploadUrlRequest request) throws Exception;
-    String confirmAndActivateFile(String tempKey);
-    String confirmAndActivateFile(String tempKey, String prefix);
+    String copyFile(String sourceKey, String destinationKey);
     UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix, String targetPrefix);
 }

@@ -1,4 +1,4 @@
-package com.blog.backend.interaction.application;
+package com.blog.backend.interaction.application.impl;
 
 import com.blog.backend.content.api.dto.AuthorResponse;
 import com.blog.backend.content.api.dto.PageResponse;
@@ -9,6 +9,7 @@ import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.CommentResponse;
 import com.blog.backend.interaction.api.dto.CreateCommentRequest;
 import com.blog.backend.interaction.api.dto.UpdateCommentRequest;
+import com.blog.backend.interaction.application.itf.CommentService;
 import com.blog.backend.interaction.domain.entity.Comment;
 import com.blog.backend.interaction.domain.enums.CommentStatus;
 import com.blog.backend.interaction.domain.exception.*;
@@ -44,10 +45,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentResponse createComment(User currentUser, CreateCommentRequest request) {
+        // Kiểm tra quyền truy cập: Người dùng phải đăng nhập để bình luận
         if (currentUser == null || currentUser.getId() == null) {
             throw new UnauthorizedCommentAccessException("Vui lòng đăng nhập để bình luận");
         }
-
+        // Lấy bài viết từ DB, nếu không tồn tại -> ném ngoại lệ
         Blog blog = blogRepository.findById(request.getBlogId())
                 .orElseThrow(() -> new BlogNotFoundException("Không tìm thấy bài viết với ID: " + request.getBlogId()));
 
