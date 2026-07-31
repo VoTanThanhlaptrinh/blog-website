@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-active-account',
@@ -24,17 +25,12 @@ export class ActiveAccountComponent implements OnInit {
       return;
     }
 
-    this.authService.activeAccount(token).subscribe({
-      next: (res) => {
-        this.loading.set(false);
+    this.authService
+      .activeAccount(token)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((res) => {
         this.success.set(true);
         this.message.set(res?.message || 'Kích hoạt tài khoản thành công! Bạn hiện có thể đăng nhập.');
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.success.set(false);
-        this.message.set(err?.error?.message || 'Kích hoạt tài khoản thất bại. Liên kết có thể đã hết hạn hoặc không hợp lệ.');
-      },
-    });
+      });
   }
 }

@@ -1,10 +1,14 @@
 <!-- Main Content Canvas -->
-<main class="">
-    <div class="w-full md:w-[90%] lg:w-[80%] max-w-[1200px] mx-auto px-10 py-8">
+<main class="py-6 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
         <!-- Header Section -->
-        <div class="mb-8">
-            <h2 class="font-headline-lg text-headline-lg text-text-ink mb-1">Content Management</h2>
-            <p class="text-text-muted font-body-md">Manage, review, and moderate all community articles.</p>
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="space-y-2">
+                <h1 class="text-2xl font-bold text-text-ink mb-2">Quản Lý Bài Viết</h1>
+                <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
+                    Kiểm duyệt và quản lý các bài đăng trên toàn hệ thống.
+                </p>
+            </div>
         </div>
 
         <!-- Error Banner -->
@@ -16,69 +20,6 @@
         <div *ngIf="loading$ | async" class="mb-4 text-sm text-secondary flex items-center gap-2">
             <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
             Đang tải dữ liệu bài viết...
-        </div>
-
-        <!-- Toolbar: Filters & Search -->
-        <div class="bg-pure-white rounded-xl border border-on-surface/5 mb-4">
-            <div class="flex flex-col md:flex-row items-center justify-between p-4 gap-4">
-                <!-- Filters -->
-                <div class="flex items-center gap-1 overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
-                    <button
-                        (click)="onFilterStatus('')"
-                        [class.bg-accent-rust]="selectedStatus === ''"
-                        [class.text-pure-white]="selectedStatus === ''"
-                        [class.text-secondary]="selectedStatus !== ''"
-                        class="px-4 py-2 font-bold rounded-full font-label-md text-label-md whitespace-nowrap transition-colors">
-                        Tất cả
-                    </button>
-                    <button
-                        (click)="onFilterStatus(BlogStatus.PENDING)"
-                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PENDING"
-                        [class.text-pure-white]="selectedStatus === BlogStatus.PENDING"
-                        [class.text-secondary]="selectedStatus !== BlogStatus.PENDING"
-                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
-                        Chờ duyệt (Pending)
-                    </button>
-                    <button
-                        (click)="onFilterStatus(BlogStatus.PUBLISHED)"
-                        [class.bg-accent-rust]="selectedStatus === BlogStatus.PUBLISHED"
-                        [class.text-pure-white]="selectedStatus === BlogStatus.PUBLISHED"
-                        [class.text-secondary]="selectedStatus !== BlogStatus.PUBLISHED"
-                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
-                        Đã xuất bản (Published)
-                    </button>
-                    <button
-                        (click)="onFilterStatus(BlogStatus.DRAFT)"
-                        [class.bg-accent-rust]="selectedStatus === BlogStatus.DRAFT"
-                        [class.text-pure-white]="selectedStatus === BlogStatus.DRAFT"
-                        [class.text-secondary]="selectedStatus !== BlogStatus.DRAFT"
-                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
-                        Nháp (Draft)
-                    </button>
-                    <button
-                        (click)="onFilterStatus(BlogStatus.REJECTED)"
-                        [class.bg-accent-rust]="selectedStatus === BlogStatus.REJECTED"
-                        [class.text-pure-white]="selectedStatus === BlogStatus.REJECTED"
-                        [class.text-secondary]="selectedStatus !== BlogStatus.REJECTED"
-                        class="px-4 py-2 hover:text-accent-rust font-label-md text-label-md whitespace-nowrap transition-colors">
-                        Từ chối (Rejected)
-                    </button>
-                </div>
-                <!-- Search Bar -->
-                <div class="relative w-full md:w-80 flex items-center gap-2">
-                    <div class="relative flex-1">
-                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
-                        <input
-                            [(ngModel)]="searchKeyword"
-                            (keyup.enter)="onSearch()"
-                            class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md"
-                            placeholder="Tìm theo tiêu đề hoặc từ khóa..." type="text">
-                    </div>
-                    <button (click)="onSearch()" class="px-3 py-2 bg-accent-rust text-white text-label-md font-bold rounded-lg hover:opacity-90">
-                        Tìm
-                    </button>
-                </div>
-            </div>
         </div>
 
         <!-- Reject Reason Dialog Overlay -->
@@ -104,6 +45,41 @@
 
         <!-- Data Table Container -->
         <div class="bg-pure-white rounded-xl border border-on-surface/5 overflow-hidden shadow-sm">
+            <!-- Filters and Search Bar -->
+            <div class="flex flex-col xl:flex-row xl:items-end justify-between border-b border-outline-variant/30 px-6 pt-6 gap-4">
+                <!-- Status Filters (Dropdown) -->
+                <div class="w-full xl:w-64 pb-4">
+                    <div class="relative">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">filter_list</span>
+                        <select
+                            [(ngModel)]="selectedStatus"
+                            (ngModelChange)="onFilterStatus($event)"
+                            class="w-full pl-10 pr-10 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md bg-stone-50 appearance-none cursor-pointer">
+                            <option value="">Tất cả trạng thái</option>
+                            <option [value]="BlogStatus.PENDING">Chờ duyệt (Pending)</option>
+                            <option [value]="BlogStatus.PUBLISHED">Đã xuất bản (Published)</option>
+                            <option [value]="BlogStatus.DRAFT">Nháp (Draft)</option>
+                            <option [value]="BlogStatus.REJECTED">Từ chối (Rejected)</option>
+                        </select>
+                        <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-secondary text-[20px] pointer-events-none">expand_more</span>
+                    </div>
+                </div>
+                <!-- Search Bar -->
+                <div class="relative w-full xl:w-96 flex items-center gap-2 pb-4">
+                    <div class="relative flex-1">
+                        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-secondary text-[20px]">search</span>
+                        <input
+                            [(ngModel)]="searchKeyword"
+                            (keyup.enter)="onSearch()"
+                            class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all text-label-md bg-stone-50"
+                            placeholder="Tìm theo tiêu đề hoặc từ khóa..." type="text">
+                    </div>
+                    <button (click)="onSearch()" class="px-4 py-2 bg-accent-rust text-white text-label-md font-bold rounded-lg hover:opacity-90 transition-opacity">
+                        Tìm kiếm
+                    </button>
+                </div>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
@@ -124,9 +100,9 @@
                                 </td>
                             </tr>
                             <tr *ngFor="let blog of blogs" class="hover:-bright transition-colors group">
-                                <td class="px-6 py-4">
+                                <td class="px-6 py-4 max-w-[200px] md:max-w-[250px] lg:max-w-[300px]">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-body-md font-bold text-text-ink leading-tight line-clamp-2">
+                                        <span class="text-body-md font-bold text-text-ink leading-tight line-clamp-2" [title]="blog.title">
                                             {{ blog.title }}
                                         </span>
                                     </div>

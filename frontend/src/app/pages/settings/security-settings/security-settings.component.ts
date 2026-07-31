@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
 import { ChangePasswordRequest } from '../../../core/models/auth.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-security-settings',
@@ -44,17 +45,12 @@ export class SecuritySettingsComponent implements OnInit {
 
     const req: ChangePasswordRequest = { oldPassword, newPassword };
 
-    this.authService.changePassword(req).subscribe({
-      next: () => {
-        this.loading.set(false);
+    this.authService
+      .changePassword(req)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe(() => {
         this.message.set('Đổi mật khẩu thành công!');
         this.passwordForm.reset();
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.isError.set(true);
-        this.message.set(err.error?.message || 'Không thể đổi mật khẩu. Vui lòng kiểm tra lại mật khẩu hiện tại.');
-      }
-    });
+      });
   }
 }

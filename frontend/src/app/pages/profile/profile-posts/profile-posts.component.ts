@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { BlogService } from '../../../core/services/blog.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { BlogResponse, BlogStatus } from '../../../core/models/blog.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-profile-posts',
@@ -76,23 +77,19 @@ export class ProfilePostsComponent implements OnInit {
       status: filterStatus,
       lastId: this.nextCursor,
       limit: 10
-    }).subscribe({
-      next: (res) => {
-        if (isLoadMore) {
-          this.blogs.update(current => [...current, ...(res.content || [])]);
-        } else {
-          this.blogs.set(res.content || []);
-        }
-        this.hasMore.set(res.hasMore);
-        this.nextCursor = res.nextCursor;
-        this.loading.set(false);
-        this.isLoadingMore = false;
-      },
-      error: () => {
-        this.error.set('Không thể tải bài viết');
-        this.loading.set(false);
-        this.isLoadingMore = false;
+    })
+    .pipe(finalize(() => {
+      this.loading.set(false);
+      this.isLoadingMore = false;
+    }))
+    .subscribe((res) => {
+      if (isLoadMore) {
+        this.blogs.update(current => [...current, ...(res.content || [])]);
+      } else {
+        this.blogs.set(res.content || []);
       }
+      this.hasMore.set(res.hasMore);
+      this.nextCursor = res.nextCursor;
     });
   }
 

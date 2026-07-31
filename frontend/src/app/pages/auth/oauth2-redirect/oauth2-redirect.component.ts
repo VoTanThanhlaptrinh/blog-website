@@ -22,13 +22,8 @@ export class Oauth2RedirectComponent implements OnInit {
   private readonly authService = inject(AuthService);
 
   ngOnInit(): void {
-    this.authService.getProfile().subscribe({
-      next: () => {
-        this.router.navigate(['/']);
-      },
-      error: () => {
-        this.router.navigate(['/login']);
-      }
+    this.authService.getProfile().subscribe(() => {
+      this.router.navigate(['/']);
     });
   }
 }

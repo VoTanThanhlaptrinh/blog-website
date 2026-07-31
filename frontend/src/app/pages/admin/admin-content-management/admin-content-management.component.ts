@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminBlogService } from '../../../core/services/admin-blog.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { ConfirmService } from '../../../core/services/confirm.service';
 import { BlogStatus } from '../../../core/models/blog.model';
 
 @Component({
@@ -15,6 +16,7 @@ import { BlogStatus } from '../../../core/models/blog.model';
 export class AdminContentManagementComponent implements OnInit {
   protected readonly adminBlogService = inject(AdminBlogService);
   private readonly toastService = inject(ToastService);
+  private readonly confirmService = inject(ConfirmService);
 
   readonly blogs$ = this.adminBlogService.blogs$;
   readonly pageMeta$ = this.adminBlogService.pageMeta$;
@@ -56,14 +58,18 @@ export class AdminContentManagementComponent implements OnInit {
     this.loadBlogs();
   }
 
-  onApprove(id: number): void {
-    if (confirm('Bạn có chắc chắn muốn phê duyệt bài viết này không?')) {
-      this.adminBlogService.approveBlog(id).subscribe({
-        next: () => {
-          this.toastService.success('Đã phê duyệt bài viết thành công.');
-          this.loadBlogs();
-        },
-        error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi phê duyệt bài viết.')
+  async onApprove(id: number): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Phê duyệt bài viết',
+      message: 'Bạn có chắc chắn muốn phê duyệt bài viết này không?',
+      confirmText: 'Phê duyệt',
+      actionType: 'primary'
+    });
+
+    if (confirmed) {
+      this.adminBlogService.approveBlog(id).subscribe(() => {
+        this.toastService.success('Đã phê duyệt bài viết thành công.');
+        this.loadBlogs();
       });
     }
   }
@@ -85,14 +91,11 @@ export class AdminContentManagementComponent implements OnInit {
       return;
     }
 
-    this.adminBlogService.rejectBlog(this.rejectingBlogId, { reason: this.rejectReason }).subscribe({
-      next: () => {
-        this.rejectingBlogId = null;
-        this.rejectReason = '';
-        this.toastService.success('Đã từ chối bài viết.');
-        this.loadBlogs();
-      },
-      error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi từ chối bài viết.')
+    this.adminBlogService.rejectBlog(this.rejectingBlogId, { reason: this.rejectReason }).subscribe(() => {
+      this.rejectingBlogId = null;
+      this.rejectReason = '';
+      this.toastService.success('Đã từ chối bài viết.');
+      this.loadBlogs();
     });
   }
 

@@ -13,7 +13,6 @@ import { CustomClipboardButtonComponent } from './components/custom-clipboard-bu
 import { AuthService } from './core/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { provideToastr } from 'ngx-toastr';
 
 export function initializeApp() {
   const authService = inject(AuthService);
@@ -40,13 +39,6 @@ export const appConfig: ApplicationConfig = {
     provideClientHydration(withEventReplay()),
     provideHttpClient(withFetch(), withInterceptors([apiInterceptor, errorInterceptor])),
     provideAnimations(),
-    provideToastr({
-      timeOut: 3000,
-      closeButton: true,
-      progressBar: true,
-      positionClass: 'toast-top-right',
-      preventDuplicates: true,
-    }),
     {
       provide: APP_INITIALIZER,
       useFactory: initializeApp,

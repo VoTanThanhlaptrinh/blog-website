@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('newPassword')?.value;
@@ -73,18 +74,12 @@ export class ResetPasswordComponent implements OnInit {
         newPassword,
         confirmPassword,
       })
-      .subscribe({
-        next: (res) => {
-          this.submitting.set(false);
-          this.successMessage.set(res?.message || 'Đặt lại mật khẩu thành công! Đang chuyển hướng về trang Đăng nhập...');
-          setTimeout(() => {
-            this.router.navigate(['/login']);
-          }, 2000);
-        },
-        error: (err) => {
-          this.submitting.set(false);
-          this.errorMessage.set(err?.error?.message || 'Không thể đặt lại mật khẩu. Mã token có thể đã hết hạn.');
-        },
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
+        this.successMessage.set(res?.message || 'Đặt lại mật khẩu thành công! Đang chuyển hướng về trang Đăng nhập...');
+        setTimeout(() => {
+          this.router.navigate(['/login']);
+        }, 2000);
       });
   }
 }

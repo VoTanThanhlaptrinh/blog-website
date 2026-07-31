@@ -34,6 +34,10 @@ export class HeaderComponent implements OnInit {
     return emailParts[0] || user.email;
   }
 
+  isAdmin(user: any): boolean {
+    return user?.roles && (user.roles.includes('ROLE_ADMIN') || user.roles.includes('ADMIN'));
+  }
+
   ngOnInit(): void {
     if (this.authService.currentUser()) {
       // Initial fetch of notifications & unread count

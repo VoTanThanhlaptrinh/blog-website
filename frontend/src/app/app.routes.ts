@@ -1,4 +1,6 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
+import { adminGuard } from './core/guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -27,10 +29,12 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
+    canActivate: [adminGuard],
     loadChildren: () => import('./pages/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
   {
     path: 'profile',
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/profile/profile.routes').then(m => m.PROFILE_ROUTES)
   },
   {
@@ -47,6 +51,7 @@ export const routes: Routes = [
   },
   {
     path: 'settings',
+    canActivate: [authGuard],
     loadChildren: () => import('./pages/settings/settings.routes').then(m => m.SETTINGS_ROUTES)
   }
 ];

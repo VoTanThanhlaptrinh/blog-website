@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { InteractionService } from '../../../core/services/interaction.service';
 import { BlogResponse } from '../../../core/models/blog.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-profile-saved',
@@ -23,25 +24,18 @@ export class ProfileSavedComponent implements OnInit {
 
   loadSaved(): void {
     this.loading.set(true);
-    this.interactionService.getMyBookmarks(0, 20).subscribe({
-      next: (page) => {
+    this.interactionService.getMyBookmarks(0, 20)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((page) => {
         this.blogs.set(page.content || []);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.error.set('Không thể tải bài viết đã lưu');
-        this.loading.set(false);
-      }
-    });
+      });
   }
 
   removeBookmark(blogId: number, event: Event): void {
     event.stopPropagation();
     event.preventDefault();
-    this.interactionService.toggleBookmark(blogId).subscribe({
-      next: () => {
-        this.blogs.set(this.blogs().filter(b => b.id !== blogId));
-      }
+    this.interactionService.toggleBookmark(blogId).subscribe(() => {
+      this.blogs.set(this.blogs().filter(b => b.id !== blogId));
     });
   }
 }

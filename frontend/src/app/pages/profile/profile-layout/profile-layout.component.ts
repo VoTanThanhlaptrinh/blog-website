@@ -20,13 +20,10 @@ export class ProfileLayoutComponent implements OnInit {
     if (cachedUser) {
       this.user.set(cachedUser);
     }
-    this.authService.getProfile().subscribe({
-      next: (res) => {
-        if (res?.data) {
-          this.user.set(res.data);
-        }
-      },
-      error: () => {}
+    this.authService.getProfile().subscribe((res) => {
+      if (res?.data) {
+        this.user.set(res.data);
+      }
     });
   }
 }

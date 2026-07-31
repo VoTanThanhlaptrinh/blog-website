@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
-
+import { finalize } from 'rxjs';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('password')?.value;
@@ -118,17 +118,13 @@ export class RegisterComponent {
     this.submitting.set(true);
     const { email, password, confirmPassword } = this.form.getRawValue();
 
-    this.authService.register({ email, password, confirmPassword }).subscribe({
-      next: (res) => {
-        this.submitting.set(false);
+    this.authService
+      .register({ email, password, confirmPassword })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
         this.successMessage.set(res?.message || 'Đăng ký tài khoản thành công! Vui lòng kiểm tra email để kích hoạt.');
         this.form.reset();
-      },
-      error: (err) => {
-        this.submitting.set(false);
-        this.errorMessage.set(err?.error?.message || 'Đăng ký không thành công. Vui lòng thử lại.');
-      },
-    });
+      });
   }
 }
 

@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup } from '@angul
 import { AuthService } from '../../../core/services/auth.service';
 import { FileService } from '../../../core/services/file.service';
 import { UpdateProfileRequest } from '../../../core/models/auth.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-profile-settings',
@@ -35,17 +36,15 @@ export class ProfileSettingsComponent implements OnInit {
   }
 
   loadProfile(): void {
-    this.authService.getProfile().subscribe({
-      next: (res) => {
-        if (res.data) {
-          this.avatarUrl.set(res.data.avatarUrl || null);
-          this.profileForm.patchValue({
-            phone: res.data.phone || '',
-            bio: res.data.bio || '',
-            birthDate: res.data.birthDate || '',
-            avatarUrl: res.data.avatarUrl || ''
-          });
-        }
+    this.authService.getProfile().subscribe((res) => {
+      if (res.data) {
+        this.avatarUrl.set(res.data.avatarUrl || null);
+        this.profileForm.patchValue({
+          phone: res.data.phone || '',
+          bio: res.data.bio || '',
+          birthDate: res.data.birthDate || '',
+          avatarUrl: res.data.avatarUrl || ''
+        });
       }
     });
   }
@@ -59,18 +58,13 @@ export class ProfileSettingsComponent implements OnInit {
     this.message.set(null);
     this.isError.set(false);
 
-    this.fileService.uploadFileToR2(file, 'profile/avatar').subscribe({
-      next: (publicUrl: string) => {
-        this.uploadingAvatar.set(false);
+    this.fileService
+      .uploadFileToR2(file, 'profile/avatar')
+      .pipe(finalize(() => this.uploadingAvatar.set(false)))
+      .subscribe((publicUrl: string) => {
         this.avatarUrl.set(publicUrl);
         this.profileForm.patchValue({ avatarUrl: publicUrl });
-      },
-      error: (err) => {
-        this.uploadingAvatar.set(false);
-        this.isError.set(true);
-        this.message.set(err?.error?.message || 'Không thể upload ảnh avatar. Vui lòng thử lại.');
-      }
-    });
+      });
 
     input.value = '';
   }
@@ -84,16 +78,11 @@ export class ProfileSettingsComponent implements OnInit {
 
     const req: UpdateProfileRequest = this.profileForm.value;
 
-    this.authService.updateProfile(req).subscribe({
-      next: () => {
-        this.loading.set(false);
+    this.authService
+      .updateProfile(req)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe(() => {
         this.message.set('Cập nhật hồ sơ cá nhân thành công!');
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.isError.set(true);
-        this.message.set(err.error?.message || 'Không thể cập nhật hồ sơ cá nhân.');
-      }
-    });
+      });
   }
 }

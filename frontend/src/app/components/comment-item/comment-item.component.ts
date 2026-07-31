@@ -1,7 +1,8 @@
-import { Component, Input, Output, EventEmitter, signal, forwardRef } from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, forwardRef, inject } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CommentResponse } from '../../core/models/interaction.model';
+import { ConfirmService } from '../../core/services/confirm.service';
 
 @Component({
   selector: 'app-comment-item',
@@ -10,6 +11,8 @@ import { CommentResponse } from '../../core/models/interaction.model';
   templateUrl: './comment-item.component.html',
 })
 export class CommentItemComponent {
+  private readonly confirmService = inject(ConfirmService);
+
   @Input({ required: true }) comment!: CommentResponse;
   @Input() currentUserId?: number;
   @Input() level = 0;
@@ -50,8 +53,15 @@ export class CommentItemComponent {
     this.likeComment.emit(this.comment.id);
   }
 
-  onDelete() {
-    if (confirm('Bạn có chắc chắn muốn xóa bình luận này?')) {
+  async onDelete() {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Xóa bình luận',
+      message: 'Bạn có chắc chắn muốn xóa bình luận này không?',
+      confirmText: 'Xóa',
+      actionType: 'danger'
+    });
+
+    if (confirmed) {
       this.deleteComment.emit(this.comment.id);
     }
   }

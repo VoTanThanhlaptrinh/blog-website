@@ -76,14 +76,11 @@ export class AdminReportsComponent implements OnInit {
     this.adminReportService.resolveReport(this.resolvingReportId, {
       status: this.resolveStatus,
       adminNotes: this.adminNotes
-    }).subscribe({
-      next: () => {
-        this.resolvingReportId = null;
-        this.adminNotes = '';
-        this.toastService.success('Đã cập nhật báo cáo thành công.');
-        this.loadReports();
-      },
-      error: (err) => this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi cập nhật báo cáo.')
+    }).subscribe(() => {
+      this.resolvingReportId = null;
+      this.adminNotes = '';
+      this.toastService.success('Đã cập nhật báo cáo thành công.');
+      this.loadReports();
     });
   }
 

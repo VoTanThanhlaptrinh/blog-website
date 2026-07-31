@@ -9,6 +9,7 @@ import { AuthService } from '../../../core/services/auth.service';
 import { BlogStatus } from '../../../core/models/blog.model';
 import { BlogCardComponent } from '../../../shared/components/blog-card/blog-card.component';
 import { isPlatformServer } from '@angular/common';
+import { finalize } from 'rxjs';
 
 interface HistoryState {
   content: string;
@@ -62,19 +63,13 @@ export class BlogCreationSplitComponent implements OnInit {
     if (id && isPlatformServer(PLATFORM_ID)) {
       this.isEditMode = true;
       this.blogId = id;
-      this.blogService.getBlogById(id).subscribe({
-        next: (blog) => {
-          this.title = blog.title;
-          this.body = blog.content;
-          if (blog.thumbnailUrl) {
-            this.thumbnailUrl.set(blog.thumbnailUrl);
-          }
-          this.recordHistory(this.body);
-        },
-        error: (err) => {
-          console.error('Lỗi khi tải thông tin bài viết:', err);
-          this.toastService.error('Không thể tải bài viết để chỉnh sửa.');
+      this.blogService.getBlogById(id).subscribe((blog) => {
+        this.title = blog.title;
+        this.body = blog.content;
+        if (blog.thumbnailUrl) {
+          this.thumbnailUrl.set(blog.thumbnailUrl);
         }
+        this.recordHistory(this.body);
       });
     }
   }
@@ -326,17 +321,9 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     this.body = `${this.body}\n![${file.name}](${tempKey})\n`;
     this.recordHistory(this.body);
 
-    this.fileService.uploadFileToR2(file, 'blog/temp').subscribe({
-      next: (publicUrl: string) => {
-        this.body = this.body.replace(`(${tempKey})`, `(${publicUrl})`);
-        this.recordHistory(this.body);
-      },
-      error: (err: unknown) => {
-        console.error('Lỗi upload ảnh lên Cloudflare R2:', err);
-        this.toastService.error(`Không thể upload ảnh "${file.name}". Vui lòng thử lại.`);
-        this.body = this.body.replace(`\n![${file.name}](${tempKey})\n`, '');
-        this.recordHistory(this.body);
-      },
+    this.fileService.uploadFileToR2(file, 'blog/temp').subscribe((publicUrl: string) => {
+      this.body = this.body.replace(`(${tempKey})`, `(${publicUrl})`);
+      this.recordHistory(this.body);
     });
 
     input.value = '';
@@ -347,34 +334,24 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     if (!file) return;
 
     this.thumbnailUploading.set(true);
-    this.fileService.uploadFileToR2(file, 'blog/thumbnails').subscribe({
-      next: (url) => {
+    this.fileService
+      .uploadFileToR2(file, 'blog/thumbnails')
+      .pipe(finalize(() => this.thumbnailUploading.set(false)))
+      .subscribe((url) => {
         this.thumbnailUrl.set(url);
-        this.thumbnailUploading.set(false);
-      },
-      error: (err) => {
-        console.error('Lỗi upload ảnh bìa:', err);
-        this.toastService.error('Upload ảnh bìa thất bại.');
-        this.thumbnailUploading.set(false);
-      }
-    });
+      });
   }
 
   openThumbnailLibrary(): void {
     this.isThumbnailLibraryOpen.set(true);
     this.selectedThumbnailFromLib.set(this.thumbnailUrl());
     this.isLoadingThumbnails.set(true);
-    this.blogService.getMyUsedThumbnails().subscribe({
-      next: (urls) => {
+    this.blogService
+      .getMyUsedThumbnails()
+      .pipe(finalize(() => this.isLoadingThumbnails.set(false)))
+      .subscribe((urls) => {
         this.usedThumbnails.set(urls || []);
-        this.isLoadingThumbnails.set(false);
-      },
-      error: (err) => {
-        console.error('Lỗi lấy danh sách ảnh bìa:', err);
-        this.toastService.error('Không thể lấy thư viện ảnh bìa.');
-        this.isLoadingThumbnails.set(false);
-      }
-    });
+      });
   }
 
   confirmThumbnailSelection(): void {
@@ -415,41 +392,31 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     this.submitting.set(true);
 
     if (this.isEditMode && this.blogId) {
-      this.blogService.updateBlog(this.blogId, {
-        title: this.title.trim(),
-        description,
-        content: this.body,
-        status,
-        thumbnailUrl: this.thumbnailUrl() || undefined
-      }).subscribe({
-        next: (res) => {
-          this.submitting.set(false);
+      this.blogService
+        .updateBlog(this.blogId, {
+          title: this.title.trim(),
+          description,
+          content: this.body,
+          status,
+          thumbnailUrl: this.thumbnailUrl() || undefined
+        })
+        .pipe(finalize(() => this.submitting.set(false)))
+        .subscribe((res) => {
           this.router.navigate(['/blog/detail', res.id || this.blogId]);
-        },
-        error: (err) => {
-          console.error('Lỗi khi cập nhật bài viết:', err);
-          this.submitting.set(false);
-          this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi cập nhật bài viết.');
-        }
-      });
+        });
     } else {
-      this.blogService.createBlog({
-        title: this.title.trim(),
-        description,
-        content: this.body,
-        status,
-        thumbnailUrl: this.thumbnailUrl() || undefined
-      }).subscribe({
-        next: (res) => {
-          this.submitting.set(false);
+      this.blogService
+        .createBlog({
+          title: this.title.trim(),
+          description,
+          content: this.body,
+          status,
+          thumbnailUrl: this.thumbnailUrl() || undefined
+        })
+        .pipe(finalize(() => this.submitting.set(false)))
+        .subscribe((res) => {
           this.router.navigate(['/blog/detail', res.id]);
-        },
-        error: (err) => {
-          console.error('Lỗi khi tạo bài viết:', err);
-          this.submitting.set(false);
-          this.toastService.error(err?.error?.message || 'Có lỗi xảy ra khi tạo bài viết.');
-        }
-      });
+        });
     }
   }
 }

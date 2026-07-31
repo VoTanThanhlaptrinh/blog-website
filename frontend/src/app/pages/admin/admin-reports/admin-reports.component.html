@@ -1,13 +1,13 @@
 <!-- Main Wrapper -->
-<main class="flex flex-col">
+<main class="py-6 px-6 md:px-10">
     <!-- Page Content -->
-    <div class="p-6 md:p-10 max-w-[1200px] w-full mx-auto space-y-10">
+    <div class="max-w-[1200px] mx-auto">
         <!-- Header Section -->
-        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-            <div>
-                <h1 class="font-headline-lg text-headline-lg text-text-ink mb-2">Reports Management</h1>
-                <p class="text-text-muted max-w-2xl font-body-md">
-                    Review and manage community-flagged content, comments, and user reports.
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="space-y-2">
+                <h1 class="text-2xl font-bold text-text-ink mb-2">Quản Lý Báo Cáo</h1>
+                <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
+                    Xem xét và quản lý nội dung, bình luận, và báo cáo vi phạm từ cộng đồng.
                 </p>
             </div>
         </div>
@@ -19,18 +19,21 @@
 
         <!-- Loading Indicator -->
         <div *ngIf="loading$ | async" class="text-sm text-secondary flex items-center gap-2">
-            <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
+            <span
+                class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
             Đang tải danh sách báo cáo...
         </div>
 
         <!-- Resolve Report Modal -->
-        <div *ngIf="resolvingReportId !== null" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div *ngIf="resolvingReportId !== null"
+            class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
                 <h3 class="text-headline-md font-headline-md text-text-ink">Xử lý báo cáo #{{ resolvingReportId }}</h3>
 
                 <div>
                     <label class="block text-sm font-bold text-secondary mb-1">Quyết định xử lý:</label>
-                    <select [(ngModel)]="resolveStatus" class="w-full p-2.5 border border-outline-variant rounded-lg font-body-md">
+                    <select [(ngModel)]="resolveStatus"
+                        class="w-full p-2.5 border border-outline-variant rounded-lg font-body-md">
                         <option [value]="ReportStatus.RESOLVED_ACCEPTED">Chấp nhận báo cáo (RESOLVED_ACCEPTED)</option>
                         <option [value]="ReportStatus.RESOLVED_REJECTED">Từ chối báo cáo (RESOLVED_REJECTED)</option>
                     </select>
@@ -38,18 +41,18 @@
 
                 <div>
                     <label class="block text-sm font-bold text-secondary mb-1">Ghi chú của Admin (tùy chọn):</label>
-                    <textarea
-                        [(ngModel)]="adminNotes"
-                        rows="3"
+                    <textarea [(ngModel)]="adminNotes" rows="3"
                         class="w-full p-3 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust text-body-md"
                         placeholder="Nhập ghi chú..."></textarea>
                 </div>
 
                 <div class="flex justify-end gap-3">
-                    <button (click)="cancelResolve()" class="px-4 py-2 border border-gray-300 text-secondary rounded-lg font-label-md hover:bg-gray-50">
+                    <button (click)="cancelResolve()"
+                        class="px-4 py-2 border border-gray-300 text-secondary rounded-lg font-label-md hover:bg-gray-50">
                         Hủy
                     </button>
-                    <button (click)="confirmResolve()" class="px-4 py-2 bg-accent-rust text-white rounded-lg font-label-md hover:opacity-90">
+                    <button (click)="confirmResolve()"
+                        class="px-4 py-2 bg-accent-rust text-white rounded-lg font-label-md hover:opacity-90">
                         Lưu trạng thái
                     </button>
                 </div>
@@ -62,32 +65,28 @@
             <div class="flex flex-wrap items-center justify-between px-6 py-4 border-b border-outline-variant/30 gap-4">
                 <div class="flex gap-2 overflow-x-auto scrollbar-hide">
                     <!-- Target Type Filter Buttons -->
-                    <button
-                        (click)="onFilterTargetType(undefined)"
+                    <button (click)="onFilterTargetType(undefined)"
                         [class.bg-accent-rust]="selectedTargetType === undefined"
                         [class.text-white]="selectedTargetType === undefined"
                         [class.text-text-muted]="selectedTargetType !== undefined"
                         class="px-4 py-1.5 rounded-full font-label-md text-sm whitespace-nowrap transition-colors">
                         Tất cả đối tượng
                     </button>
-                    <button
-                        (click)="onFilterTargetType(ReportTargetType.BLOG)"
+                    <button (click)="onFilterTargetType(ReportTargetType.BLOG)"
                         [class.bg-accent-rust]="selectedTargetType === ReportTargetType.BLOG"
                         [class.text-white]="selectedTargetType === ReportTargetType.BLOG"
                         [class.text-text-muted]="selectedTargetType !== ReportTargetType.BLOG"
                         class="px-4 py-1.5 rounded-full hover:-container font-label-md text-sm whitespace-nowrap transition-colors">
                         Bài viết (BLOG)
                     </button>
-                    <button
-                        (click)="onFilterTargetType(ReportTargetType.COMMENT)"
+                    <button (click)="onFilterTargetType(ReportTargetType.COMMENT)"
                         [class.bg-accent-rust]="selectedTargetType === ReportTargetType.COMMENT"
                         [class.text-white]="selectedTargetType === ReportTargetType.COMMENT"
                         [class.text-text-muted]="selectedTargetType !== ReportTargetType.COMMENT"
                         class="px-4 py-1.5 rounded-full hover:-container font-label-md text-sm whitespace-nowrap transition-colors">
                         Bình luận (COMMENT)
                     </button>
-                    <button
-                        (click)="onFilterTargetType(ReportTargetType.USER)"
+                    <button (click)="onFilterTargetType(ReportTargetType.USER)"
                         [class.bg-accent-rust]="selectedTargetType === ReportTargetType.USER"
                         [class.text-white]="selectedTargetType === ReportTargetType.USER"
                         [class.text-text-muted]="selectedTargetType !== ReportTargetType.USER"
@@ -98,9 +97,7 @@
 
                 <div class="flex items-center gap-2">
                     <span class="font-label-md text-xs text-text-muted uppercase">Trạng thái:</span>
-                    <select
-                        [ngModel]="selectedStatus"
-                        (ngModelChange)="onFilterStatus($event)"
+                    <select [ngModel]="selectedStatus" (ngModelChange)="onFilterStatus($event)"
                         class="bg-transparent border border-outline-variant rounded px-2 py-1 font-label-md text-sm focus:ring-0 cursor-pointer">
                         <option [ngValue]="undefined">Tất cả trạng thái</option>
                         <option [ngValue]="ReportStatus.PENDING">Đang chờ (PENDING)</option>
@@ -114,7 +111,8 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse">
                     <thead>
-                        <tr class="bg-gray-50 border-b border-outline-variant/30 text-xs font-label-md text-text-muted uppercase tracking-wider">
+                        <tr
+                            class="bg-gray-50 border-b border-outline-variant/30 text-xs font-label-md text-text-muted uppercase tracking-wider">
                             <th class="px-6 py-4">ID</th>
                             <th class="px-6 py-4">Loại đối tượng</th>
                             <th class="px-6 py-4">Target ID</th>
@@ -135,7 +133,8 @@
                             <tr *ngFor="let report of reports" class="hover:bg-gray-50 transition-colors">
                                 <td class="px-6 py-4 font-mono font-bold text-xs">#{{ report.id }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider bg-gray-100 text-gray-800">
+                                    <span
+                                        class="px-2 py-1 text-[10px] font-bold rounded uppercase tracking-wider bg-gray-100 text-gray-800">
                                         {{ report.targetType }}
                                     </span>
                                 </td>
@@ -147,8 +146,7 @@
                                     {{ report.reporter.email || 'N/A' }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span
-                                        [ngClass]="{
+                                    <span [ngClass]="{
                                             'bg-amber-100 text-amber-800': report.status === ReportStatus.PENDING,
                                             'bg-green-100 text-green-800': report.status === ReportStatus.RESOLVED_ACCEPTED,
                                             'bg-red-100 text-red-800': report.status === ReportStatus.RESOLVED_REJECTED
@@ -156,7 +154,8 @@
                                         class="px-2 py-1 text-[10px] font-bold rounded-full uppercase tracking-wider">
                                         {{ report.status }}
                                     </span>
-                                    <p *ngIf="report.adminNotes" class="text-xs text-secondary mt-1 italic" [title]="report.adminNotes">
+                                    <p *ngIf="report.adminNotes" class="text-xs text-secondary mt-1 italic"
+                                        [title]="report.adminNotes">
                                         Ghi chú: {{ report.adminNotes }}
                                     </p>
                                 </td>
@@ -164,8 +163,7 @@
                                     {{ report.createdDate | date:'dd/MM/yyyy HH:mm' }}
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <button
-                                        (click)="openResolveDialog(report.id)"
+                                    <button (click)="openResolveDialog(report.id)"
                                         class="px-3 py-1.5 bg-accent-rust text-white text-xs font-bold rounded hover:opacity-90 transition-all">
                                         Xử lý
                                     </button>
@@ -178,31 +176,27 @@
 
             <!-- Pagination Footer -->
             <ng-container *ngIf="pageMeta$ | async as pageMeta">
-                <div *ngIf="pageMeta.totalPages > 0" class="px-6 py-4 border-t border-outline-variant/30 flex items-center justify-between bg-gray-50">
+                <div *ngIf="pageMeta.totalPages > 0"
+                    class="px-6 py-4 border-t border-outline-variant/30 flex items-center justify-between bg-gray-50">
                     <span class="text-caption text-secondary">
-                        Trang <span class="font-bold">{{ pageMeta.pageNumber + 1 }}</span> / <span class="font-bold">{{ pageMeta.totalPages }}</span>
+                        Trang <span class="font-bold">{{ pageMeta.pageNumber + 1 }}</span> / <span class="font-bold">{{
+                            pageMeta.totalPages }}</span>
                         (Tổng {{ pageMeta.totalElements }} báo cáo)
                     </span>
                     <div class="flex items-center gap-2">
-                        <button
-                            (click)="goToPage(currentPage - 1)"
-                            [disabled]="currentPage === 0"
+                        <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0"
                             class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
                             <span class="material-symbols-outlined">chevron_left</span>
                         </button>
 
-                        <button
-                            *ngFor="let page of [].constructor(pageMeta.totalPages); let i = index"
-                            (click)="goToPage(i)"
-                            [class.bg-accent-rust]="currentPage === i"
-                            [class.text-white]="currentPage === i"
-                            [class.text-secondary]="currentPage !== i"
+                        <button *ngFor="let page of [].constructor(pageMeta.totalPages); let i = index"
+                            (click)="goToPage(i)" [class.bg-accent-rust]="currentPage === i"
+                            [class.text-white]="currentPage === i" [class.text-secondary]="currentPage !== i"
                             class="w-8 h-8 flex items-center justify-center rounded font-bold text-caption transition-colors">
                             {{ i + 1 }}
                         </button>
 
-                        <button
-                            (click)="goToPage(currentPage + 1)"
+                        <button (click)="goToPage(currentPage + 1)"
                             [disabled]="pageMeta.last || currentPage >= pageMeta.totalPages - 1"
                             class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
                             <span class="material-symbols-outlined">chevron_right</span>

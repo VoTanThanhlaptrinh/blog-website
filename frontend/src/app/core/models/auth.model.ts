@@ -11,6 +11,7 @@ export interface UserProfileResponse {
   birthDate?: string;
   avatarUrl?: string;
   bio?: string;
+  roles?: string[];
 }
 
 export interface AuthResponse {

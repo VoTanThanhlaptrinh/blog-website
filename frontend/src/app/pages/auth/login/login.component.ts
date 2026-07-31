@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -69,17 +70,12 @@ export class LoginComponent {
     this.submitting.set(true);
 
     const formValue = this.form.getRawValue();
-    this.authService.login(formValue).subscribe({
-      next: (res) => {
-        this.submitting.set(false);
+    this.authService
+      .login(formValue)
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
         const returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.router.navigateByUrl(returnUrl);
-      },
-      error: (err) => {
-        this.submitting.set(false);
-        const msg = err?.error?.message || 'Đăng nhập thất bại. Vui lòng kiểm tra lại thông tin!';
-        this.errorMessage.set(msg);
-      },
-    });
+      });
   }
 }

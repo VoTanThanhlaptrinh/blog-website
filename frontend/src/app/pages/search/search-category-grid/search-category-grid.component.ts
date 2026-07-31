@@ -4,6 +4,7 @@ import { CategoryService } from '../../../core/services/category.service';
 import { BlogService } from '../../../core/services/blog.service';
 import { CategoryResponse, BlogResponse, BlogStatus } from '../../../core/models/blog.model';
 import { BlogCardComponent } from '../../../shared/components/blog-card/blog-card.component';
+import { finalize } from 'rxjs';
 
 export interface SortOption {
   label: string;
@@ -48,14 +49,9 @@ export class SearchCategoryGridComponent implements OnInit {
   }
 
   private loadCategories() {
-    this.categoryService.getCategories().subscribe({
-      next: (categories: CategoryResponse[]) => {
-        const catNames = categories.map(c => c.name);
-        this.allCategories.set(['Tất cả', ...catNames]);
-      },
-      error: (err: any) => {
-        console.error('Failed to load categories', err);
-      }
+    this.categoryService.getCategories().subscribe((categories: CategoryResponse[]) => {
+      const catNames = categories.map(c => c.name);
+      this.allCategories.set(['Tất cả', ...catNames]);
     });
   }
 
@@ -240,13 +236,17 @@ export class SearchCategoryGridComponent implements OnInit {
     const categories = this.selectedCategories().length > 0 ? this.selectedCategories() : undefined;
     const lastId = isLoadMore ? this.nextCursor() : undefined;
 
-    this.blogService.searchBlogsCursor({
+    const query = {
       keyword: keyword || undefined,
       categories: categories,
       lastId: lastId,
       limit: 6
-    }).subscribe({
-      next: (res) => {
+    };
+
+    this.blogService
+      .searchBlogsCursor(query)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((res) => {
         if (isLoadMore) {
           this.blogs.update(current => [...current, ...res.content]);
         } else {
@@ -254,13 +254,7 @@ export class SearchCategoryGridComponent implements OnInit {
         }
         this.hasMore.set(res.hasMore);
         this.nextCursor.set(res.nextCursor);
-        this.loading.set(false);
-      },
-      error: (err) => {
-        console.error('Lỗi khi tìm kiếm bài viết', err);
-        this.loading.set(false);
-      }
-    });
+      });
   }
 
   loadMore() {

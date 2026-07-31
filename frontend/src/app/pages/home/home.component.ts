@@ -53,23 +53,20 @@ export class HomeComponent implements OnInit {
   }
 
   loadStats(): void {
-    this.blogService.getHomeStats().subscribe({
-      next: (res) => {
-        this.stats[0].value = res.totalBlogs;
-        this.stats[0].suffix = res.totalBlogs >= 1000 ? 'K+' : '+';
+    this.blogService.getHomeStats().subscribe((res) => {
+      this.stats[0].value = res.totalBlogs;
+      this.stats[0].suffix = res.totalBlogs >= 1000 ? 'K+' : '+';
 
-        this.stats[1].value = res.totalAuthors;
-        this.stats[1].suffix = res.totalAuthors >= 1000 ? 'K+' : '+';
+      this.stats[1].value = res.totalAuthors;
+      this.stats[1].suffix = res.totalAuthors >= 1000 ? 'K+' : '+';
 
-        this.stats[2].value = res.totalLikes;
-        this.stats[2].suffix = res.totalLikes >= 1000 ? 'K+' : '+';
+      this.stats[2].value = res.totalLikes;
+      this.stats[2].suffix = res.totalLikes >= 1000 ? 'K+' : '+';
 
-        this.stats[3].value = res.totalCategories;
-        this.stats[3].suffix = res.totalCategories >= 1000 ? 'K+' : '+';
+      this.stats[3].value = res.totalCategories;
+      this.stats[3].suffix = res.totalCategories >= 1000 ? 'K+' : '+';
 
-        this.startCountUp();
-      },
-      error: (err) => console.error('Failed to load home stats', err)
+      this.startCountUp();
     });
   }
 
