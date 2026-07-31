@@ -243,6 +243,47 @@ public class BlogServiceImpl implements BlogService {
                 .build();
     }
 
+    @Override
+    public BlogCursorResponse getMyBlogsCursor(BlogStatus status, Long lastId, int limit, User currentUser) {
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để lấy danh sách bài viết");
+        }
+
+        Specification<Blog> spec = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("user").get("id"), currentUser.getId()));
+
+            if (status != null) {
+                predicates.add(cb.equal(root.get("status"), status));
+            }
+
+            if (lastId != null) {
+                predicates.add(cb.lessThan(root.get("id"), lastId));
+            }
+
+            return cb.and(predicates.toArray(new Predicate[0]));
+        };
+
+        PageRequest pageRequest = PageRequest.of(0, limit, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Blog> pageResult = blogRepository.findAll(spec, pageRequest);
+
+        List<BlogResponse> content = pageResult.getContent().stream()
+                .map(b -> mapToResponse(b, currentUser))
+                .collect(Collectors.toList());
+
+        boolean hasMore = content.size() == limit && pageResult.hasNext();
+        Long nextCursor = null;
+        if (!content.isEmpty()) {
+            nextCursor = content.get(content.size() - 1).getId();
+        }
+
+        return BlogCursorResponse.builder()
+                .content(content)
+                .hasMore(hasMore)
+                .nextCursor(nextCursor)
+                .build();
+    }
+
     private boolean isAuthorOrAdmin(User currentUser, Blog blog) {
         if (currentUser == null || currentUser.getId() == null) return false;
         boolean isAuthor = blog.getUser() != null && blog.getUser().getId().equals(currentUser.getId());

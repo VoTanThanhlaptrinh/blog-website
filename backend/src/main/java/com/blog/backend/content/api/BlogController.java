@@ -72,6 +72,17 @@ public class BlogController {
         return ResponseEntity.ok(new ApiResponse<>(res, "Tìm kiếm bài viết thành công", 200));
     }
 
+    @GetMapping("/me/cursor")
+    public ResponseEntity<ApiResponse<BlogCursorResponse>> getMyBlogsCursor(
+            @RequestParam(required = false) BlogStatus status,
+            @RequestParam(required = false) Long lastId,
+            @RequestParam(defaultValue = "10") int limit,
+            @AuthenticationPrincipal User currentUser) {
+
+        BlogCursorResponse res = blogService.getMyBlogsCursor(status, lastId, limit, currentUser);
+        return ResponseEntity.ok(new ApiResponse<>(res, "Lấy danh sách bài viết cá nhân thành công", 200));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<BlogResponse>> updateBlog(@PathVariable Long id,
                                                                 @AuthenticationPrincipal User currentUser,

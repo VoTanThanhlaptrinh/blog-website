@@ -12,4 +12,5 @@ public interface BlogService {
     BlogResponse updateBlog(Long id, User currentUser, UpdateBlogRequest request);
     void deleteBlog(Long id, User currentUser);
     BlogCursorResponse searchBlogsCursor(String keyword, java.util.List<String> categoryNames, Long lastId, int limit, User currentUser);
+    BlogCursorResponse getMyBlogsCursor(BlogStatus status, Long lastId, int limit, User currentUser);
 }

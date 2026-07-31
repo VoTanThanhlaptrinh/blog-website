@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, inject, signal, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { BlogService } from '../../../core/services/blog.service';
@@ -19,29 +19,53 @@ export class ProfileDraftsComponent implements OnInit {
   readonly loading = signal<boolean>(true);
   readonly error = signal<string | null>(null);
 
+  readonly hasMore = signal<boolean>(true);
+  private nextCursor?: number;
+  private isLoadingMore = false;
+
   ngOnInit(): void {
     this.loadDrafts();
   }
 
-  loadDrafts(): void {
-    this.loading.set(true);
-    const currentUser = this.authService.currentUser();
+  loadDrafts(isLoadMore = false): void {
+    if (this.isLoadingMore || (!this.hasMore() && isLoadMore)) return;
+    
+    this.isLoadingMore = true;
+    if (!isLoadMore) {
+        this.loading.set(true);
+    }
 
-    this.blogService.getBlogs({
-      userId: currentUser?.id,
-      status: BlogStatus.DRAFT,
-      page: 0,
-      size: 20
+    this.blogService.getMyBlogsCursor({
+      status: BlogStatus.PENDING,
+      lastId: this.nextCursor,
+      limit: 10
     }).subscribe({
-      next: (page) => {
-        this.blogs.set(page.content || []);
+      next: (res) => {
+        if (isLoadMore) {
+          this.blogs.update(current => [...current, ...(res.content || [])]);
+        } else {
+          this.blogs.set(res.content || []);
+        }
+        this.hasMore.set(res.hasMore);
+        this.nextCursor = res.nextCursor;
         this.loading.set(false);
+        this.isLoadingMore = false;
       },
       error: () => {
         this.error.set('Không thể tải bài viết nháp');
         this.loading.set(false);
+        this.isLoadingMore = false;
       }
     });
+  }
+
+  @HostListener('window:scroll', ['$event'])
+  onScroll(): void {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 100) {
+      if (this.hasMore() && !this.isLoadingMore) {
+        this.loadDrafts(true);
+      }
+    }
   }
 
   deleteDraft(blogId: number, event: Event): void {

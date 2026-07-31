@@ -45,5 +45,13 @@
         </div>
       </article>
     }
+
+    @if (!hasMore()) {
+      <div class="py-6 text-center text-sm text-text-muted">Đã tải hết bài viết.</div>
+    } @else {
+      <div class="py-6 text-center text-text-muted">
+        <span class="material-symbols-outlined animate-spin text-2xl">progress_activity</span>
+      </div>
+    }
   }
 </section>
