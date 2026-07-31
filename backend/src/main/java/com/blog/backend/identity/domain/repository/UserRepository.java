@@ -3,12 +3,13 @@ package com.blog.backend.identity.domain.repository;
 import com.blog.backend.identity.domain.entity.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     Optional<User> findUserById(Long id);
 
     @EntityGraph(attributePaths = { "userRoles", "userRoles.role", "avatar" })
