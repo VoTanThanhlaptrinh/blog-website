@@ -58,6 +58,7 @@ public class BlogServiceImpl implements BlogService {
                 .title(request.getTitle())
                 .description(request.getDescription())
                 .content(request.getContent())
+                .thumbnailUrl(request.getThumbnailUrl())
                 .status(targetStatus)
                 .user(currentUser)
                 .category(category)
@@ -172,6 +173,7 @@ public class BlogServiceImpl implements BlogService {
         if (request.getTitle() != null) blog.setTitle(request.getTitle());
         if (request.getDescription() != null) blog.setDescription(request.getDescription());
         if (request.getContent() != null) blog.setContent(request.getContent());
+        if (request.getThumbnailUrl() != null) blog.setThumbnailUrl(request.getThumbnailUrl());
         if (request.getStatus() != null) {
             BlogStatus targetStatus = request.getStatus();
             if (targetStatus == BlogStatus.PUBLISHED && !isAdmin(currentUser)) {
@@ -290,6 +292,14 @@ public class BlogServiceImpl implements BlogService {
                 .build();
     }
 
+    @Override
+    public List<String> getMyUsedThumbnails(User currentUser) {
+        if (currentUser == null || currentUser.getId() == null) {
+            throw new UnauthorizedBlogAccessException("Vui lòng đăng nhập để lấy danh sách ảnh bìa");
+        }
+        return blogRepository.findDistinctThumbnailUrlsByUserId(currentUser.getId());
+    }
+
     private boolean isAuthorOrAdmin(User currentUser, Blog blog) {
         if (currentUser == null || currentUser.getId() == null) return false;
         boolean isAuthor = blog.getUser() != null && blog.getUser().getId().equals(currentUser.getId());
@@ -341,6 +351,7 @@ public class BlogServiceImpl implements BlogService {
                 .content(blog.getContent())
                 .status(blog.getStatus())
                 .rejectionReason(blog.getRejectionReason())
+                .thumbnailUrl(blog.getThumbnailUrl())
                 .author(authorResponse)
                 .category(categoryResponse)
                 .likesCount(likesCount)

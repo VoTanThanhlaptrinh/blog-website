@@ -13,7 +13,7 @@
       <span class="text-xs font-medium text-stone-500 hidden sm:block">Trình soạn thảo</span>
     </div>
     <div class="flex items-center gap-3">
-      <a routerLink="/"
+      <a [routerLink]="isEditMode ? '/profile/posts' : '/'"
         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all">
         <span class="material-symbols-outlined text-[18px]">arrow_back</span>
         <span>Thoát</span>
@@ -199,6 +199,38 @@
           </button>
         }
       </div>
+      <!-- Thumbnail Section -->
+      <div class="mb-8">
+        <label class="block font-label-md text-label-md text-text-muted mb-2">Ảnh bìa (Thumbnail)</label>
+        @if (thumbnailUrl()) {
+          <div class="relative group inline-block rounded-lg overflow-hidden border border-text-ink/10">
+            <img [src]="thumbnailUrl()" alt="Thumbnail" class="w-full max-w-[300px] h-auto object-cover" />
+            <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+              <button type="button" (click)="thumbnailUrl.set('')" class="text-white bg-red-500/80 p-2 rounded-full hover:bg-red-500 transition-colors">
+                <span class="material-symbols-outlined text-sm">delete</span>
+              </button>
+            </div>
+          </div>
+        } @else {
+          <div class="border-2 border-dashed border-text-ink/20 rounded-lg p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:border-accent-rust/50 hover:bg-accent-rust/5 transition-all" (click)="thumbnailInput.click()">
+            @if (thumbnailUploading()) {
+              <span class="material-symbols-outlined animate-spin text-accent-rust text-2xl mb-2">progress_activity</span>
+              <p class="text-caption text-text-muted">Đang tải lên...</p>
+            } @else {
+              <span class="material-symbols-outlined text-text-muted text-2xl mb-2">image</span>
+              <p class="text-caption text-text-muted">Nhấn để tải lên ảnh bìa</p>
+            }
+          </div>
+          <input #thumbnailInput type="file" accept="image/*" class="hidden" (change)="onThumbnailSelected($event)" [disabled]="thumbnailUploading()" />
+        }
+        <button 
+          type="button" 
+          (click)="openThumbnailLibrary()" 
+          class="mt-3 text-caption font-medium text-accent-rust hover:opacity-80 flex items-center gap-1 transition-opacity">
+          <span class="material-symbols-outlined text-base">photo_library</span>
+          <span>Chọn từ thư viện đã dùng</span>
+        </button>
+      </div>
       <!-- Main Content -->
       <textarea
         #bodyInput
@@ -215,48 +247,60 @@
     [class.flex]="mobilePreview()"
     [class.hidden]="!mobilePreview()">
     <div
-      class="px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center"
+      class="px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center justify-between"
     >
       <span
         class="font-label-md text-label-md text-text-muted uppercase tracking-widest"
         >Xem trước</span
       >
+      <div class="flex bg-surface-container rounded-full p-1 border border-text-ink/5">
+        <button type="button" (click)="previewMode.set('article')" [class.bg-pure-white]="previewMode() === 'article'" [class.shadow-sm]="previewMode() === 'article'" [class.text-text-ink]="previewMode() === 'article'" class="px-4 py-1 rounded-full text-caption text-text-muted font-medium transition-all">Bài viết</button>
+        <button type="button" (click)="previewMode.set('card')" [class.bg-pure-white]="previewMode() === 'card'" [class.shadow-sm]="previewMode() === 'card'" [class.text-text-ink]="previewMode() === 'card'" class="px-4 py-1 rounded-full text-caption text-text-muted font-medium transition-all">Card</button>
+      </div>
     </div>
     <div class="flex-1 overflow-y-auto editor-container p-10">
       <div
         class="max-w-[720px] mx-auto bg-pure-white p-12 custom-shadow border border-text-ink/5"
       >
-        <!-- Preview Author -->
-        <div class="flex items-center gap-4 mb-8">
-          <div
-            class="w-10 h-10 rounded-full bg-surface-container"
-            data-alt="A professional headshot of a young Vietnamese writer in a minimalist office setting with soft, natural lighting coming from a nearby window."
-            style="
-              background-image: url(&quot;https://lh3.googleusercontent.com/aida-public/AB6AXuArdH379Kuv3R8j9EA1YTjfFugXS_nrhN7tuNy7JZWiWnz-AynBmtzrps-tddjeOUDGXPV-XezIU8smlsfCij0Ib7mbmPtXR-Vs7fX_elPlQKAA3rUyHB-plkSeRcMFERArw-oFGgLmSalF-nZAWKENdu8I7-RG3tJfGaW-xqO8G2Ys-DTEkBLBzEIZWwg9kMGaWRSOF-03GBQvZ8eSknoGRA6RzDwEMLu_OYFxfQYE_xiLm6LAqBak-prJqoQBPVb5nwKLJk5F2VM&quot;);
-            "
-          ></div>
-          <div>
-            <p class="font-label-md text-label-md text-on-background">
-              Nguyễn Văn A
-            </p>
-            <p class="text-caption text-text-muted">
-              Writer &amp; Developer • 24 Th05, 2024
-            </p>
+        @if (previewMode() === 'article') {
+          <!-- Preview Author -->
+          <div class="flex items-center gap-4 mb-8">
+            <div
+              class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center font-bold text-accent-rust uppercase overflow-hidden"
+            >
+              @if (currentUser()?.avatarUrl) {
+                <img [src]="currentUser()?.avatarUrl" alt="Avatar" class="w-full h-full object-cover" />
+              } @else {
+                {{ currentUser()?.email ? currentUser()?.email![0] : 'U' }}
+              }
+            </div>
+            <div>
+              <p class="font-label-md text-label-md text-on-background">
+                {{ currentUser()?.email || 'Người dùng' }}
+              </p>
+              <p class="text-caption text-text-muted">
+                Tác giả • {{ todayDate }}
+              </p>
+            </div>
           </div>
-        </div>
-        <!-- Preview Content -->
-        <article class="prose prose-stone prose-lg max-w-none">
-          <h1
-            class="font-headline-lg text-headline-lg text-text-ink mb-8 leading-tight"
-          >
-            {{ title || "Tiêu đề bài viết của bạn..." }}
-          </h1>
-          <markdown
-            clipboard
-            [data]="previewData || defaultPreview"
-            class="font-body-lg text-body-lg text-text-muted space-y-6"
-          ></markdown>
-        </article>
+          <!-- Preview Content -->
+          <article class="prose prose-stone prose-lg max-w-none">
+            <h1
+              class="font-headline-lg text-headline-lg text-text-ink mb-8 leading-tight"
+            >
+              {{ title || "Tiêu đề bài viết của bạn..." }}
+            </h1>
+            <markdown
+              clipboard
+              [data]="previewData || defaultPreview"
+              class="font-body-lg text-body-lg text-text-muted space-y-6"
+            ></markdown>
+          </article>
+        } @else {
+          <div class="max-w-[400px] mx-auto mt-10">
+            <app-blog-card [post]="mockBlogCard"></app-blog-card>
+          </div>
+        }
       </div>
     </div>
   </section>
@@ -281,7 +325,7 @@
     <span>{{ mobilePreview() ? 'Soạn thảo' : 'Xem trước' }}</span>
   </button>
 
-  <!-- Right: Save Draft & Publish Buttons -->
+  <!-- Right: Save Draft & Submit for Review Buttons -->
   <button type="button"
     (click)="submit(BlogStatus.DRAFT)"
     [disabled]="submitting()"
@@ -289,10 +333,10 @@
     Lưu nháp
   </button>
   <button type="button"
-    (click)="submit(BlogStatus.PUBLISHED)"
+    (click)="submit(BlogStatus.PENDING)"
     [disabled]="submitting()"
     class="px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
-    {{ submitting() ? 'Đang gửi...' : (isEditMode ? 'Cập nhật' : 'Xuất bản') }}
+    {{ submitting() ? 'Đang gửi...' : 'Gửi xét duyệt' }}
   </button>
 </div>
 
@@ -318,3 +362,70 @@
     </div>
   </div>
 </footer>
+
+<!-- Thumbnail Library Modal -->
+@if (isThumbnailLibraryOpen()) {
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-fade-in">
+    <div class="bg-white dark:bg-stone-900 rounded-2xl max-w-2xl w-full p-6 shadow-2xl border border-stone-200 dark:border-stone-800 flex flex-col max-h-[85vh]">
+      <!-- Header -->
+      <div class="flex items-center justify-between pb-4 border-b border-stone-200 dark:border-stone-800">
+        <div>
+          <h3 class="text-lg font-bold text-stone-900 dark:text-stone-100">Thư viện ảnh bìa</h3>
+          <p class="text-xs text-stone-500">Chọn từ danh sách ảnh bạn đã từng sử dụng trước đây</p>
+        </div>
+        <button type="button" (click)="isThumbnailLibraryOpen.set(false)" class="p-1 rounded-full text-stone-400 hover:text-stone-600 hover:bg-stone-100 dark:hover:bg-stone-800 transition-colors">
+          <span class="material-symbols-outlined text-xl">close</span>
+        </button>
+      </div>
+
+      <!-- Body Grid -->
+      <div class="flex-1 overflow-y-auto py-6">
+        @if (isLoadingThumbnails()) {
+          <div class="flex flex-col items-center justify-center py-12 text-stone-400">
+            <span class="material-symbols-outlined animate-spin text-3xl mb-2 text-accent-rust">progress_activity</span>
+            <p class="text-sm">Đang tải thư viện ảnh...</p>
+          </div>
+        } @else if (usedThumbnails().length === 0) {
+          <div class="flex flex-col items-center justify-center py-12 text-stone-400">
+            <span class="material-symbols-outlined text-4xl mb-2">photo_library</span>
+            <p class="text-sm">Bạn chưa có ảnh bìa nào trong thư viện.</p>
+          </div>
+        } @else {
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            @for (url of usedThumbnails(); track url) {
+              <div 
+                (click)="selectedThumbnailFromLib.set(url)"
+                [class.ring-4]="selectedThumbnailFromLib() === url"
+                [class.ring-accent-rust]="selectedThumbnailFromLib() === url"
+                class="relative aspect-video rounded-xl overflow-hidden cursor-pointer border border-stone-200 dark:border-stone-800 group hover:shadow-md transition-all">
+                <img [src]="url" alt="Thumbnail option" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                @if (selectedThumbnailFromLib() === url) {
+                  <div class="absolute inset-0 bg-accent-rust/20 flex items-center justify-center">
+                    <span class="bg-accent-rust text-white p-1 rounded-full material-symbols-outlined text-lg shadow-md">check</span>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      <!-- Footer -->
+      <div class="pt-4 border-t border-stone-200 dark:border-stone-800 flex items-center justify-end gap-3">
+        <button 
+          type="button" 
+          (click)="isThumbnailLibraryOpen.set(false)"
+          class="px-4 py-2 rounded-full text-sm font-medium text-stone-600 hover:bg-stone-100 dark:text-stone-300 dark:hover:bg-stone-800 transition-colors">
+          Hủy
+        </button>
+        <button 
+          type="button" 
+          (click)="confirmThumbnailSelection()"
+          [disabled]="!selectedThumbnailFromLib()"
+          class="px-5 py-2 rounded-full text-sm font-semibold text-white bg-accent-rust hover:bg-clay-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-md transition-all">
+          Xác nhận
+        </button>
+      </div>
+    </div>
+  </div>
+}

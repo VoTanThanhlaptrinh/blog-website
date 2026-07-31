@@ -1,11 +1,14 @@
-import { Component, ElementRef, HostListener, OnInit, ViewChild, inject, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, PLATFORM_ID, ViewChild, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
 import { FileService } from '../../../core/services/file.service';
 import { BlogService } from '../../../core/services/blog.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { AuthService } from '../../../core/services/auth.service';
 import { BlogStatus } from '../../../core/models/blog.model';
+import { BlogCardComponent } from '../../../shared/components/blog-card/blog-card.component';
+import { isPlatformServer } from '@angular/common';
 
 interface HistoryState {
   content: string;
@@ -15,7 +18,7 @@ interface HistoryState {
 
 @Component({
   selector: 'app-blog-creation-split',
-  imports: [FormsModule, MarkdownComponent, RouterLink],
+  imports: [FormsModule, MarkdownComponent, RouterLink, BlogCardComponent],
   templateUrl: './blog-creation-split.component.html',
   styleUrl: './blog-creation-split.component.scss'
 })
@@ -23,8 +26,12 @@ export class BlogCreationSplitComponent implements OnInit {
   private readonly fileService = inject(FileService);
   private readonly blogService = inject(BlogService);
   private readonly toastService = inject(ToastService);
+  private readonly authService = inject(AuthService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
+
+  readonly currentUser = this.authService.currentUser;
+  readonly todayDate = new Date().toLocaleDateString('vi-VN');
 
   @ViewChild('bodyInput') bodyInput!: ElementRef<HTMLTextAreaElement>;
   @ViewChild('imageInput') imageInput!: ElementRef<HTMLInputElement>;
@@ -37,19 +44,31 @@ export class BlogCreationSplitComponent implements OnInit {
   mobilePreview = signal(false);
   submitting = signal(false);
 
+  thumbnailUrl = signal<string>('');
+  thumbnailUploading = signal(false);
+  previewMode = signal<'article' | 'card'>('article');
+
+  isThumbnailLibraryOpen = signal(false);
+  usedThumbnails = signal<string[]>([]);
+  isLoadingThumbnails = signal(false);
+  selectedThumbnailFromLib = signal<string>('');
+
   isEditMode = false;
   blogId: number | string | null = null;
   BlogStatus = BlogStatus;
 
   ngOnInit(): void {
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
+    if (id && isPlatformServer(PLATFORM_ID)) {
       this.isEditMode = true;
       this.blogId = id;
       this.blogService.getBlogById(id).subscribe({
         next: (blog) => {
           this.title = blog.title;
           this.body = blog.content;
+          if (blog.thumbnailUrl) {
+            this.thumbnailUrl.set(blog.thumbnailUrl);
+          }
           this.recordHistory(this.body);
         },
         error: (err) => {
@@ -97,6 +116,34 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
 
   get canRedo(): boolean {
     return this.historyIndex < this.history.length - 1;
+  }
+
+  get mockBlogCard(): any {
+    const currentUser = this.authService.currentUser();
+    return {
+      id: 0,
+      title: this.title || 'Tiêu đề bài viết...',
+      description: this.body ? this.body.substring(0, 150) : 'Mô tả bài viết sẽ hiển thị ở đây...',
+      thumbnailUrl: this.thumbnailUrl() || null,
+      content: this.body,
+      status: BlogStatus.DRAFT,
+      author: {
+        id: currentUser?.id || 0,
+        email: currentUser?.email || 'user@example.com',
+        avatarUrl: currentUser?.avatarUrl || null
+      },
+      category: {
+        id: 0,
+        name: this.tags.length > 0 ? this.tags[0] : 'Công nghệ',
+        slug: 'cong-nghe'
+      },
+      likesCount: 0,
+      commentsCount: 0,
+      viewsCount: 0,
+      sharesCount: 0,
+      createdDate: new Date().toISOString(),
+      modifiedDate: new Date().toISOString()
+    };
   }
 
   autoGrow(event: Event): void {
@@ -295,6 +342,48 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
     input.value = '';
   }
 
+  onThumbnailSelected(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    this.thumbnailUploading.set(true);
+    this.fileService.uploadFileToR2(file, 'blog/thumbnails').subscribe({
+      next: (url) => {
+        this.thumbnailUrl.set(url);
+        this.thumbnailUploading.set(false);
+      },
+      error: (err) => {
+        console.error('Lỗi upload ảnh bìa:', err);
+        this.toastService.error('Upload ảnh bìa thất bại.');
+        this.thumbnailUploading.set(false);
+      }
+    });
+  }
+
+  openThumbnailLibrary(): void {
+    this.isThumbnailLibraryOpen.set(true);
+    this.selectedThumbnailFromLib.set(this.thumbnailUrl());
+    this.isLoadingThumbnails.set(true);
+    this.blogService.getMyUsedThumbnails().subscribe({
+      next: (urls) => {
+        this.usedThumbnails.set(urls || []);
+        this.isLoadingThumbnails.set(false);
+      },
+      error: (err) => {
+        console.error('Lỗi lấy danh sách ảnh bìa:', err);
+        this.toastService.error('Không thể lấy thư viện ảnh bìa.');
+        this.isLoadingThumbnails.set(false);
+      }
+    });
+  }
+
+  confirmThumbnailSelection(): void {
+    if (this.selectedThumbnailFromLib()) {
+      this.thumbnailUrl.set(this.selectedThumbnailFromLib());
+    }
+    this.isThumbnailLibraryOpen.set(false);
+  }
+
   addTag(): void {
     const tag = this.newTag.trim();
     if (tag && !this.tags.includes(tag)) {
@@ -331,6 +420,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
         description,
         content: this.body,
         status,
+        thumbnailUrl: this.thumbnailUrl() || undefined
       }).subscribe({
         next: (res) => {
           this.submitting.set(false);
@@ -348,6 +438,7 @@ Hãy bắt đầu hành trình viết lách của bạn ngay hôm nay. Mỗi bà
         description,
         content: this.body,
         status,
+        thumbnailUrl: this.thumbnailUrl() || undefined
       }).subscribe({
         next: (res) => {
           this.submitting.set(false);

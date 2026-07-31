@@ -22,7 +22,8 @@ import com.blog.backend.identity.domain.repository.UserRepository;
 import com.blog.backend.identity.infrastructure.oauth2.CustomOAuth2UserService;
 import com.blog.backend.identity.infrastructure.oauth2.HttpCookieOAuth2AuthorizationRequestRepository;
 import com.blog.backend.identity.infrastructure.oauth2.OAuth2AuthenticationSuccessHandler;
-
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.http.HttpStatus;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -81,6 +82,9 @@ public class SecurityConfig {
                                                                 "/api/v1/categories/**")
                                                 .permitAll()
                                                 .anyRequest().authenticated())
+                                .exceptionHandling(customizer -> customizer
+                                                .authenticationEntryPoint(
+                                                                new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
                                 .oauth2Login(oauth2 -> oauth2
                                                 .authorizationEndpoint(auth -> auth
                                                                 .authorizationRequestRepository(

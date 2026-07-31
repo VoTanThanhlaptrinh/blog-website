@@ -207,11 +207,27 @@ export class BlogService {
   /**
    * Fetch statistics for home page hero section
    */
+  /**
+   * Fetch statistics for home page hero section
+   */
   getHomeStats(): Observable<HomeStatsResponse> {
     return this.http.get<ApiResponse<HomeStatsResponse>>('/api/v1/stats/home').pipe(
       map((res) => res.data),
       catchError((err) => {
         return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Fetch user's previously used blog thumbnail URLs
+   */
+  getMyUsedThumbnails(): Observable<string[]> {
+    return this.http.get<ApiResponse<string[]>>(`${this.apiUrl}/me/thumbnails`).pipe(
+      map((res) => res.data),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể lấy danh sách ảnh bìa';
+        return throwError(() => new Error(errorMessage));
       })
     );
   }

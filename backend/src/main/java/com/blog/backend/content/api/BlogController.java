@@ -83,6 +83,13 @@ public class BlogController {
         return ResponseEntity.ok(new ApiResponse<>(res, "Lấy danh sách bài viết cá nhân thành công", 200));
     }
 
+    @GetMapping("/me/thumbnails")
+    public ResponseEntity<ApiResponse<List<String>>> getMyUsedThumbnails(
+            @AuthenticationPrincipal User currentUser) {
+        List<String> thumbnails = blogService.getMyUsedThumbnails(currentUser);
+        return ResponseEntity.ok(new ApiResponse<>(thumbnails, "Lấy danh sách ảnh bìa cá nhân thành công", 200));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ApiResponse<BlogResponse>> updateBlog(@PathVariable Long id,
                                                                 @AuthenticationPrincipal User currentUser,

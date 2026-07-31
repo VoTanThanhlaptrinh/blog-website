@@ -11,11 +11,11 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findUserById(Long id);
 
-    @EntityGraph(attributePaths = { "userRoles", "userRoles.role" })
+    @EntityGraph(attributePaths = { "userRoles", "userRoles.role", "avatar" })
     @org.springframework.data.jpa.repository.Query("SELECT u FROM User u WHERE u.id = :id")
     Optional<User> findUserByIdWithRoles(@org.springframework.data.repository.query.Param("id") Long id);
 
-    @EntityGraph(attributePaths = { "userRoles", "userRoles.role" })
+    @EntityGraph(attributePaths = { "userRoles", "userRoles.role", "avatar" })
     Optional<User> findUserByEmail(String email);
 
     long countByCreatedDateBetween(java.time.LocalDateTime start, java.time.LocalDateTime end);

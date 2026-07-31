@@ -32,4 +32,7 @@ public interface BlogRepository extends JpaRepository<Blog, Long>, JpaSpecificat
     long countByCreatedDateBetween(LocalDateTime start, LocalDateTime end);
 
     Page<Blog> findByStatusOrderByViewCountDesc(BlogStatus status, org.springframework.data.domain.Pageable pageable);
+
+    @Query("SELECT DISTINCT b.thumbnailUrl FROM Blog b WHERE b.user.id = :userId AND b.thumbnailUrl IS NOT NULL AND b.thumbnailUrl <> ''")
+    java.util.List<String> findDistinctThumbnailUrlsByUserId(@Param("userId") Long userId);
 }

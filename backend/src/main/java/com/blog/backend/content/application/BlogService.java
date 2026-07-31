@@ -13,4 +13,5 @@ public interface BlogService {
     void deleteBlog(Long id, User currentUser);
     BlogCursorResponse searchBlogsCursor(String keyword, java.util.List<String> categoryNames, Long lastId, int limit, User currentUser);
     BlogCursorResponse getMyBlogsCursor(BlogStatus status, Long lastId, int limit, User currentUser);
+    java.util.List<String> getMyUsedThumbnails(User currentUser);
 }

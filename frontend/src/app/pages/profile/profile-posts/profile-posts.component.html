@@ -1,7 +1,53 @@
 <section class="flex flex-col gap-4">
-  <div class="flex justify-between items-center mb-2">
-    <h3 class="text-xl font-bold text-text-ink">Bài viết đã xuất bản</h3>
-    <a routerLink="/blog/create" class="inline-flex items-center gap-1 text-sm font-medium text-accent-rust hover:opacity-80 transition-opacity">
+  <!-- Profile Posts Management Section -->
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+    <div class="flex items-center gap-3 relative">
+      <h3 class="text-xl font-bold text-text-ink">Quản lý bài viết</h3>
+
+      <!-- Custom Styled Dropdown -->
+      <div class="relative">
+        <button 
+          type="button"
+          (click)="toggleDropdown($event)"
+          class="flex items-center justify-between gap-3 bg-pure-white border border-stone-200 hover:border-accent-rust/30 hover:bg-stone-50 text-stone-700 hover:text-accent-rust text-sm font-medium rounded-2xl px-4 py-2.5 shadow-sm transition-all duration-300 active:scale-95 min-w-[190px]">
+          <div class="flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-accent-rust">{{ getSelectedOption().icon }}</span>
+            <span>{{ getSelectedOption().label }}</span>
+          </div>
+          <span class="material-symbols-outlined text-[18px] text-stone-400 transition-transform duration-300" [class.rotate-180]="isDropdownOpen()">expand_more</span>
+        </button>
+
+        <!-- Dropdown Popup Menu -->
+        @if (isDropdownOpen()) {
+          <div 
+            (click)="$event.stopPropagation()"
+            class="absolute left-0 mt-2 w-[220px] bg-pure-white border border-stone-100 rounded-2xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] p-2 z-30 flex flex-col gap-1 origin-top-left">
+            @for (opt of filterOptions; track opt.value) {
+              <button 
+                type="button"
+                (click)="selectFilter(opt.value)"
+                [ngClass]="currentStatusFilter() === opt.value 
+                  ? 'bg-accent-rust text-white shadow-md shadow-accent-rust/20' 
+                  : 'text-stone-600 hover:bg-stone-100 hover:text-stone-900'"
+                class="w-full flex items-center justify-between px-3.5 py-2.5 text-sm font-medium rounded-xl transition-all duration-200 group">
+                <div class="flex items-center gap-3">
+                  <span class="material-symbols-outlined text-[18px] transition-colors" 
+                    [ngClass]="currentStatusFilter() === opt.value ? 'text-white' : 'text-stone-400 group-hover:text-accent-rust'">
+                    {{ opt.icon }}
+                  </span>
+                  <span>{{ opt.label }}</span>
+                </div>
+                @if (currentStatusFilter() === opt.value) {
+                  <span class="material-symbols-outlined text-[16px] text-white">check_circle</span>
+                }
+              </button>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    <a routerLink="/blog/create" class="inline-flex items-center gap-1.5 px-4 py-2 bg-accent-rust text-white rounded-xl text-sm font-medium hover:bg-clay-700 shadow-sm transition-all self-start sm:self-auto">
       <span class="material-symbols-outlined text-[18px]">add</span> Viết bài mới
     </a>
   </div>
@@ -13,40 +59,61 @@
   } @else if (blogs().length === 0) {
     <div class="p-12 text-center bg-pure-white border border-on-surface/5 rounded-xl">
       <span class="material-symbols-outlined text-4xl text-text-muted mb-2">article</span>
-      <p class="text-text-muted">Bạn chưa xuất bản bài viết nào.</p>
+      <p class="text-text-muted">Không tìm thấy bài viết nào trong mục này.</p>
     </div>
   } @else {
     @for (blog of blogs(); track blog.id) {
       <article class="bg-pure-white border border-on-surface/5 rounded-xl p-5 shadow-sm hover:shadow-md transition-shadow group">
         <div class="flex justify-between items-start mb-2">
-          <span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
-            {{ blog.category?.name || 'General' }}
-          </span>
+          <div class="flex items-center gap-2">
+            <span class="text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+              {{ blog.category?.name || 'General' }}
+            </span>
+            @if (blog.status === BlogStatus.DRAFT) {
+              <span class="bg-stone-100 text-stone-600 px-2.5 py-0.5 rounded-full text-xs font-medium">Bản nháp</span>
+            } @else if (blog.status === BlogStatus.PENDING) {
+              <span class="bg-amber-50 text-amber-700 border border-amber-200/60 px-2.5 py-0.5 rounded-full text-xs font-medium">Đang xét duyệt</span>
+            } @else if (blog.status === BlogStatus.PUBLISHED) {
+              <span class="bg-emerald-50 text-emerald-700 border border-emerald-200/60 px-2.5 py-0.5 rounded-full text-xs font-medium">Đã duyệt</span>
+            }
+          </div>
           <span class="text-xs text-text-muted">
             {{ blog.createdDate ? (blog.createdDate | date:'mediumDate') : '' }}
           </span>
         </div>
-        <a [routerLink]="['/blog', blog.id]">
+
+        <a [routerLink]="blog.status === BlogStatus.PUBLISHED ? ['/blog/detail', blog.id] : ['/blog/edit', blog.id]">
           <h4 class="text-lg font-bold text-text-ink group-hover:text-accent-rust transition-colors mb-2">
-            {{ blog.title }}
+            {{ blog.title || '(Chưa có tiêu đề)' }}
           </h4>
         </a>
+
         <p class="text-text-muted text-sm line-clamp-2 mb-4">
-          {{ blog.description }}
+          {{ blog.description || blog.content || 'Chưa có nội dung...' }}
         </p>
-        <div class="flex items-center gap-6 text-xs text-text-muted">
-          <span class="flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">visibility</span>
-            {{ blog.viewsCount || 0 }}
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">favorite</span>
-            {{ blog.likesCount || 0 }}
-          </span>
-          <span class="flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">chat_bubble</span>
-            {{ blog.commentsCount || 0 }}
-          </span>
+
+        <div class="flex items-center justify-between text-xs text-text-muted">
+          <div class="flex items-center gap-6">
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">visibility</span>
+              {{ blog.viewsCount || 0 }}
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">favorite</span>
+              {{ blog.likesCount || 0 }}
+            </span>
+            <span class="flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">chat_bubble</span>
+              {{ blog.commentsCount || 0 }}
+            </span>
+          </div>
+
+          @if (blog.status === BlogStatus.DRAFT || blog.status === BlogStatus.PENDING) {
+            <a [routerLink]="['/blog/edit', blog.id]" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent-rust/10 hover:bg-accent-rust text-accent-rust hover:text-white text-xs font-semibold transition-all duration-200 active:scale-95">
+              <span>Chỉnh sửa</span>
+              <span class="material-symbols-outlined text-[15px]">edit</span>
+            </a>
+          }
         </div>
       </article>
     }
