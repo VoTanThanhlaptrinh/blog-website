@@ -26,4 +26,5 @@ public class CreateBlogRequest {
 
     private BlogStatus status;
     private Long categoryId;
+    private String thumbnailUrl;
 }

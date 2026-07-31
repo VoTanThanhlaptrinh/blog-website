@@ -41,4 +41,16 @@ public class AdminReportController {
         ReportResponse response = adminService.resolveReport(id, request, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã cập nhật trạng thái xử lý báo cáo", 200));
     }
+
+    @GetMapping("/export")
+    public ResponseEntity<byte[]> exportReports(
+            @RequestParam(required = false) ReportTargetType targetType,
+            @RequestParam(required = false) ReportStatus status,
+            @AuthenticationPrincipal User adminUser) {
+        byte[] csvData = adminService.exportReportsCsv(targetType, status, adminUser);
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=reports_export.csv")
+                .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))
+                .body(csvData);
+    }
 }

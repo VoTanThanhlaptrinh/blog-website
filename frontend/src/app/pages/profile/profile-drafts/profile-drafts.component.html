@@ -1,7 +1,7 @@
 <section class="flex flex-col gap-4">
   <div class="flex justify-between items-center mb-2">
     <h3 class="text-xl font-bold text-text-ink">Bài viết nháp</h3>
-    <a routerLink="/blog/create" class="inline-flex items-center gap-1 text-sm font-medium text-accent-rust hover:underline">
+    <a routerLink="/blog/create" class="inline-flex items-center gap-1 text-sm font-medium text-accent-rust hover:opacity-80 transition-opacity">
       <span class="material-symbols-outlined text-[18px]">add</span> Viết bài mới
     </a>
   </div>
@@ -39,11 +39,19 @@
           {{ blog.description || 'Bản nháp chưa có mô tả.' }}
         </p>
         <div class="flex justify-end">
-          <a [routerLink]="['/blog/edit', blog.id]" class="inline-flex items-center gap-1 text-sm text-accent-rust font-medium hover:underline">
+          <a [routerLink]="['/blog/edit', blog.id]" class="inline-flex items-center gap-1 text-sm text-accent-rust font-medium hover:opacity-80 transition-opacity">
             Chỉnh sửa nháp <span class="material-symbols-outlined text-sm">arrow_forward</span>
           </a>
         </div>
       </article>
+    }
+
+    @if (!hasMore()) {
+      <div class="py-6 text-center text-sm text-text-muted">Đã tải hết bài viết.</div>
+    } @else {
+      <div class="py-6 text-center text-text-muted">
+        <span class="material-symbols-outlined animate-spin text-2xl">progress_activity</span>
+      </div>
     }
   }
 </section>

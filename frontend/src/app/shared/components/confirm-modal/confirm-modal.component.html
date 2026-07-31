@@ -1,0 +1,58 @@
+@if (confirmService.modalState().isOpen) {
+<div class="fixed inset-0 z-[9999] flex items-center justify-center p-4">
+  <!-- Backdrop -->
+  <div 
+    class="fixed inset-0 bg-stone-900/60 backdrop-blur-xs transition-opacity animate-fade-in"
+    (click)="onCancel()">
+  </div>
+
+  <!-- Modal Card -->
+  <div class="relative w-full max-w-md bg-white rounded-2xl p-6 shadow-2xl border border-stone-100 z-10 space-y-5 animate-scale-up">
+    <!-- Header with Icon -->
+    <div class="flex items-start gap-4">
+      <!-- Icon Wrapper -->
+      <div [ngClass]="{
+        'bg-rose-100 text-rose-600': confirmService.modalState().options.actionType === 'danger',
+        'bg-amber-100 text-amber-600': confirmService.modalState().options.actionType === 'info',
+        'bg-stone-100 text-accent-rust': !confirmService.modalState().options.actionType || confirmService.modalState().options.actionType === 'primary'
+      }" class="flex-shrink-0 w-11 h-11 rounded-full flex items-center justify-center">
+        <span class="material-symbols-outlined text-[24px]">
+          {{ confirmService.modalState().options.icon || (confirmService.modalState().options.actionType === 'danger' ? 'warning' : 'help_outline') }}
+        </span>
+      </div>
+
+      <!-- Title & Content -->
+      <div class="space-y-1.5 flex-1">
+        <h3 class="text-lg font-bold text-stone-900 leading-snug">
+          {{ confirmService.modalState().options.title }}
+        </h3>
+        <p class="text-sm text-stone-600 leading-relaxed">
+          {{ confirmService.modalState().options.message }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex items-center justify-end gap-3 pt-2">
+      <button 
+        type="button"
+        (click)="onCancel()"
+        class="px-4 py-2.5 rounded-xl border border-stone-200 text-stone-700 text-sm font-semibold hover:bg-stone-100 hover:text-stone-900 transition-colors cursor-pointer">
+        {{ confirmService.modalState().options.cancelText }}
+      </button>
+
+      <button 
+        type="button"
+        (click)="onConfirm()"
+        [ngClass]="{
+          'bg-rose-600 hover:bg-rose-700 text-white': confirmService.modalState().options.actionType === 'danger',
+          'bg-amber-600 hover:bg-amber-700 text-white': confirmService.modalState().options.actionType === 'info',
+          'bg-accent-rust hover:opacity-90 text-white': !confirmService.modalState().options.actionType || confirmService.modalState().options.actionType === 'primary'
+        }"
+        class="px-5 py-2.5 rounded-xl text-sm font-bold shadow-xs transition-colors cursor-pointer">
+        {{ confirmService.modalState().options.confirmText }}
+      </button>
+    </div>
+  </div>
+</div>
+}

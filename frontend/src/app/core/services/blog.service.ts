@@ -92,6 +92,30 @@ export class BlogService {
   }
 
   /**
+   * Fetch user's own blogs using cursor pagination
+   */
+  getMyBlogsCursor(params: { status?: string; lastId?: number; limit?: number }): Observable<BlogCursorResponse> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+
+    let httpParams = new HttpParams();
+    if (params.status) httpParams = httpParams.set('status', params.status);
+    if (params.lastId !== undefined) httpParams = httpParams.set('lastId', params.lastId.toString());
+    if (params.limit !== undefined) httpParams = httpParams.set('limit', params.limit.toString());
+
+    return this.http.get<ApiResponse<BlogCursorResponse>>(`${this.apiUrl}/me/cursor`, { params: httpParams }).pipe(
+      map((res) => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể lấy danh sách bài viết cá nhân';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  /**
    * Fetch single blog detail by ID
    */
   getBlogById(id: number | string): Observable<BlogResponse> {
@@ -183,11 +207,27 @@ export class BlogService {
   /**
    * Fetch statistics for home page hero section
    */
+  /**
+   * Fetch statistics for home page hero section
+   */
   getHomeStats(): Observable<HomeStatsResponse> {
     return this.http.get<ApiResponse<HomeStatsResponse>>('/api/v1/stats/home').pipe(
       map((res) => res.data),
       catchError((err) => {
         return throwError(() => err);
+      })
+    );
+  }
+
+  /**
+   * Fetch user's previously used blog thumbnail URLs
+   */
+  getMyUsedThumbnails(): Observable<string[]> {
+    return this.http.get<ApiResponse<string[]>>(`${this.apiUrl}/me/thumbnails`).pipe(
+      map((res) => res.data),
+      catchError((err) => {
+        const errorMessage = err?.error?.message || 'Không thể lấy danh sách ảnh bìa';
+        return throwError(() => new Error(errorMessage));
       })
     );
   }

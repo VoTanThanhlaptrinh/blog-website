@@ -1,5 +1,6 @@
 import { Component, ElementRef, Inject, OnInit, OnDestroy, PLATFORM_ID, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
+import { finalize } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MarkdownComponent } from 'ngx-markdown';
@@ -43,7 +44,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   readonly isBookmarked = signal<boolean>(false);
   readonly sharesCount = signal<number>(0);
   readonly viewsCount = signal<number>(0);
-  
+
   // Follow Signals
   readonly isFollowing = signal<boolean>(false);
   readonly followersCount = signal<number>(0);
@@ -63,14 +64,9 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   toc: TocItem[] = [];
   private viewTimer: any = null;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: object) {}
+  constructor(@Inject(PLATFORM_ID) private platformId: object) { }
 
   ngOnInit(): void {
-    // Attempt to load current user profile if logged in but empty
-    if (!this.authService.currentUser()) {
-      this.authService.getProfile().subscribe({ error: () => {} });
-    }
-
     this.route.params.subscribe((params) => {
       const id = params['id'];
       if (id) {
@@ -90,15 +86,15 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   fetchBlogDetail(id: string | number): void {
     this.loading.set(true);
     this.error.set(null);
-    this.blogService.getBlogById(id).subscribe({
-      next: (res) => {
+    this.blogService.getBlogById(id)
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((res) => {
         this.blog.set(res);
         this.isLiked.set(!!res.likedByCurrentUser);
         this.likesCount.set(res.likesCount || 0);
         this.sharesCount.set(res.sharesCount || 0);
         this.viewsCount.set(res.viewsCount || 0);
         this.totalComments.set(res.commentsCount || 0);
-        this.loading.set(false);
 
         // Schedule View Recording (after 5 seconds on page)
         this.scheduleViewRecord(res.id);
@@ -106,22 +102,14 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         // Fetch initial page of comments
         this.fetchComments(res.id, 0);
 
-        // Fetch follow status
+        // Fetch follow status if author exists
         if (res.author && res.author.id) {
-          this.interactionService.getFollowStatus(res.author.id).subscribe({
-            next: (followRes) => {
-              this.isFollowing.set(followRes.following);
-              this.followersCount.set(followRes.followersCount);
-            },
-            error: () => {}
+          this.interactionService.getFollowStatus(res.author.id).subscribe((followRes) => {
+            this.isFollowing.set(followRes.following);
+            this.followersCount.set(followRes.followersCount);
           });
         }
-      },
-      error: (err) => {
-        this.error.set(err?.error?.message || 'Không thể lấy nội dung bài viết này.');
-        this.loading.set(false);
-      },
-    });
+      });
   }
 
   /** View Recording */
@@ -130,15 +118,12 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     if (this.viewTimer) clearTimeout(this.viewTimer);
 
     this.viewTimer = setTimeout(() => {
-      this.interactionService.recordView(blogId).subscribe({
-        next: (res) => {
-          if (res && res.viewsCount !== undefined) {
-            this.viewsCount.set(res.viewsCount);
-          } else {
-            this.viewsCount.update((v) => v + 1);
-          }
-        },
-        error: () => {},
+      this.interactionService.recordView(blogId).subscribe((res) => {
+        if (res && res.viewsCount !== undefined) {
+          this.viewsCount.set(res.viewsCount);
+        } else {
+          this.viewsCount.update((v) => v + 1);
+        }
       });
     }, 5000);
   }
@@ -156,16 +141,9 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     this.isLiked.set(nextLiked);
     this.likesCount.set(nextLiked ? prevCount + 1 : Math.max(0, prevCount - 1));
 
-    this.interactionService.toggleLike(b.id).subscribe({
-      next: (res) => {
-        this.isLiked.set(res.liked);
-        this.likesCount.set(res.likesCount);
-      },
-      error: () => {
-        // Rollback on error
-        this.isLiked.set(prevLiked);
-        this.likesCount.set(prevCount);
-      },
+    this.interactionService.toggleLike(b.id).subscribe((res) => {
+      this.isLiked.set(res.liked);
+      this.likesCount.set(res.likesCount);
     });
   }
 
@@ -179,19 +157,13 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
 
     const prevFollowing = this.isFollowing();
     const prevCount = this.followersCount();
-    
+
     this.isFollowing.set(!prevFollowing);
     this.followersCount.set(!prevFollowing ? prevCount + 1 : Math.max(0, prevCount - 1));
 
-    this.interactionService.toggleFollow(authorId).subscribe({
-      next: (res) => {
-        this.isFollowing.set(res.following);
-        this.followersCount.set(res.followersCount);
-      },
-      error: () => {
-        this.isFollowing.set(prevFollowing);
-        this.followersCount.set(prevCount);
-      }
+    this.interactionService.toggleFollow(authorId).subscribe((res) => {
+      this.isFollowing.set(res.following);
+      this.followersCount.set(res.followersCount);
     });
   }
 
@@ -203,13 +175,8 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     const prevBookmarked = this.isBookmarked();
     this.isBookmarked.set(!prevBookmarked);
 
-    this.interactionService.toggleBookmark(b.id).subscribe({
-      next: (res) => {
-        this.isBookmarked.set(res.bookmarked);
-      },
-      error: () => {
-        this.isBookmarked.set(prevBookmarked);
-      },
+    this.interactionService.toggleBookmark(b.id).subscribe((res) => {
+      this.isBookmarked.set(res.bookmarked);
     });
   }
 
@@ -218,11 +185,8 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     const b = this.blog();
     if (!b) return;
 
-    this.interactionService.shareBlog(b.id, provider).subscribe({
-      next: (res) => {
-        this.sharesCount.set(res.sharesCount);
-      },
-      error: () => {},
+    this.interactionService.shareBlog(b.id, provider).subscribe((res) => {
+      this.sharesCount.set(res.sharesCount);
     });
 
     if (isPlatformBrowser(this.platformId)) {
@@ -246,8 +210,9 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
   /** Load Comments */
   fetchComments(blogId: number, page: number): void {
     this.commentsLoading.set(true);
-    this.interactionService.getComments(blogId, page, 10).subscribe({
-      next: (res) => {
+    this.interactionService.getComments(blogId, page, 10)
+      .pipe(finalize(() => this.commentsLoading.set(false)))
+      .subscribe((res) => {
         if (page === 0) {
           this.comments.set(res.content || []);
         } else {
@@ -255,12 +220,7 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
         }
         this.commentsPage.set(res.pageNumber);
         this.hasMoreComments.set(!res.last);
-        this.commentsLoading.set(false);
-      },
-      error: () => {
-        this.commentsLoading.set(false);
-      },
-    });
+      });
   }
 
   loadMoreComments(): void {
@@ -276,30 +236,25 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     if (!b || !content) return;
 
     const parent = this.replyingTo();
-    const req = {
+    const payload = {
       blogId: b.id,
       content,
       parentId: parent ? parent.parentId : null,
     };
 
-    this.interactionService.createComment(req).subscribe({
-      next: (newComment) => {
-        this.newCommentContent.set('');
-        this.replyingTo.set(null);
-        this.totalComments.update((c) => c + 1);
+    this.interactionService.createComment(payload).subscribe((newComment: any) => {
+      this.newCommentContent.set('');
+      this.replyingTo.set(null);
+      this.totalComments.update((c) => c + 1);
 
-        if (req.parentId) {
-          // Add to nested replies in local state
-          this.addReplyToCommentTree(this.comments(), req.parentId, newComment);
-          this.comments.update((list) => [...list]);
-        } else {
-          // Prepend to top-level comments
-          this.comments.update((list) => [newComment, ...list]);
-        }
-      },
-      error: (err) => {
-        this.toastService.error(err?.error?.message || 'Gửi bình luận thất bại');
-      },
+      if (payload.parentId) {
+        // Add to nested replies in local state
+        this.addReplyToCommentTree(this.comments(), payload.parentId, newComment);
+        this.comments.update((list) => [...list]);
+      } else {
+        // Prepend to top-level comments
+        this.comments.update((list) => [newComment, ...list]);
+      }
     });
   }
 
@@ -317,37 +272,24 @@ export class BlogDetailAuthorComponent implements OnInit, OnDestroy {
     this.toggleCommentLikeInTree(this.comments(), commentId);
     this.comments.update((list) => [...list]);
 
-    this.interactionService.toggleCommentLike(commentId).subscribe({
-      next: (res) => {
-        this.updateCommentLikeInTree(this.comments(), commentId, res.liked, res.likesCount);
-        this.comments.update((list) => [...list]);
-      },
-      error: () => {},
+    this.interactionService.toggleCommentLike(commentId).subscribe((res) => {
+      this.updateCommentLikeInTree(this.comments(), commentId, res.liked, res.likesCount);
+      this.comments.update((list) => [...list]);
     });
   }
 
   handleEditComment(event: { commentId: number; content: string }): void {
-    this.interactionService.updateComment(event.commentId, { content: event.content }).subscribe({
-      next: (updated) => {
-        this.updateCommentContentInTree(this.comments(), event.commentId, updated.content);
-        this.comments.update((list) => [...list]);
-      },
-      error: (err) => {
-        this.toastService.error(err?.error?.message || 'Cập nhật bình luận thất bại');
-      },
+    this.interactionService.updateComment(event.commentId, { content: event.content }).subscribe((updated) => {
+      this.updateCommentContentInTree(this.comments(), event.commentId, updated.content);
+      this.comments.update((list) => [...list]);
     });
   }
 
   handleDeleteComment(commentId: number): void {
-    this.interactionService.deleteComment(commentId).subscribe({
-      next: () => {
-        this.removeCommentFromTree(this.comments(), commentId);
-        this.comments.update((list) => [...list]);
-        this.totalComments.update((c) => Math.max(0, c - 1));
-      },
-      error: (err) => {
-        this.toastService.error(err?.error?.message || 'Xóa bình luận thất bại');
-      },
+    this.interactionService.deleteComment(commentId).subscribe(() => {
+      this.removeCommentFromTree(this.comments(), commentId);
+      this.comments.update((list) => [...list]);
+      this.totalComments.update((c) => Math.max(0, c - 1));
     });
   }
 

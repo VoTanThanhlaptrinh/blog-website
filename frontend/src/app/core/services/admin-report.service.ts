@@ -69,4 +69,21 @@ export class AdminReportService {
       })
     );
   }
+
+  exportReports(targetType?: string, status?: string): void {
+    let params = new HttpParams();
+    if (targetType) params = params.set('targetType', targetType);
+    if (status) params = params.set('status', status);
+
+    this.http.get(`${this.apiUrl}/export`, { params, responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'reports_export.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    });
+  }
 }

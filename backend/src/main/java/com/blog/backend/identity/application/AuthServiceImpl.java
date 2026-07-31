@@ -107,6 +107,7 @@ public class AuthServiceImpl implements AuthService {
                 .bio(currentUser.getBio())
                 .birthDate(currentUser.getBirthDate() != null ? currentUser.getBirthDate().toString() : null)
                 .avatarUrl(currentUser.getAvatar() != null ? currentUser.getAvatar().getUrl() : null)
+                .roles(currentUser.getAuthorities() != null ? currentUser.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList() : java.util.List.of())
                 .build();
 
         return AuthResponse.builder()
@@ -174,6 +175,7 @@ public class AuthServiceImpl implements AuthService {
                 .bio(user.getBio())
                 .birthDate(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
                 .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
+                .roles(user.getAuthorities() != null ? user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList() : java.util.List.of())
                 .build();
     }
 
@@ -290,6 +292,7 @@ public class AuthServiceImpl implements AuthService {
                 .bio(user.getBio())
                 .birthDate(user.getBirthDate() != null ? user.getBirthDate().toString() : null)
                 .avatarUrl(user.getAvatar() != null ? user.getAvatar().getUrl() : null)
+                .roles(user.getAuthorities() != null ? user.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList() : java.util.List.of())
                 .build();
     }
 

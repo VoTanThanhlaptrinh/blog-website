@@ -47,6 +47,7 @@ export interface BlogResponse {
   content: string;
   status: BlogStatus;
   rejectionReason?: string;
+  thumbnailUrl?: string;
   author: AuthorResponse;
   category?: CategoryResponse;
   likesCount: number;
@@ -73,6 +74,7 @@ export interface CreateBlogRequest {
   description: string;
   content: string;
   status?: BlogStatus;
+  thumbnailUrl?: string;
 }
 
 export interface UpdateBlogRequest {
@@ -80,6 +82,7 @@ export interface UpdateBlogRequest {
   description: string;
   content: string;
   status?: BlogStatus;
+  thumbnailUrl?: string;
 }
 
 export interface HomeStatsResponse {

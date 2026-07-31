@@ -27,14 +27,23 @@ import java.util.List;
 @Getter
 @Setter
 public class Blog {
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;
+
+    @Column(columnDefinition = "TEXT")
     private String description;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
     @Enumerated(EnumType.STRING)
     private BlogStatus status;
     private String rejectionReason;
+
+    @Column(columnDefinition = "TEXT")
+    private String thumbnailUrl;
+
     @Builder.Default
     private int viewCount = 0;
     @Builder.Default

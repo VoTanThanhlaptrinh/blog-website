@@ -1,172 +1,90 @@
-<!-- TopNavBar -->
-<!-- Main Content -->
-<main class=" mt-16 p-10 max-w-[1100px]">
-<div class="grid grid-cols-12 gap-8">
-<!-- Settings Navigation -->
-<div class="col-span-12 md:col-span-3">
-</div>
-<!-- Settings Canvas -->
-<div class="col-span-12 md:col-span-9">
-<!-- General Section -->
-<section class="tab-content space-y-8" id="general">
-<div class="bg-pure-white p-8 rounded-lg border border-on-surface/5 editorial-shadow">
-<h3 class="font-headline-md text-headline-md mb-6 font-headline-lg">General Information</h3>
-<div class="space-y-6">
-<div>
-<label class="block font-label-md text-label-md mb-2 text-text-ink">Site Title</label>
-<input class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all outline-none" type="text" value="BBlogHub Editorial">
-</div>
-<div>
-<label class="block font-label-md text-label-md mb-2 text-text-ink">Description</label>
-<textarea class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all outline-none" rows="3">A modern editorial engine for technical writers and developers.</textarea>
-</div>
-<div class="flex items-center justify-between py-4 border-t border-on-surface/5">
-<div>
-<span class="block font-label-md text-label-md text-text-ink">Maintenance Mode</span>
-<span class="block font-caption text-caption text-text-muted">Take the site offline for system updates</span>
-</div>
-<button class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none bg-on-surface/10" id="maintenance-toggle" onclick="this.classList.toggle('bg-accent-rust'); this.children[0].classList.toggle('translate-x-5')">
-<span class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0"></span>
-</button>
-</div>
-<div class="pt-4">
-<label class="block font-label-md text-label-md mb-4 text-text-ink">Platform Logo</label>
-<div class="flex items-center gap-6">
-<div class="w-20 h-20 -container rounded-lg flex items-center justify-center border-2 border-dashed border-on-surface/10">
-<span class="material-symbols-outlined text-text-muted">add_photo_alternate</span>
-</div>
-<button class="px-6 py-2 border border-accent-rust text-accent-rust font-label-md text-label-md rounded hover:bg-accent-rust/5 transition-colors">Upload New Logo</button>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Security Section (Hidden by default) -->
-<section class="tab-content hidden space-y-8" id="security">
-<div class="bg-pure-white p-8 rounded-lg border border-on-surface/5 editorial-shadow">
-<h3 class="font-headline-md text-headline-md mb-6 font-headline-lg">Access &amp; Security</h3>
-<div class="space-y-8">
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-<div>
-<label class="block font-label-md text-label-md mb-2 text-text-ink">Minimum Password Length</label>
-<select class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20">
-<option>8 Characters</option>
-<option selected="">12 Characters (Recommended)</option>
-<option>16 Characters</option>
-</select>
-</div>
-<div>
-<label class="block font-label-md text-label-md mb-2 text-text-ink">Session Timeout</label>
-<select class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20">
-<option>15 Minutes</option>
-<option selected="">1 Hour</option>
-<option>8 Hours</option>
-</select>
-</div>
-</div>
-<div class="p-6 -container-lowest border border-accent-rust/10 rounded-lg flex items-start gap-4">
-<span class="material-symbols-outlined text-accent-rust" style="font-variation-settings: 'FILL' 1;">security</span>
-<div>
-<h4 class="font-label-md text-label-md text-text-ink mb-1 font-headline-lg">Two-Factor Authentication</h4>
-<p class="font-body-md text-body-md text-text-muted mb-4">Mandate 2FA for all administrator and moderator accounts to ensure system integrity.</p>
-<button class="bg-accent-rust text-pure-white px-6 py-2 font-label-md text-label-md rounded-lg active:scale-95 transition-transform">Enable Global 2FA</button>
-</div>
-</div>
-</div>
-</div>
-</section>
-<!-- Moderation Section (Hidden) -->
-<section class="tab-content hidden space-y-8" id="moderation">
-<div class="bg-pure-white p-8 rounded-lg border border-on-surface/5 editorial-shadow">
-<h3 class="font-headline-md text-headline-md mb-6 font-headline-lg">Community Moderation</h3>
-<div class="space-y-6">
-<div>
-<label class="block font-label-md text-label-md mb-2 text-text-ink">Keyword Blacklist</label>
-<textarea class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 outline-none" placeholder="Enter comma separated words..." rows="4"></textarea>
-<p class="mt-2 font-caption text-caption text-text-muted italic">Comments containing these words will be automatically held for review.</p>
-</div>
-<div class="py-6 border-t border-on-surface/5">
-<label class="block font-label-md text-label-md mb-4 text-text-ink">Auto-flagging Sensitivity</label>
-<input class="w-full accent-accent-rust h-2 bg-on-surface/10 rounded-lg appearance-none cursor-pointer" max="10" min="1" type="range" value="7">
-<div class="flex justify-between mt-2 font-caption text-caption text-text-muted">
-<span class="">Lax</span>
-<span class="">Balanced (Level 7)</span>
-<span class="">Strict</span>
-</div>
-</div>
-<div class="pt-4">
-<a class="inline-flex items-center gap-2 text-accent-rust font-label-md text-label-md hover:underline" href="#">
-                                    Edit Community Guidelines
-                                    <span class="material-symbols-outlined" style="font-size: 18px;">open_in_new</span>
-</a>
-</div>
-</div>
-</div>
-</section>
-<!-- API Section (Hidden) -->
-<section class="tab-content hidden space-y-8" id="api">
-<div class="bg-pure-white p-8 rounded-lg border border-on-surface/5 editorial-shadow">
-<div class="flex justify-between items-center mb-6">
-<h3 class="font-headline-md text-headline-md font-headline-lg">API &amp; Keys</h3>
-<button class="bg-accent-rust text-pure-white px-4 py-2 font-label-md text-label-md rounded flex items-center gap-2 rounded-lg">
-<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
-                                Create Key
-                            </button>
-</div>
-<div class="space-y-4">
-<div class="p-4 -paper border border-on-surface/5 rounded-lg flex items-center justify-between">
-<div class="flex items-center gap-4">
-<div class="p-2 bg-accent-rust/10 rounded">
-<span class="material-symbols-outlined text-accent-rust">api</span>
-</div>
-<div>
-<span class="block font-label-md text-label-md text-text-ink">Primary CMS Key</span>
-<code class="text-caption font-mono text-text-muted">sk_live_••••••••••••4201</code>
-</div>
-</div>
-<div class="flex gap-2">
-<button class="p-2 hover:bg-on-surface/5 rounded transition-colors"><span class="material-symbols-outlined text-text-muted">content_copy</span></button>
-<button class="p-2 hover:bg-on-surface/5 rounded transition-colors text-error"><span class="material-symbols-outlined">delete</span></button>
-</div>
-</div>
-</div>
-<h3 class="font-headline-md text-headline-md mt-10 mb-6 font-headline-lg">Third-Party Integrations</h3>
-<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-<div class="p-4 border border-on-surface/5 rounded-lg flex items-center justify-between hover:border-accent-rust/30 transition-colors">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-on-surface/5 rounded flex items-center justify-center">
-<span class="material-symbols-outlined text-text-muted">mail</span>
-</div>
-<span class="font-label-md text-label-md text-text-ink">Mailchimp</span>
-</div>
-<span class="text-caption text-tertiary bg-tertiary/10 px-2 py-1 rounded">Connected</span>
-</div>
-<div class="p-4 border border-on-surface/5 rounded-lg flex items-center justify-between group cursor-pointer hover:border-accent-rust/30 transition-colors">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-on-surface/5 rounded flex items-center justify-center">
-<span class="material-symbols-outlined text-text-muted">monitoring</span>
-</div>
-<span class="font-label-md text-label-md text-text-ink">Google Analytics</span>
-</div>
-<span class="text-caption text-text-muted group-hover:text-accent-rust transition-colors font-bold">Configure</span>
-</div>
-</div>
-</div>
-</section>
-<!-- Save Footer -->
-<div class="mt-8 pt-8 border-t border-on-surface/5 flex justify-end gap-4">
-<button class="px-8 py-3 text-text-muted font-label-md text-label-md hover:text-text-ink transition-colors">Cancel Changes</button>
-<button class="px-8 py-3 bg-accent-rust text-pure-white font-label-md text-label-md rounded shadow-sm hover:brightness-110 active:scale-95 transition-all rounded-lg">Save All Changes</button>
-</div>
-</div>
-</div>
+<!-- Main Content Canvas -->
+<main class="py-6 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
+        <!-- Header Section -->
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
+            <div class="space-y-2">
+                <h1 class="text-2xl font-bold text-text-ink mb-2">Cài Đặt Hệ Thống</h1>
+                <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
+                    Cấu hình các thông số cơ bản cho hệ thống blog.
+                </p>
+            </div>
+        </div>
+
+        <!-- Error Banner -->
+        <div *ngIf="error" class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-md">
+            {{ error }}
+        </div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="loading" class="mb-4 text-sm text-secondary flex items-center gap-2">
+            <span
+                class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
+            Đang lưu/tải dữ liệu...
+        </div>
+
+        <!-- Settings Canvas -->
+        <div class="space-y-8">
+            <!-- General Section -->
+            <section class="space-y-8">
+                <div class="bg-pure-white p-8 rounded-lg border border-on-surface/5 editorial-shadow space-y-6">
+                    <h3 class="font-headline-md text-headline-md font-bold text-text-ink">Thông Tin Chung (General)</h3>
+
+                    <div>
+                        <label class="block font-label-md text-label-md mb-2 text-text-ink font-bold">Tên Website (Site
+                            Title)</label>
+                        <input [(ngModel)]="settings['siteName']"
+                            class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all outline-none"
+                            type="text">
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-label-md mb-2 text-text-ink font-bold">Mô tả
+                            (Description)</label>
+                        <textarea [(ngModel)]="settings['siteDescription']"
+                            class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all outline-none"
+                            rows="3"></textarea>
+                    </div>
+
+                    <div>
+                        <label class="block font-label-md text-label-md mb-2 text-text-ink font-bold">Dung lượng Upload
+                            tối đa (MB)</label>
+                        <input [(ngModel)]="settings['maxUploadSizeMb']"
+                            class="w-full bg-pure-white border border-on-surface/10 rounded-lg p-3 focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all outline-none"
+                            type="number">
+                    </div>
+
+                    <div class="flex items-center justify-between py-4 border-t border-on-surface/5">
+                        <div>
+                            <span class="block font-label-md text-label-md text-text-ink font-bold">Chế độ Bảo trì
+                                (Maintenance Mode)</span>
+                            <span class="block font-caption text-caption text-text-muted">Tạm thời khóa quyền truy cập
+                                của người dùng thường khi nâng cấp hệ thống</span>
+                        </div>
+                        <button (click)="toggleMaintenance()"
+                            [class.bg-accent-rust]="settings['maintenanceMode'] === 'true'"
+                            [class.bg-on-surface]="settings['maintenanceMode'] !== 'true'"
+                            class="relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none">
+                            <span [class.translate-x-5]="settings['maintenanceMode'] === 'true'"
+                                [class.translate-x-0]="settings['maintenanceMode'] !== 'true'"
+                                class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"></span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Save Footer -->
+            <div class="mt-8 pt-8 border-t border-on-surface/5 flex justify-end gap-4">
+                <button (click)="loadSettings()"
+                    class="px-8 py-3 text-text-muted font-label-md text-label-md hover:text-text-ink transition-colors">
+                    Hủy thay đổi
+                </button>
+                <button (click)="saveSettings()"
+                    class="px-8 py-3 bg-accent-rust text-pure-white font-label-md text-label-md rounded shadow-sm hover:brightness-110 active:scale-95 transition-all rounded-lg">
+                    Lưu tất cả thay đổi
+                </button>
+            </div>
+        </div>
+
+    </div>
 </main>
-<!-- Footer -->
-<footer class=" w-[calc(100%-16rem)] py-4 px-10 flex justify-between items-center border-t border-on-surface/5 -container-low">
-<span class="font-caption text-caption text-text-muted">© 2024 BBlogHub Editorial Systems</span>
-<div class="flex gap-4">
-<a class="font-caption text-caption text-text-muted hover:text-accent-rust transition-colors" href="#">Privacy Policy</a>
-<a class="font-caption text-caption text-text-muted hover:text-accent-rust transition-colors" href="#">Terms of Service</a>
-<a class="font-caption text-caption text-text-muted hover:text-accent-rust transition-colors" href="#">API Documentation</a>
-</div>
-</footer>

@@ -1,7 +1,7 @@
 import { Injectable, effect, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { Observable, tap, finalize } from 'rxjs';
+import { Observable, tap, finalize, catchError, throwError } from 'rxjs';
 import {
   AccountLoginRequest,
   ApiResponse,
@@ -17,6 +17,7 @@ import {
 import { UploadPostResponse, UploadUrlRequest } from '../models/file.model';
 
 import { environment } from '../../../environments/environment';
+import { error } from 'console';
 
 @Injectable({
   providedIn: 'root',
@@ -79,6 +80,11 @@ export class AuthService {
           this.currentUser.set(res.data);
         }
       }),
+      finalize(() => {
+        if (this.currentUser() === undefined) {
+          this.currentUser.set(null);
+        }
+      })
     );
   }
 

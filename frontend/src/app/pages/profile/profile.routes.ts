@@ -16,7 +16,8 @@ export const PROFILE_ROUTES: Routes = [
       },
       { 
         path: 'drafts', 
-        loadComponent: () => import('./profile-drafts/profile-drafts.component').then(m => m.ProfileDraftsComponent) 
+        redirectTo: 'posts',
+        pathMatch: 'full'
       },
     ]
   },

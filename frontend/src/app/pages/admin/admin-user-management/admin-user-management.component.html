@@ -1,287 +1,205 @@
-<!-- TopNavBar -->
 <!-- Main Content Canvas -->
-<main class=" pt-24 pb-16 px-10  ">
-    <div class="max-w-[1100px] mx-auto">
+<main class="py-6 px-6 md:px-10">
+    <div class="max-w-[1200px] mx-auto">
         <!-- Header Section -->
         <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
             <div class="space-y-2">
-                <h1 class="font-headline-lg text-display-lg text-text-ink">User Management</h1>
+                <h1 class="text-2xl font-bold text-text-ink mb-2">Quản Lý Người Dùng</h1>
                 <p class="font-body-lg text-body-lg text-text-muted max-w-xl">
-                    Manage community members, roles, and account permissions. Oversee the pulse of the BBlogHub
-                    ecosystem.
+                    Quản lý thành viên, vai trò, và phân quyền tài khoản trong hệ thống.
                 </p>
             </div>
-            <div>
-                <button
-                    class="bg-accent-rust text-pure-white font-label-md text-label-md px-6 py-2.5 rounded flex items-center gap-2 shadow-sm hover:opacity-90 active:scale-95 transition-all">
-                    <span class="material-symbols-outlined text-sm" data-icon="add">add</span>
-                    Add User
-                </button>
+        </div>
+
+        <!-- Error Banner -->
+        <div *ngIf="error" class="mb-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded-md">
+            {{ error }}
+        </div>
+
+        <!-- Loading Indicator -->
+        <div *ngIf="loading" class="mb-4 text-sm text-secondary flex items-center gap-2">
+            <span class="inline-block animate-spin rounded-full h-4 w-4 border-2 border-accent-rust border-t-transparent"></span>
+            Đang tải danh sách người dùng...
+        </div>
+
+        <!-- Edit Role Modal -->
+        <div *ngIf="editingUser" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl max-w-md w-full p-6 shadow-xl space-y-4">
+                <h3 class="text-headline-md font-headline-md text-text-ink">Cập nhật vai trò người dùng</h3>
+                <p class="text-body-md text-secondary">Chọn vai trò mới cho tài khoản {{ editingUser.email }}:</p>
+                <select [(ngModel)]="newRole" class="w-full p-3 border border-outline-variant rounded-lg focus:outline-none focus:ring-2 focus:ring-accent-rust text-body-md">
+                    <option value="USER">User (Thành viên)</option>
+                    <option value="AUTHOR">Author (Tác giả)</option>
+                    <option value="MODERATOR">Moderator (Kiểm duyệt viên)</option>
+                    <option value="ADMIN">Admin (Quản trị viên)</option>
+                </select>
+                <div class="flex justify-end gap-3">
+                    <button (click)="cancelEditRole()" class="px-4 py-2 border border-gray-300 text-secondary rounded-lg font-label-md hover:bg-gray-50">
+                        Hủy
+                    </button>
+                    <button (click)="saveRole()" class="px-4 py-2 bg-accent-rust text-white rounded-lg font-label-md hover:opacity-90">
+                        Lưu vai trò
+                    </button>
+                </div>
             </div>
         </div>
+
         <!-- Filters and Search -->
         <div class="flex flex-col gap-4 mb-8">
             <div class="flex items-center border-b border-text-ink/10 overflow-x-auto hide-scrollbar">
                 <button
-                    class="px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap">All
-                    Users</button>
-                <button
-                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Authors</button>
-                <button
-                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Moderators</button>
-                <button
-                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap flex items-center gap-2">
-                    Pending Approval <span
-                        class="bg-primary/10 text-primary px-2 py-0.5 rounded-full text-[10px]">4</span>
+                    (click)="onFilterStatus(undefined)"
+                    [class]="selectedStatus === undefined ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Tất cả người dùng
                 </button>
                 <button
-                    class="px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap">Suspended</button>
+                    (click)="onFilterStatus('ACTIVE')"
+                    [class]="selectedStatus === 'ACTIVE' ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Hoạt động (Active)
+                </button>
+                <button
+                    (click)="onFilterStatus('PENDING')"
+                    [class]="selectedStatus === 'PENDING' ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Chờ duyệt (Pending)
+                </button>
+                <button
+                    (click)="onFilterStatus('BANNED')"
+                    [class]="selectedStatus === 'BANNED' ? 'px-6 py-4 font-label-md text-label-md text-accent-rust border-b-2 border-accent-rust whitespace-nowrap font-bold' : 'px-6 py-4 font-label-md text-label-md text-on-secondary-container hover:text-text-ink whitespace-nowrap'">
+                    Đã khóa (Banned)
+                </button>
             </div>
             <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
                 <div class="relative w-full sm:w-96">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-secondary"
                         data-icon="search">search</span>
                     <input
+                        [(ngModel)]="searchKeyword"
+                        (keyup.enter)="onSearch()"
                         class="w-full pl-10 pr-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg font-body-md text-body-md focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust outline-none transition-all"
-                        placeholder="Search by name, email or role..." type="text">
+                        placeholder="Tìm theo email hoặc SĐT..." type="text">
                 </div>
                 <div class="flex gap-2 w-full sm:w-auto">
-                    <button
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:-container transition-colors">
-                        <span class="material-symbols-outlined text-sm" data-icon="filter_list">filter_list</span>
-                        <span class="font-label-md text-label-md">Filter</span>
+                    <button (click)="onSearch()"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-stone-50 transition-colors">
+                        <span class="material-symbols-outlined text-sm" data-icon="search">search</span>
+                        <span class="font-label-md text-label-md">Tìm kiếm</span>
                     </button>
-                    <button
-                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:-container transition-colors">
+                    <button (click)="onExport()"
+                        class="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 bg-pure-white border border-text-ink/10 rounded-lg text-on-secondary-container hover:bg-stone-50 transition-colors">
                         <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
-                        <span class="font-label-md text-label-md">Export</span>
+                        <span class="font-label-md text-label-md">Xuất CSV</span>
                     </button>
                 </div>
             </div>
         </div>
+
         <!-- Table Card -->
-        <div class="bg-pure-white border border-text-ink/5 rounded-xl overflow-hidden shadow-sm">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="-container-low border-b border-text-ink/5">
-                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">User
-                        </th>
-                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Role
-                        </th>
-                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Status
-                        </th>
-                        <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Joined
-                        </th>
-                        <th
-                            class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-center">
-                            Engagement</th>
-                        <th
-                            class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">
-                            Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-text-ink/5">
-                    <!-- Entry 1 -->
-                    <tr class="table-row-hover transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
-                                    <img class="w-full h-full object-cover"
-                                        data-alt="Close-up portrait of a professional Vietnamese man with a friendly expression, wearing a minimalist modern polo shirt, set against a warm, soft-focus office background with natural lighting."
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCQmRz7rM9uPVx-2KqQWpnjU_2yaJIKomlipzqA4_mIcctnYe_vZXtYVJPgshzisgOPRNB60p0pMTDpSwyqqMrB4gAD50h86vMmkcrIaNAmp0LmfRDSdAsaJ2iP_fyyLXU0GRo0sjlF0ki-iSVNT_9Z7tNdSd0XFOjxHVEBR-o3ly7m6Bv7RD77-srdbiBoEc_rpwLvdoC3cGiwwoV1VEgfal40pwiafxeolKA51_VQcHDx5qWfXnBojJ4XwblWlaFyTak04mIgiZA">
+        <div class="bg-pure-white border border-text-ink/5 rounded-xl overflow-visible shadow-sm">
+            <div class="overflow-visible">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-stone-50 border-b border-text-ink/5">
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Người dùng</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Vai trò</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Trạng thái</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider">Ngày tham gia</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-center">Bài viết</th>
+                            <th class="px-6 py-4 font-label-md text-label-md text-secondary uppercase tracking-wider text-right">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-text-ink/5 font-body-md text-sm">
+                        <tr *ngIf="users.length === 0">
+                            <td colspan="6" class="px-6 py-8 text-center text-secondary">
+                                Không tìm thấy người dùng nào.
+                            </td>
+                        </tr>
+                        <tr *ngFor="let u of users" class="hover:bg-stone-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5 bg-gray-100 flex items-center justify-center font-bold text-accent-rust">
+                                        <img *ngIf="u.avatarUrl" [src]="u.avatarUrl" class="w-full h-full object-cover">
+                                        <span *ngIf="!u.avatarUrl">{{ (u.email || 'U').charAt(0).toUpperCase() }}</span>
+                                    </div>
+                                    <div>
+                                        <p class="font-label-md text-label-md text-text-ink font-bold">{{ u.email }}</p>
+                                        <p class="font-caption text-caption text-secondary">{{ u.phone || 'Chưa cập nhật SĐT' }}</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p class="font-label-md text-label-md text-text-ink">Nguyen Van A</p>
-                                    <p class="font-caption text-caption text-secondary">vana.n&#64;bbloghub.com</p>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">
+                                    {{ u.roles.join(', ') || 'USER' }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full"
+                                        [ngClass]="{
+                                            'bg-emerald-500': u.status === 'ACTIVE',
+                                            'bg-amber-400': u.status === 'PENDING',
+                                            'bg-rose-500': u.status === 'BANNED'
+                                        }"></span>
+                                    <span class="font-body-md text-body-md text-on-surface">
+                                        {{ u.status === 'ACTIVE' ? 'Hoạt động' : u.status === 'PENDING' ? 'Chờ duyệt' : 'Đã khóa' }}
+                                    </span>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">Author</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                <span class="font-body-md text-body-md text-on-surface">Active</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jul 12, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex flex-col">
-                                <span class="font-label-md text-label-md text-text-ink">12 Posts</span>
-                                <span class="font-caption text-caption text-secondary">1.2k Views</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
-                        </td>
-                    </tr>
-                    <!-- Entry 2 -->
-                    <tr class="table-row-hover transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
-                                    <img class="w-full h-full object-cover"
-                                        data-alt="Headshot of a sophisticated Vietnamese woman with glasses, looking thoughtful, minimalist studio setting with editorial soft lighting, warm beige tones consistent with a luxury magazine aesthetic."
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQczC2Y6dzRLyxizIxJetB51ycwnAw9nUjHMPLQ8GSmFu1Zkwkakbs5yOIFiB7SiCie1xzvKS2fChlBUT7GzRvkBRe3hnSV34Gu8eS9nxQblNPSWbkiUoUJaSSyEc3VKqRgfZOhFesZiWBHq_8dusvNZBcwgQFO6NMcxxurcovjy6aswVHEf3osiAHffBBTizLZxMnFMzluBJEMmmv7xZHmQNRFWoeznrjum42QL_DbvUwIbdSJY7VTbKPgn_wf1Us8lPTZOg2V3s">
+                            </td>
+                            <td class="px-6 py-4 text-secondary text-xs whitespace-nowrap">
+                                {{ u.createdDate | date:'dd/MM/yyyy' }}
+                            </td>
+                            <td class="px-6 py-4 text-center font-bold">
+                                {{ u.postsCount }}
+                            </td>
+                            <td class="px-6 py-4 text-right whitespace-nowrap">
+                                <div class="flex items-center justify-end gap-2">
+                                    <button *ngIf="u.status === 'PENDING'" (click)="onApprove(u)"
+                                        class="px-3 py-1 bg-emerald-600 text-white text-xs font-bold rounded hover:bg-emerald-700 transition-all">
+                                        Duyệt
+                                    </button>
+                                    <button *ngIf="u.status !== 'BANNED'" (click)="onSuspend(u)"
+                                        class="px-3 py-1 bg-red-600 text-white text-xs font-bold rounded hover:bg-red-700 transition-all">
+                                        Khóa
+                                    </button>
+                                    <button *ngIf="u.status === 'BANNED'" (click)="onApprove(u)"
+                                        class="px-3 py-1 bg-amber-600 text-white text-xs font-bold rounded hover:bg-amber-700 transition-all">
+                                        Mở khóa
+                                    </button>
+                                    <button (click)="openEditRole(u)" class="p-1.5 text-secondary hover:text-accent-rust transition-colors" title="Đổi vai trò">
+                                        <span class="material-symbols-outlined text-[18px]">manage_accounts</span>
+                                    </button>
                                 </div>
-                                <div>
-                                    <p class="font-label-md text-label-md text-text-ink">Tran Thi B</p>
-                                    <p class="font-caption text-caption text-secondary">thib.tran&#64;bbloghub.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="bg-accent-rust/10 text-accent-rust px-3 py-1 rounded text-[12px] font-bold">Author</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                <span class="font-body-md text-body-md text-on-surface">Active</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jun 08, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex flex-col">
-                                <span class="font-label-md text-label-md text-text-ink">8 Posts</span>
-                                <span class="font-caption text-caption text-secondary">840 Views</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
-                        </td>
-                    </tr>
-                    <!-- Entry 3 -->
-                    <tr class="table-row-hover transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
-                                    <img class="w-full h-full object-cover"
-                                        data-alt="Portrait of a confident man with a short beard, wearing a charcoal turtleneck, professional studio lighting, minimalist editorial style, clean and focused background."
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHrjDWATotCYvAQPK4lroZ6D5t4qDZz02nbKUjnfjiVWgQaPHeyFT5k1Rno9zfEOcxOSBOT1AfKz2qI3-ySMgs_3vs0mNXwln6x93AGx0DLt_zwCpVFv4MIMpsIeO7ADrRFobpeRlVd-PrZ5ZwykaPZOx8L2lR_i12tn2LXe2CgO-c3bLWuoU37OlM4BrchXEU6R4JNa4o5oivLmkX3NjE-sZm-UoV4Fg9XS2_N6KOdrTTbaO9lXqSLEFPGpsB1I-gtlghjtdVdoA">
-                                </div>
-                                <div>
-                                    <p class="font-label-md text-label-md text-text-ink">Marcus Vane</p>
-                                    <p class="font-caption text-caption text-secondary">mvane.mod&#64;bbloghub.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-[12px] font-bold">Moderator</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                                <span class="font-body-md text-body-md text-on-surface">Active</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Jan 22, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex flex-col">
-                                <span class="font-label-md text-label-md text-text-ink">0 Posts</span>
-                                <span class="font-caption text-caption text-secondary">42 Reviews</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="edit">edit</span></button>
-                            <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                    class="material-symbols-outlined" data-icon="more_vert">more_vert</span></button>
-                        </td>
-                    </tr>
-                    <!-- Entry 4 -->
-                    <tr class="table-row-hover transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-full overflow-hidden border border-text-ink/5">
-                                    <img class="w-full h-full object-cover"
-                                        data-alt="Minimalist professional portrait of a woman with a sleek bob haircut, wearing a cream blazer, high-key lighting, soft shadows, editorial magazine feel with high clarity."
-                                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuAa80LDQbQERQHKMWITlyNtOdYcPQAY88xUpfi5w7Qm8LVZ6gw4R-qsFdN_ZMQeuJ1Jz1HGFe6surq5mCoum0nIUOwXKqMAOl2DZ_JUHfZnnPc8INI9D7QNAbVKH6KDMKPN9QdALwJlaJaRc-fc1faZJY1LmqvW2aPiFDdOWYpiuGzXWhvo5I3OjxXhPmkQfpnar-oZ6iqZaa9exblZ3ipbEfLzEx6wOLag4k7eHPZwU-weEBFB15bmGMOJBEBp5TfBS8wRf76DdnM">
-                                </div>
-                                <div>
-                                    <p class="font-label-md text-label-md text-text-ink">Sarah Chen</p>
-                                    <p class="font-caption text-caption text-secondary">schen.dev&#64;gmail.com</p>
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4">
-                            <span
-                                class="-paper text-secondary px-3 py-1 rounded-full text-[12px] font-bold">User</span>
-                        </td>
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                                <span class="font-body-md text-body-md text-on-surface">Pending</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 font-body-md text-body-md text-secondary">Oct 05, 2024</td>
-                        <td class="px-6 py-4 text-center">
-                            <div class="flex flex-col">
-                                <span class="font-label-md text-label-md text-text-ink">0 Posts</span>
-                                <span class="font-caption text-caption text-secondary">New Member</span>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <button
-                                    class="bg-primary text-pure-white text-[10px] uppercase tracking-wider font-bold px-3 py-1.5 rounded hover:opacity-90">Approve</button>
-                                <button class="p-2 text-secondary hover:text-accent-rust transition-colors"><span
-                                        class="material-symbols-outlined"
-                                        data-icon="more_vert">more_vert</span></button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <!-- Pagination -->
-            <div class="px-6 py-4 -container/20 flex items-center justify-between border-t border-text-ink/5">
-                <p class="font-body-md text-caption text-secondary">Showing 4 of 248 members</p>
-                <div class="flex gap-2">
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white hover:text-accent-rust transition-all">
-                        <span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination Footer -->
+            <div *ngIf="pageMeta && pageMeta.totalPages > 0" class="px-6 py-4 border-t border-text-ink/5 flex items-center justify-between">
+                <span class="text-caption text-secondary">
+                    Trang <span class="font-bold">{{ pageMeta.pageNumber + 1 }}</span> / <span class="font-bold">{{ pageMeta.totalPages }}</span>
+                    (Tổng {{ pageMeta.totalElements }} người dùng)
+                </span>
+                <div class="flex items-center gap-2">
+                    <button (click)="goToPage(currentPage - 1)" [disabled]="currentPage === 0"
+                        class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                        <span class="material-symbols-outlined">chevron_left</span>
                     </button>
-                    <button
-                        class="bg-accent-rust text-pure-white font-label-md text-label-md w-8 h-8 flex items-center justify-center rounded-lg shadow-sm hover:opacity-90 active:scale-95 transition-all">1</button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white transition-all text-xs">2</button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white transition-all text-xs">3</button>
-                    <button
-                        class="w-8 h-8 flex items-center justify-center rounded-lg border border-text-ink/5 text-secondary hover:bg-pure-white hover:text-accent-rust transition-all">
-                        <span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+
+                    <button *ngFor="let page of [].constructor(pageMeta.totalPages); let i = index"
+                        (click)="goToPage(i)" [class.bg-accent-rust]="currentPage === i"
+                        [class.text-white]="currentPage === i" [class.text-secondary]="currentPage !== i"
+                        class="w-8 h-8 flex items-center justify-center rounded font-bold text-caption transition-colors">
+                        {{ i + 1 }}
+                    </button>
+
+                    <button (click)="goToPage(currentPage + 1)"
+                        [disabled]="pageMeta.last || currentPage >= pageMeta.totalPages - 1"
+                        class="p-1 text-secondary hover:text-accent-rust disabled:opacity-30">
+                        <span class="material-symbols-outlined">chevron_right</span>
                     </button>
                 </div>
-            </div>
-        </div>
-        <!-- Dashboard Insight Cards (Bento Style) -->
-        <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="-paper p-6 rounded-xl border border-text-ink/5">
-                <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="trending_up">trending_up</span>
-                <h3 class="font-headline-md text-headline-md text-text-ink">Growth</h3>
-                <p class="font-body-md text-body-md text-text-muted mt-2">12% increase in new authors this month.</p>
-            </div>
-            <div class="-paper p-6 rounded-xl border border-text-ink/5">
-                <span class="material-symbols-outlined text-accent-rust mb-4"
-                    data-icon="shield_person">shield_person</span>
-                <h3 class="font-headline-md text-headline-md text-text-ink">Safety</h3>
-                <p class="font-body-md text-body-md text-text-muted mt-2">3 flagged accounts pending review by mods.</p>
-            </div>
-            <div class="-paper p-6 rounded-xl border border-text-ink/5">
-                <span class="material-symbols-outlined text-accent-rust mb-4" data-icon="stars">stars</span>
-                <h3 class="font-headline-md text-headline-md text-text-ink">Elite</h3>
-                <p class="font-body-md text-body-md text-text-muted mt-2">15 authors reached "Pro" status last week.</p>
             </div>
         </div>
     </div>
 </main>
-<!-- Micro-interaction Scripts -->

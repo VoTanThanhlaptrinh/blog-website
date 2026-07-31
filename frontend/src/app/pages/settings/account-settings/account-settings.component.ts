@@ -2,6 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 import { ToastService } from '../../../core/services/toast.service';
+import { finalize } from 'rxjs';
+import { ConfirmService } from '../../../core/services/confirm.service';
 
 @Component({
   selector: 'app-account-settings',
@@ -12,37 +14,39 @@ import { ToastService } from '../../../core/services/toast.service';
 export class AccountSettingsComponent implements OnInit {
   private readonly authService = inject(AuthService);
   private readonly toastService = inject(ToastService);
+  private readonly confirmService = inject(ConfirmService);
 
   email = signal<string>('');
   loading = signal(false);
   message = signal<string | null>(null);
 
   ngOnInit(): void {
-    this.authService.getProfile().subscribe({
-      next: (res) => {
-        if (res.data) {
-          this.email.set(res.data.email || '');
-        }
+    this.authService.getProfile().subscribe((res) => {
+      if (res.data) {
+        this.email.set(res.data.email || '');
       }
     });
   }
 
-  onDeactivate(): void {
-    if (!confirm('Bạn có chắc chắn muốn vô hiệu hóa tài khoản?')) return;
+  async onDeactivate(): Promise<void> {
+    const confirmed = await this.confirmService.confirm({
+      title: 'Vô hiệu hóa tài khoản',
+      message: 'Bạn có chắc chắn muốn vô hiệu hóa tài khoản? Hành động này sẽ đăng xuất bạn khỏi hệ thống.',
+      confirmText: 'Vô hiệu hóa',
+      actionType: 'danger'
+    });
+
+    if (!confirmed) return;
 
     this.loading.set(true);
     this.message.set(null);
 
-    this.authService.deactivateAccount().subscribe({
-      next: () => {
-        this.loading.set(false);
+    this.authService
+      .deactivateAccount()
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe(() => {
         this.toastService.success('Tài khoản của bạn đã được vô hiệu hóa thành công.');
         this.authService.logout().subscribe();
-      },
-      error: (err) => {
-        this.loading.set(false);
-        this.message.set(err.error?.message || 'Không thể vô hiệu hóa tài khoản.');
-      }
-    });
+      });
   }
 }

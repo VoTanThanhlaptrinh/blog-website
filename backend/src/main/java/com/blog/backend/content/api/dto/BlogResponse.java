@@ -19,6 +19,7 @@ public class BlogResponse {
     private String content;
     private BlogStatus status;
     private String rejectionReason;
+    private String thumbnailUrl;
     private AuthorResponse author;
     private CategoryResponse category;
     private int likesCount;

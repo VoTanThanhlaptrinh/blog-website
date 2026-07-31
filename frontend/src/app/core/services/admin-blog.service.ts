@@ -90,4 +90,21 @@ export class AdminBlogService {
       })
     );
   }
+
+  exportBlogs(status?: string, keyword?: string): void {
+    let params = new HttpParams();
+    if (status) params = params.set('status', status);
+    if (keyword) params = params.set('keyword', keyword);
+
+    this.http.get(`${this.apiUrl}/export`, { params, responseType: 'blob' }).subscribe({
+      next: (blob) => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'blogs_export.csv';
+        a.click();
+        window.URL.revokeObjectURL(url);
+      }
+    });
+  }
 }

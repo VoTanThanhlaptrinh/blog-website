@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { FileService } from '../../../core/services/file.service';
 import { UserProfileResponse } from '../../../core/models/auth.model';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-update-profile',
@@ -33,17 +34,14 @@ export class UpdateProfileComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.authService.getProfile().subscribe({
-      next: (res) => {
-        this.loading.set(false);
+    this.authService
+      .getProfile()
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe((res) => {
         if (res?.data) {
           this.populateForm(res.data);
         }
-      },
-      error: () => {
-        this.loading.set(false);
-      },
-    });
+      });
   }
 
   private populateForm(profile: UserProfileResponse): void {
@@ -72,16 +70,12 @@ export class UpdateProfileComponent implements OnInit {
     this.errorMessage.set(null);
 
     // Dùng FileService upload ảnh R2
-    this.fileService.uploadFileToR2(file, 'profile/avatar').subscribe({
-      next: (publicUrl: string) => {
-        this.uploadingAvatar.set(false);
+    this.fileService
+      .uploadFileToR2(file, 'profile/avatar')
+      .pipe(finalize(() => this.uploadingAvatar.set(false)))
+      .subscribe((publicUrl: string) => {
         this.avatarUrl.set(publicUrl);
-      },
-      error: (err) => {
-        this.uploadingAvatar.set(false);
-        this.errorMessage.set(err?.error?.message || 'Không thể upload ảnh avatar. Vui lòng thử lại.');
-      },
-    });
+      });
 
     input.value = '';
   }
@@ -100,15 +94,9 @@ export class UpdateProfileComponent implements OnInit {
         bio: bio || undefined,
         avatarUrl: this.avatarUrl() || undefined,
       })
-      .subscribe({
-        next: (res) => {
-          this.submitting.set(false);
-          this.successMessage.set(res?.message || 'Cập nhật thông tin cá nhân thành công!');
-        },
-        error: (err) => {
-          this.submitting.set(false);
-          this.errorMessage.set(err?.error?.message || 'Cập nhật không thành công. Vui lòng thử lại.');
-        },
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
+        this.successMessage.set(res?.message || 'Cập nhật thông tin cá nhân thành công!');
       });
   }
 }

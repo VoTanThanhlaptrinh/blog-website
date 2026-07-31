@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormBuilder, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 function passwordsMatch(group: AbstractControl): ValidationErrors | null {
   const password = group.get('newPassword')?.value;
@@ -58,17 +59,13 @@ export class ChangePasswordComponent {
 
     const { oldPassword, newPassword } = this.form.getRawValue();
 
-    this.authService.changePassword({ oldPassword, newPassword }).subscribe({
-      next: (res) => {
-        this.submitting.set(false);
+    this.authService
+      .changePassword({ oldPassword, newPassword })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
         this.successMessage.set(res?.message || 'Đổi mật khẩu thành công!');
         this.form.reset();
-      },
-      error: (err) => {
-        this.submitting.set(false);
-        this.errorMessage.set(err?.error?.message || 'Đổi mật khẩu không thành công. Vui lòng kiểm tra lại mật khẩu cũ.');
-      },
-    });
+      });
   }
 }
 

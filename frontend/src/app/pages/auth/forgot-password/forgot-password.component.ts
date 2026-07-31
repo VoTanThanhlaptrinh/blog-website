@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-forgot-password',
@@ -36,16 +37,12 @@ export class ForgotPasswordComponent {
     this.successMessage.set(null);
     this.sendingOtp.set(true);
 
-    this.authService.forgotPassword({ email: emailControl.value }).subscribe({
-      next: (res) => {
-        this.sendingOtp.set(false);
+    this.authService
+      .forgotPassword({ email: emailControl.value })
+      .pipe(finalize(() => this.sendingOtp.set(false)))
+      .subscribe((res) => {
         this.successMessage.set(res?.message || 'Mã OTP đã được gửi về email của bạn.');
-      },
-      error: (err) => {
-        this.sendingOtp.set(false);
-        this.errorMessage.set(err?.error?.message || 'Không thể gửi mã OTP. Vui lòng kiểm tra lại email.');
-      },
-    });
+      });
   }
 
   verifyOtp(): void {
@@ -61,9 +58,10 @@ export class ForgotPasswordComponent {
 
     const { email, otp } = this.form.getRawValue();
 
-    this.authService.verifyOtp({ email, otp }).subscribe({
-      next: (res) => {
-        this.submitting.set(false);
+    this.authService
+      .verifyOtp({ email, otp })
+      .pipe(finalize(() => this.submitting.set(false)))
+      .subscribe((res) => {
         const resetToken = res?.data;
         if (resetToken) {
           // Chuyển hướng sang trang Reset Password kèm token
@@ -71,12 +69,7 @@ export class ForgotPasswordComponent {
         } else {
           this.errorMessage.set('Mã xác nhận không hợp lệ.');
         }
-      },
-      error: (err) => {
-        this.submitting.set(false);
-        this.errorMessage.set(err?.error?.message || 'Mã xác nhận không chính xác hoặc đã hết hạn.');
-      },
-    });
+      });
   }
 }
 

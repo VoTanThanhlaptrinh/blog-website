@@ -4,11 +4,13 @@ import { HeaderComponent } from './layout/header/header.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { MobileNavbarComponent } from './layout/mobile-navbar/mobile-navbar.component';
 import { TopProgressBarComponent } from './components/top-progress-bar/top-progress-bar.component';
+import { ConfirmModalComponent } from './shared/components/confirm-modal/confirm-modal.component';
+import { ToastContainerComponent } from './shared/components/toast-container/toast-container.component';
 import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, FooterComponent, MobileNavbarComponent, TopProgressBarComponent],
+  imports: [RouterOutlet, HeaderComponent, FooterComponent, MobileNavbarComponent, TopProgressBarComponent, ConfirmModalComponent, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
