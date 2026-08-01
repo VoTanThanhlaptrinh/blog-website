@@ -1,6 +1,6 @@
 package com.blog.backend.admin.api;
 
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminSystemSettingService;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.notification.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class AdminSystemSettingsController {
 
-    private final AdminService adminService;
+    private final AdminSystemSettingService adminService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<Map<String, String>>> getSettings(

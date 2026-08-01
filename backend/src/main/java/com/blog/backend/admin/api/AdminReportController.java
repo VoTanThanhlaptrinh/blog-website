@@ -3,7 +3,7 @@ package com.blog.backend.admin.api;
 import com.blog.backend.admin.api.dto.PenalizeUserRequest;
 import com.blog.backend.admin.api.dto.ReportResponse;
 import com.blog.backend.admin.api.dto.ResolveReportRequest;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminReportService;
 import com.blog.backend.admin.domain.enums.ReportStatus;
 import com.blog.backend.admin.domain.enums.ReportTargetType;
 import com.blog.backend.notification.api.ApiResponse;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminReportController {
 
-    private final AdminService adminService;
+    private final AdminReportService adminService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ReportResponse>>> getReports(
