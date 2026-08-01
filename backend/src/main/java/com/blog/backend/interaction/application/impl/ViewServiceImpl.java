@@ -1,4 +1,4 @@
-package com.blog.backend.interaction.application;
+package com.blog.backend.interaction.application.impl;
 
 import com.blog.backend.content.domain.entity.Blog;
 import com.blog.backend.content.domain.exception.BlogNotFoundException;
@@ -6,6 +6,7 @@ import com.blog.backend.content.domain.repository.BlogRepository;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.RecordViewRequest;
 import com.blog.backend.interaction.api.dto.ViewResponse;
+import com.blog.backend.interaction.application.itf.ViewService;
 import com.blog.backend.interaction.domain.entity.View;
 import com.blog.backend.interaction.domain.repository.ViewRepository;
 import lombok.RequiredArgsConstructor;

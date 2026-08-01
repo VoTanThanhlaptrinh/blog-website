@@ -5,7 +5,7 @@ import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.CommentResponse;
 import com.blog.backend.interaction.api.dto.CreateCommentRequest;
 import com.blog.backend.interaction.api.dto.UpdateCommentRequest;
-import com.blog.backend.interaction.application.CommentService;
+import com.blog.backend.interaction.application.itf.CommentService;
 import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

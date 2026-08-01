@@ -1,4 +1,4 @@
-package com.blog.backend.interaction.application;
+package com.blog.backend.interaction.application.itf;
 
 import com.blog.backend.content.api.dto.PageResponse;
 import com.blog.backend.identity.domain.entity.User;

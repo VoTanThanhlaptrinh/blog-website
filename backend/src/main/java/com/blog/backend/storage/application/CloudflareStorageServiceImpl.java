@@ -1,14 +1,20 @@
 package com.blog.backend.storage.application;
 
-import com.blog.backend.storage.api.dto.UpdateImagePrefixRequest;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.blog.backend.storage.api.dto.UpdateImagePrefixResponse;
 import com.blog.backend.storage.api.dto.UploadPostResponse;
 import com.blog.backend.storage.api.dto.UploadUrlRequest;
+import com.blog.backend.storage.application.util.StorageUtils;
+import com.blog.backend.storage.domain.constant.StorageConstants;
 import com.blog.backend.storage.infrastructure.cloudflare.config.CloudflareR2Properties;
-import java.util.List;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.CopyObjectRequest;
 import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
@@ -16,14 +22,6 @@ import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
-import java.time.Duration;
-
-import com.blog.backend.storage.application.util.AwsSignatureUtils;
-import com.blog.backend.storage.application.util.StorageUtils;
-import com.blog.backend.storage.domain.constant.StorageConstants;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -35,58 +33,44 @@ public class CloudflareStorageServiceImpl implements StorageService {
     private final S3Presigner s3Presigner;
 
     /**
-     * Di chuyển file từ vùng temp ra thư mục gốc chính thức bằng cách loại bỏ tiền tố "temp/"
-     * * @param tempKey Đường dẫn file tạm (ví dụ: "temp/avatar/uuid-filename.png")
-     * @return Đường dẫn URL công khai hoàn chỉnh (ví dụ: "https://cdn.domain.com/avatar/uuid-filename.png")
+     * Copy file từ sourceKey sang destinationKey
+     *
+     * @param sourceKey      Đường dẫn file nguồn (ví dụ: "identity/temp/avatar/123.jpg")
+     * @param destinationKey Đường dẫn file đích (ví dụ: "identity/avatar/123.jpg")
+     * @return Đường dẫn URL công khai hoàn chỉnh (ví dụ:
+     *         "https://cdn.domain.com/identity/avatar/123.jpg")
      */
-    public String confirmAndActivateFile(String tempKey) {
-        return confirmAndActivateFile(tempKey, StorageConstants.TEMP_FOLDER_PREFIX);
-    }
-
-    public String confirmAndActivateFile(String tempKey, String prefix) {
-        // 1. Kiểm tra tính hợp lệ của key đầu vào
-        if (tempKey == null || !tempKey.startsWith(prefix)) {
-            throw new IllegalArgumentException("Đường dẫn file tạm không hợp lệ hoặc không thuộc vùng xử lý");
+    @Override
+    public String copyFile(String sourceKey, String destinationKey) {
+        if (sourceKey == null || sourceKey.isBlank() || destinationKey == null || destinationKey.isBlank()) {
+            throw new IllegalArgumentException("Đường dẫn file nguồn và đích không được để trống");
         }
 
-        // 2. Xóa thư mục "temp/" khỏi đường dẫn để chuyển thành file chính thức
-        // Ví dụ: "identity/temp/avatar/123.jpg" -> "identity/avatar/123.jpg"
-        String permanentKey;
-        if (prefix.contains("temp/")) {
-            permanentKey = tempKey.replaceFirst("temp/", "");
-        } else {
-            permanentKey = tempKey.replaceFirst("^" + prefix, "");
-        }
-        
         String bucketName = properties.getBucket();
 
         try {
-            // 3. Thực hiện lệnh COPY file trong nội bộ Cloudflare R2 sang key mới sạch sẽ hơn
+            // Thực hiện lệnh COPY file trong nội bộ Cloudflare R2 sang key đích
             CopyObjectRequest copyRequest = CopyObjectRequest.builder()
                     .sourceBucket(bucketName)
-                    .sourceKey(tempKey)
+                    .sourceKey(sourceKey)
                     .destinationBucket(bucketName)
-                    .destinationKey(permanentKey)
+                    .destinationKey(destinationKey)
                     .build();
             s3Client.copyObject(copyRequest);
 
-            // 4. Xóa file ở vùng tạm ngay sau khi copy thành công để tránh rác dữ liệu
-            DeleteObjectRequest deleteRequest = DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(tempKey)
-                    .build();
-            s3Client.deleteObject(deleteRequest);
+            // Không cần xóa file gốc vì Cloudflare đã được cấu hình tự động xóa file có chứa "/temp" sau 1 ngày
 
-            // 5. Chuẩn hóa Base URL và ghép nối tạo ra URL hiển thị công khai hoàn chỉnh
+            // Chuẩn hóa Base URL và ghép nối tạo ra URL hiển thị công khai hoàn chỉnh
             String baseUrl = properties.getPublicUrl();
-            if (baseUrl.endsWith("/")) {
+            if (baseUrl != null && baseUrl.endsWith("/")) {
                 baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
             }
 
-            return String.format("%s/%s", baseUrl, permanentKey);
+            return String.format("%s/%s", baseUrl, destinationKey);
 
         } catch (Exception e) {
-            throw new RuntimeException("Thao tác dịch chuyển cấu trúc file trên Cloudflare R2 thất bại: " + e.getMessage(), e);
+            throw new RuntimeException(
+                    "Thao tác copy file trên Cloudflare R2 thất bại: " + e.getMessage(), e);
         }
     }
 
@@ -96,7 +80,8 @@ public class CloudflareStorageServiceImpl implements StorageService {
         }
 
         // Định nghĩa Object Key
-        String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(), StorageConstants.TEMP_FOLDER_PREFIX);
+        String objectKey = StorageUtils.generateObjectKey(request.getFolder(), request.getFileName(),
+                StorageConstants.TEMP_FOLDER_PREFIX);
 
         // Tạo PutObjectRequest
         PutObjectRequest putObjectRequest = PutObjectRequest.builder()
@@ -132,15 +117,17 @@ public class CloudflareStorageServiceImpl implements StorageService {
 
     /**
      * Cập nhật tiền tố (prefix/thư mục) hàng loạt cho danh sách URL ảnh trên R2.
-     * Thường dùng khi chuyển ảnh tạm từ thư mục "temp/" sang thư mục lưu trữ chính thức như "blog/" hoặc "avatar/".
+     * Thường dùng khi chuyển ảnh tạm từ thư mục "temp/" sang thư mục lưu trữ chính
+     * thức như "blog/" hoặc "avatar/".
      *
-     * @param imageUrls Danh sách URL/Key ảnh cần chuyển đổi
+     * @param imageUrls    Danh sách URL/Key ảnh cần chuyển đổi
      * @param sourcePrefix Tiền tố nguồn (mặc định "temp/")
      * @param targetPrefix Tiền tố đích (mặc định "blog/")
      * @return Danh sách các URL công khai mới sau khi đã di chuyển thành công
      */
     @Override
-    public UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix, String targetPrefix) {
+    public UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix,
+            String targetPrefix) {
         if (imageUrls == null || imageUrls.isEmpty()) {
             return new UpdateImagePrefixResponse(List.of());
         }
@@ -213,7 +200,8 @@ public class CloudflareStorageServiceImpl implements StorageService {
                 updatedUrls.add(finalPublicUrl);
             } catch (Exception e) {
                 log.error("Lỗi khi chuyển prefix từ key {} sang {}: {}", key, destinationKey, e.getMessage());
-                throw new RuntimeException("Không thể cập nhật prefix cho file: " + key + ". Lỗi: " + e.getMessage(), e);
+                throw new RuntimeException("Không thể cập nhật prefix cho file: " + key + ". Lỗi: " + e.getMessage(),
+                        e);
             }
         }
 

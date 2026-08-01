@@ -1,6 +1,7 @@
 import { Component, OnInit, HostListener, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { AdminBlogService } from '../../../core/services/admin-blog.service';
 import { ToastService } from '../../../core/services/toast.service';
 import { ConfirmService } from '../../../core/services/confirm.service';
@@ -9,7 +10,7 @@ import { BlogStatus } from '../../../core/models/blog.model';
 @Component({
   selector: 'app-admin-content-management',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './admin-content-management.component.html',
   styleUrl: './admin-content-management.component.scss'
 })
@@ -17,6 +18,8 @@ export class AdminContentManagementComponent implements OnInit {
   protected readonly adminBlogService = inject(AdminBlogService);
   private readonly toastService = inject(ToastService);
   private readonly confirmService = inject(ConfirmService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   readonly blogs$ = this.adminBlogService.blogs$;
   readonly pageMeta$ = this.adminBlogService.pageMeta$;
@@ -48,7 +51,12 @@ export class AdminContentManagementComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadBlogs();
+    this.route.queryParams.subscribe(params => {
+      this.selectedStatus = params['status'] || BlogStatus.PENDING;
+      this.searchKeyword = params['keyword'] || '';
+      this.currentPage = params['page'] ? +params['page'] : 0;
+      this.loadBlogs();
+    });
   }
 
   loadBlogs(): void {
@@ -60,15 +68,27 @@ export class AdminContentManagementComponent implements OnInit {
     }).subscribe();
   }
 
+  private updateQueryParams(): void {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: {
+        status: this.selectedStatus,
+        keyword: this.searchKeyword || null,
+        page: this.currentPage > 0 ? this.currentPage : null
+      },
+      queryParamsHandling: 'merge'
+    });
+  }
+
   onFilterStatus(status: string): void {
     this.selectedStatus = status;
     this.currentPage = 0;
-    this.loadBlogs();
+    this.updateQueryParams();
   }
 
   onSearch(): void {
     this.currentPage = 0;
-    this.loadBlogs();
+    this.updateQueryParams();
   }
 
   async onApprove(id: number): Promise<void> {
@@ -123,7 +143,7 @@ export class AdminContentManagementComponent implements OnInit {
 
   goToPage(page: number): void {
     this.currentPage = page;
-    this.loadBlogs();
+    this.updateQueryParams();
   }
 
   onExport(): void {

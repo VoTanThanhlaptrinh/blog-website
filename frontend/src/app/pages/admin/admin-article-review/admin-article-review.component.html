@@ -1,0 +1,111 @@
+<div class="min-h-screen bg-surface font-body-md text-ink flex flex-col">
+  <!-- Loading state -->
+  @if (isLoading) {
+    <div class="flex items-center justify-center min-h-screen">
+      <span class="inline-block animate-spin rounded-full h-8 w-8 border-4 border-accent-rust border-t-transparent"></span>
+    </div>
+  } @else if (error) {
+    <div class="p-10 text-center">
+      <p class="text-error font-bold mb-4">{{ error }}</p>
+      <button (click)="goBack()" class="px-4 py-2 border rounded">Quay lại</button>
+    </div>
+  } @else if (article) {
+    <!-- Admin Header Minimal -->
+    <header class="bg-pure-white border-b border-text-ink/5 py-4 px-6 sticky top-0 z-10 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <button (click)="goBack()" class="p-2 hover:bg-surface-dim rounded-full transition-colors flex items-center justify-center" title="Quay lại danh sách">
+          <span class="material-symbols-outlined text-text-ink">arrow_back</span>
+        </button>
+        <span class="font-label-md text-accent-rust bg-accent-rust/10 px-3 py-1 rounded-full uppercase tracking-widest">Review Mode</span>
+        <h1 class="font-headline-md truncate max-w-md hidden sm:block">{{ article.title }}</h1>
+      </div>
+      <div class="text-text-muted font-caption flex items-center gap-3">
+        <span class="hidden sm:inline">Trạng thái: {{ article.status }}</span>
+        <span>ID: {{ article.id }}</span>
+      </div>
+    </header>
+
+    <!-- Article Layout -->
+    <main class="max-w-[1100px] mx-auto w-full flex flex-col lg:flex-row gap-12 mt-10 px-6">
+      <!-- Main Content Column (720px) -->
+      <article class="max-w-[720px] w-full bg-pure-white border border-text-ink/5 rounded-xl p-8 sm:p-12 shadow-sm">
+        <!-- Article Header -->
+        <header class="mb-10 border-b border-text-ink/5 pb-8">
+          <h1 class="font-display-lg mb-6 text-text-ink">{{ article.title }}</h1>
+          <div class="flex items-center justify-between flex-wrap gap-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full border border-text-ink/10 flex items-center justify-center bg-surface-dim font-bold text-text-ink uppercase">
+                {{ article.author?.email?.charAt(0) || 'U' }}
+              </div>
+              <div>
+                <p class="font-label-md text-text-ink">{{ article.author?.email || 'Unknown' }}</p>
+                <p class="font-caption text-text-muted">Submitted on {{ article.createdDate | date:'mediumDate' }}</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="text-center bg-surface-container px-3 py-2 rounded-md">
+                <p class="font-caption text-text-muted uppercase tracking-wider mb-1">Views</p>
+                <p class="font-label-md text-accent-rust">{{ article.viewsCount || 0 }}</p>
+              </div>
+              <div class="text-center bg-surface-container px-3 py-2 rounded-md">
+                <p class="font-caption text-text-muted uppercase tracking-wider mb-1">Likes</p>
+                <p class="font-label-md text-tertiary">{{ article.likesCount || 0 }}</p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- WYSIWYG Content -->
+        <div class="prose prose-stone prose-h2:font-headline-lg prose-h3:font-headline-md prose-p:font-body-lg max-w-none" [innerHTML]="article.content">
+        </div>
+      </article>
+
+      <!-- Sidebar / Meta -->
+      <aside class="hidden lg:block w-[256px]">
+        <div class="sticky top-[100px] bg-surface-container rounded-xl p-6 border border-text-ink/5">
+          <h3 class="font-label-md mb-4 uppercase tracking-widest text-text-muted">Review Checklist</h3>
+          <ul class="space-y-3 font-caption text-text-ink">
+            <li class="flex items-start gap-2">
+              <input type="checkbox" class="mt-0.5 accent-accent-rust"> Đã kiểm tra nội dung
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" class="mt-0.5 accent-accent-rust"> Định dạng chuẩn xác
+            </li>
+            <li class="flex items-start gap-2">
+              <input type="checkbox" class="mt-0.5 accent-accent-rust"> Văn phong chuyên nghiệp
+            </li>
+          </ul>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Sticky Bottom Bar -->
+    @if(article.status === 'PENDING') {
+      <div class="sticky bottom-0 w-full bg-surface-container/90 backdrop-blur-md border-t border-text-ink/5 py-4 px-6 z-20 mt-auto">
+        <div class="max-w-[1100px] mx-auto flex justify-between items-center">
+          <div class="font-caption text-text-muted">
+            Đang duyệt bài viết chờ duyệt. Hãy kiểm tra kỹ trước khi quyết định.
+          </div>
+          <div class="flex items-center gap-4">
+            <button (click)="openRejectModal()" 
+                    class="px-6 py-2.5 font-label-md rounded border border-text-ink text-text-ink hover:bg-surface-dim transition-colors active:scale-95">
+              Từ chối (Reject)
+            </button>
+            <button (click)="onApprove()" 
+                    class="px-6 py-2.5 font-label-md rounded bg-accent-rust text-pure-white hover:bg-primary transition-colors active:scale-95 shadow-sm">
+              Đồng ý Duyệt (Approve)
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Reject Modal -->
+    @if(isRejectModalOpen) {
+      <app-reject-reason-modal 
+        (close)="closeRejectModal()" 
+        (confirm)="onRejectConfirm($event)">
+      </app-reject-reason-modal>
+    }
+  }
+</div>

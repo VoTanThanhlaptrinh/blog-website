@@ -1,4 +1,4 @@
-package com.blog.backend.interaction.application;
+package com.blog.backend.interaction.application.impl;
 
 import com.blog.backend.content.domain.entity.Blog;
 import com.blog.backend.content.domain.exception.BlogNotFoundException;
@@ -9,6 +9,7 @@ import com.blog.backend.interaction.api.dto.CommentLikeResponse;
 import com.blog.backend.interaction.api.dto.LikeResponse;
 import com.blog.backend.interaction.api.dto.ToggleCommentLikeRequest;
 import com.blog.backend.interaction.api.dto.ToggleLikeRequest;
+import com.blog.backend.interaction.application.itf.LikeService;
 import com.blog.backend.interaction.domain.entity.Comment;
 import com.blog.backend.interaction.domain.entity.CommentLike;
 import com.blog.backend.interaction.domain.entity.Like;
@@ -26,7 +27,8 @@ import java.util.Optional;
 
 /**
  * Service quản lý lượt Thích (Like) cho bài viết và bình luận.
- * Cơ chế State-Flip: Lần bấm đầu sẽ tạo record (liked=true), các lần bấm tiếp theo sẽ đảo ngược trạng thái (liked=true <-> false).
+ * Cơ chế State-Flip: Lần bấm đầu sẽ tạo record (liked=true), các lần bấm tiếp
+ * theo sẽ đảo ngược trạng thái (liked=true <-> false).
  */
 @Service
 @RequiredArgsConstructor
@@ -38,7 +40,8 @@ public class LikeServiceImpl implements LikeService {
     private final CommentRepository commentRepository;
 
     /**
-     * Bật/Tắt thích bài viết. Nếu chưa từng thích -> Thêm mới với liked=true. Nếu đã có -> Đảo trạng thái liked.
+     * Bật/Tắt thích bài viết. Nếu chưa từng thích -> Thêm mới với liked=true. Nếu
+     * đã có -> Đảo trạng thái liked.
      */
     @Override
     @Transactional
@@ -52,29 +55,20 @@ public class LikeServiceImpl implements LikeService {
 
         Optional<Like> existingLike = likeRepository.findByBlogIdAndUserId(blog.getId(), currentUser.getId());
 
-        boolean isLiked;
-        if (existingLike.isPresent()) {
-            Like like = existingLike.get();
-            isLiked = !like.isLiked();
-            like.setLiked(isLiked);
-            likeRepository.save(like);
-        } else {
-            Like newLike = Like.builder()
+        long totalLikes = likeRepository.countByBlogIdAndLikedTrue(blog.getId());
+        Like like;
+        if (existingLike.isEmpty()) {
+            like = Like.builder()
                     .blog(blog)
                     .user(currentUser)
                     .liked(true)
                     .build();
-            likeRepository.save(newLike);
-            isLiked = true;
+        } else {
+            like = existingLike.get();
+            like.setLiked(!like.isLiked());
         }
-
-        long totalLikes = likeRepository.countByBlogIdAndLikedTrue(blog.getId());
-
-        return LikeResponse.builder()
-                .blogId(blog.getId())
-                .liked(isLiked)
-                .likesCount(totalLikes)
-                .build();
+        likeRepository.save(like);
+        return buildLikeResponse(blog, like.isLiked(), totalLikes + (like.isLiked() ? 1 : -1));
     }
 
     @Override
@@ -85,13 +79,15 @@ public class LikeServiceImpl implements LikeService {
         }
 
         Comment comment = commentRepository.findById(request.getCommentId())
-                .orElseThrow(() -> new CommentNotFoundException("Không tìm thấy bình luận với ID: " + request.getCommentId()));
+                .orElseThrow(() -> new CommentNotFoundException(
+                        "Không tìm thấy bình luận với ID: " + request.getCommentId()));
 
         if (comment.getStatus() == CommentStatus.DELETED) {
             throw new CommentAlreadyDeletedException("Bình luận này đã bị xóa");
         }
 
-        Optional<CommentLike> existingLike = commentLikeRepository.findByCommentIdAndUserId(comment.getId(), currentUser.getId());
+        Optional<CommentLike> existingLike = commentLikeRepository.findByCommentIdAndUserId(comment.getId(),
+                currentUser.getId());
 
         boolean isLiked;
         if (existingLike.isPresent()) {
@@ -115,6 +111,14 @@ public class LikeServiceImpl implements LikeService {
                 .commentId(comment.getId())
                 .liked(isLiked)
                 .totalLikes(totalLikes)
+                .build();
+    }
+
+    private LikeResponse buildLikeResponse(Blog blog, boolean isLiked, long totalLikes) {
+        return LikeResponse.builder()
+                .blogId(blog.getId())
+                .liked(isLiked)
+                .likesCount(totalLikes)
                 .build();
     }
 }

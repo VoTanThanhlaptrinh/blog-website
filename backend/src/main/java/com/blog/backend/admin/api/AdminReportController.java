@@ -1,8 +1,9 @@
 package com.blog.backend.admin.api;
 
+import com.blog.backend.admin.api.dto.PenalizeUserRequest;
 import com.blog.backend.admin.api.dto.ReportResponse;
 import com.blog.backend.admin.api.dto.ResolveReportRequest;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminReportService;
 import com.blog.backend.admin.domain.enums.ReportStatus;
 import com.blog.backend.admin.domain.enums.ReportTargetType;
 import com.blog.backend.notification.api.ApiResponse;
@@ -21,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminReportController {
 
-    private final AdminService adminService;
+    private final AdminReportService adminService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<ReportResponse>>> getReports(
@@ -40,6 +41,15 @@ public class AdminReportController {
             @AuthenticationPrincipal User adminUser) {
         ReportResponse response = adminService.resolveReport(id, request, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã cập nhật trạng thái xử lý báo cáo", 200));
+    }
+
+    @PostMapping("/{id}/penalize")
+    public ResponseEntity<ApiResponse<ReportResponse>> penalizeUser(
+            @PathVariable Long id,
+            @Valid @RequestBody PenalizeUserRequest request,
+            @AuthenticationPrincipal User adminUser) {
+        ReportResponse response = adminService.penalizeUser(id, request, adminUser);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Đã thực hiện xử phạt người dùng thành công", 200));
     }
 
     @GetMapping("/export")
