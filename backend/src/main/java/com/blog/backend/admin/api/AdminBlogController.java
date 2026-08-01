@@ -15,12 +15,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.blog.backend.admin.domain.event.AdminGetBlogEvent;
+import org.springframework.context.ApplicationEventPublisher;
+
 @RestController
 @RequestMapping("/api/v1/admin/blogs")
 @RequiredArgsConstructor
 public class AdminBlogController {
 
     private final AdminService adminService;
+    private final ApplicationEventPublisher eventPublisher;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<BlogResponse>> getBlogById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User adminUser) {
+        AdminGetBlogEvent event = new AdminGetBlogEvent(this, id, adminUser);
+        eventPublisher.publishEvent(event);
+        return ResponseEntity.ok(new ApiResponse<>(event.getResult(), "Lấy chi tiết bài viết thành công", 200));
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<BlogResponse>>> getBlogsForModeration(

@@ -1,0 +1,30 @@
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <!-- Backdrop -->
+  <div class="absolute inset-0 bg-text-ink/40 backdrop-blur-sm" (click)="onClose()"></div>
+
+  <!-- Modal Content -->
+  <div class="relative bg-pure-white rounded-xl shadow-lg w-full max-w-md border border-text-ink/5 p-6 animate-fade-in font-body-md">
+    <h2 class="font-headline-md text-text-ink mb-2">Lý do từ chối</h2>
+    <p class="font-caption text-text-muted mb-6">Vui lòng cung cấp lý do để tác giả có thể chỉnh sửa bài viết tốt hơn.</p>
+
+    <textarea 
+      [(ngModel)]="reason"
+      rows="4"
+      class="w-full bg-pure-white border border-text-ink/10 rounded-md p-3 text-text-ink focus:outline-none focus:ring-2 focus:ring-accent-rust/20 focus:border-accent-rust transition-all resize-none"
+      placeholder="Nhập lý do chi tiết..."></textarea>
+
+    <div class="mt-8 flex justify-end gap-3">
+      <button 
+        (click)="onClose()"
+        class="px-5 py-2 font-label-md rounded border border-text-ink text-text-ink hover:bg-surface-dim transition-colors active:scale-95">
+        Hủy
+      </button>
+      <button 
+        (click)="onConfirm()"
+        [disabled]="!reason.trim()"
+        class="px-5 py-2 font-label-md rounded bg-error text-pure-white hover:bg-error/90 transition-colors active:scale-95 disabled:opacity-50 disabled:pointer-events-none shadow-sm">
+        Xác nhận từ chối
+      </button>
+    </div>
+  </div>
+</div>

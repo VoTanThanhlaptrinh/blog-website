@@ -1,5 +1,6 @@
 package com.blog.backend.admin.api;
 
+import com.blog.backend.admin.api.dto.PenalizeUserRequest;
 import com.blog.backend.admin.api.dto.ReportResponse;
 import com.blog.backend.admin.api.dto.ResolveReportRequest;
 import com.blog.backend.admin.application.AdminService;
@@ -40,6 +41,15 @@ public class AdminReportController {
             @AuthenticationPrincipal User adminUser) {
         ReportResponse response = adminService.resolveReport(id, request, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã cập nhật trạng thái xử lý báo cáo", 200));
+    }
+
+    @PostMapping("/{id}/penalize")
+    public ResponseEntity<ApiResponse<ReportResponse>> penalizeUser(
+            @PathVariable Long id,
+            @Valid @RequestBody PenalizeUserRequest request,
+            @AuthenticationPrincipal User adminUser) {
+        ReportResponse response = adminService.penalizeUser(id, request, adminUser);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Đã thực hiện xử phạt người dùng thành công", 200));
     }
 
     @GetMapping("/export")

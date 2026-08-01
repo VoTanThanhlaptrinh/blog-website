@@ -21,6 +21,7 @@ public interface AdminService {
     ReportResponse createReport(User reporter, CreateReportRequest request);
     PageResponse<ReportResponse> getReports(ReportTargetType targetType, ReportStatus status, Pageable pageable, User adminUser);
     ReportResponse resolveReport(Long reportId, ResolveReportRequest request, User adminUser);
+    ReportResponse penalizeUser(Long reportId, PenalizeUserRequest request, User adminUser);
 
     // Analytics Dashboard
     AdminDashboardSummaryResponse getDashboardSummary(User adminUser);

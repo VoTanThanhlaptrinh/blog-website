@@ -25,6 +25,10 @@ export const ADMIN_ROUTES: Routes = [
         path: 'user-management', 
         loadComponent: () => import('./admin-user-management/admin-user-management.component').then(m => m.AdminUserManagementComponent) 
       },
+      {
+        path: 'articles/review/:id',
+        loadComponent: () => import('./admin-article-review/admin-article-review.component').then(m => m.AdminArticleReviewComponent)
+      },
       { path: '', redirectTo: 'analytics', pathMatch: 'full' }
     ]
   }

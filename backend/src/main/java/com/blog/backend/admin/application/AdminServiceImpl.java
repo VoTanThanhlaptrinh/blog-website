@@ -2,8 +2,11 @@ package com.blog.backend.admin.application;
 
 import com.blog.backend.admin.api.dto.*;
 import com.blog.backend.admin.domain.entity.Report;
+import com.blog.backend.admin.domain.enums.PenaltyAction;
 import com.blog.backend.admin.domain.enums.ReportStatus;
 import com.blog.backend.admin.domain.enums.ReportTargetType;
+import com.blog.backend.admin.domain.event.UserPenalizedEvent;
+import com.blog.backend.interaction.domain.entity.Comment;
 import com.blog.backend.admin.domain.repository.ReportRepository;
 import com.blog.backend.admin.domain.repository.SystemSettingRepository;
 import com.blog.backend.content.api.dto.AuthorResponse;
@@ -203,6 +206,57 @@ public class AdminServiceImpl implements AdminService {
         report.setStatus(request.getStatus());
         report.setAdminNotes(request.getAdminNotes());
         report = reportRepository.save(report);
+
+        return mapToReportResponse(report);
+    }
+
+    @Override
+    @Transactional
+    public ReportResponse penalizeUser(Long reportId, PenalizeUserRequest request, User adminUser) {
+        validateAdmin(adminUser);
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy báo cáo với ID: " + reportId));
+
+        User reportedUser = null;
+        if (report.getTargetType() == ReportTargetType.USER) {
+            reportedUser = userRepository.findById(report.getTargetId())
+                    .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy người dùng bị báo cáo"));
+        } else if (report.getTargetType() == ReportTargetType.BLOG) {
+            Blog blog = blogRepository.findById(report.getTargetId()).orElse(null);
+            if (blog != null) reportedUser = blog.getUser();
+        } else if (report.getTargetType() == ReportTargetType.COMMENT) {
+            Comment comment = commentRepository.findById(report.getTargetId()).orElse(null);
+            if (comment != null) reportedUser = comment.getUser();
+        }
+
+        if (reportedUser == null) {
+            throw new IllegalArgumentException("Không tìm thấy người dùng liên quan đến báo cáo này");
+        }
+
+        if (request.getAction() == PenaltyAction.LOCK) {
+            reportedUser.setStatus(UserStatus.BANNED);
+        } else if (request.getAction() == PenaltyAction.WARN) {
+            int newCount = reportedUser.getWarningCount() + 1;
+            reportedUser.setWarningCount(newCount);
+            if (newCount >= 3) {
+                reportedUser.setStatus(UserStatus.BANNED);
+            }
+        }
+
+        userRepository.save(reportedUser);
+
+        report.setStatus(ReportStatus.RESOLVED);
+        report.setAdminNotes(String.format("Xử phạt [%s]: %s", request.getAction(), request.getReason()));
+        report = reportRepository.save(report);
+
+        // Phát sự kiện để gửi thông báo In-app và Email
+        eventPublisher.publishEvent(new UserPenalizedEvent(
+                this,
+                reportedUser,
+                request.getAction(),
+                request.getReason(),
+                reportedUser.getWarningCount()
+        ));
 
         return mapToReportResponse(report);
     }
