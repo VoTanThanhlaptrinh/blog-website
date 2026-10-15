@@ -25,14 +25,14 @@
 <main class="flex-1 mt-16 flex overflow-hidden">
   <!-- Left Column: Editor -->
   <section
-    class="flex-1 flex flex-col border-r border-text-ink/5 bg-pure-white"
+    class="flex-1 min-w-0 flex flex-col border-r border-text-ink/5 bg-pure-white"
     [class.hidden]="mobilePreview()"
   >
     <!-- Toolbar -->
     <div
-      class="px-10 py-2 border-b border-text-ink/5 flex items-center justify-between bg-surface-container-lowest"
+      class="px-4 sm:px-6 lg:px-10 py-2 border-b border-text-ink/5 flex items-center justify-between gap-3 bg-surface-container-lowest"
     >
-      <div class="flex items-center gap-1">
+      <div class="flex min-w-0 items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <button
           type="button"
           (click)="undo()"
@@ -151,11 +151,11 @@
           (change)="onImageSelected($event)"
         />
       </div>
-      <div class="text-caption text-text-muted">{{ wordCount }} từ</div>
+      <div class="hidden shrink-0 text-caption text-text-muted sm:block">{{ wordCount }} từ</div>
     </div>
     <!-- Content Area -->
     <div
-      class="flex-1 overflow-y-auto editor-container px-10 py-8 max-w-[800px] mx-auto w-full"
+      class="flex-1 overflow-y-auto editor-container px-4 sm:px-6 lg:px-10 py-6 sm:py-8 pb-28 max-w-[800px] mx-auto w-full"
     >
       <!-- Title Input -->
       <textarea
@@ -243,11 +243,11 @@
 
   </section>
   <!-- Right Column: Preview -->
-  <section class="flex-1 bg-surface overflow-hidden flex-col lg:flex"
+  <section class="flex-1 min-w-0 bg-surface overflow-hidden flex-col lg:flex"
     [class.flex]="mobilePreview()"
     [class.hidden]="!mobilePreview()">
     <div
-      class="px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center justify-between"
+      class="px-4 sm:px-6 lg:px-10 py-2 border-b border-text-ink/5 bg-surface-container-low flex items-center justify-between"
     >
       <span
         class="font-label-md text-label-md text-text-muted uppercase tracking-widest"
@@ -258,9 +258,9 @@
         <button type="button" (click)="previewMode.set('card')" [class.bg-pure-white]="previewMode() === 'card'" [class.shadow-sm]="previewMode() === 'card'" [class.text-text-ink]="previewMode() === 'card'" class="px-4 py-1 rounded-full text-caption text-text-muted font-medium transition-all">Card</button>
       </div>
     </div>
-    <div class="flex-1 overflow-y-auto editor-container p-10">
+    <div class="flex-1 overflow-y-auto editor-container p-4 pb-28 sm:p-6 sm:pb-28 lg:p-10">
       <div
-        class="max-w-[720px] mx-auto bg-pure-white p-12 custom-shadow border border-text-ink/5"
+        class="max-w-[720px] mx-auto bg-pure-white p-5 sm:p-8 lg:p-12 custom-shadow border border-text-ink/5"
       >
         @if (previewMode() === 'article') {
           <!-- Preview Author -->
@@ -307,16 +307,16 @@
 </main>
 
 <!-- Floating Action Dock (Bottom-Center Capsule Bar) -->
-<div class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-3 px-5 py-2.5 rounded-full bg-white/90 dark:bg-stone-900/90 backdrop-blur-xl border border-stone-200/80 dark:border-stone-800 shadow-[0_16px_36px_-6px_rgba(27,28,23,0.22)] transition-all">
+<div class="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-50 flex max-w-[calc(100vw-1.5rem)] items-center gap-2 sm:gap-3 px-3 sm:px-5 py-2.5 whitespace-nowrap rounded-full bg-white/90 dark:bg-stone-900/90 backdrop-blur-xl border border-stone-200/80 dark:border-stone-800 shadow-[0_16px_36px_-6px_rgba(27,28,23,0.22)] transition-all">
   <!-- Left: Auto-save Status & Word Count -->
-  <div class="flex items-center gap-2 px-1 text-xs font-medium text-stone-500">
+  <div class="hidden items-center gap-2 px-1 text-xs font-medium text-stone-500 sm:flex">
     <span class="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-    <span class="hidden sm:inline">Đang lưu</span>
+    <span>Đang lưu</span>
     <span class="text-stone-300">|</span>
     <span class="font-semibold text-stone-700 dark:text-stone-300">{{ wordCount }} từ</span>
   </div>
 
-  <div class="h-4 w-px bg-stone-200 dark:bg-stone-700"></div>
+  <div class="hidden h-4 w-px bg-stone-200 dark:bg-stone-700 sm:block"></div>
 
   <!-- Middle: Mobile/Tablet Preview Toggle Button (Hidden on Desktop lg:) -->
   <button (click)="toggleMobilePreview()" type="button"
@@ -329,13 +329,13 @@
   <button type="button"
     (click)="submit(BlogStatus.DRAFT)"
     [disabled]="submitting()"
-    class="px-4 py-1.5 rounded-full text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+    class="px-3 sm:px-4 py-1.5 rounded-full text-sm font-medium text-stone-600 hover:text-stone-900 hover:bg-stone-100 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
     Lưu nháp
   </button>
   <button type="button"
     (click)="submit(BlogStatus.PENDING)"
     [disabled]="submitting()"
-    class="px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+    class="px-4 sm:px-5 py-1.5 bg-accent-rust hover:bg-clay-700 text-white rounded-full text-sm font-semibold shadow-md shadow-accent-rust/30 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
     {{ submitting() ? 'Đang gửi...' : 'Gửi xét duyệt' }}
   </button>
 </div>
