@@ -1,12 +1,19 @@
 package com.blog.backend.storage.application;
 
-import com.blog.backend.storage.api.dto.UpdateImagePrefixResponse;
 import com.blog.backend.storage.api.dto.UploadPostResponse;
 import com.blog.backend.storage.api.dto.UploadUrlRequest;
-import java.util.List;
+
+import java.util.Collection;
+import java.util.Map;
 
 public interface StorageService {
-    UploadPostResponse generatePresignedUrl(UploadUrlRequest request) throws Exception;
-    String copyFile(String sourceKey, String destinationKey);
-    UpdateImagePrefixResponse updateImagePrefixes(List<String> imageUrls, String sourcePrefix, String targetPrefix);
+
+    /** Asks file-service for a presigned PUT URL; the response keeps the shape the frontend already uses. */
+    UploadPostResponse createUploadUrl(UploadUrlRequest request);
+
+    /**
+     * Confirms every blog temp file referenced by the given URLs (others are ignored) and returns
+     * a map from each temp URL to its permanent URL.
+     */
+    Map<String, String> confirmTempUrls(Collection<String> urls);
 }

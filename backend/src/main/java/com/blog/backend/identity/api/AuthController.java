@@ -4,15 +4,11 @@ import com.blog.backend.notification.api.ApiResponse;
 import com.blog.backend.identity.api.dto.*;
 import com.blog.backend.identity.application.AuthService;
 import com.blog.backend.identity.domain.entity.User;
-import com.blog.backend.identity.domain.event.ProfileImageUploadEvent;
-import com.blog.backend.storage.api.dto.UploadUrlRequest;
-import com.blog.backend.storage.api.dto.UploadPostResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.ResponseCookie;
@@ -30,7 +26,6 @@ import java.util.Objects;
 @AllArgsConstructor
 public class AuthController {
     private final AuthService authService;
-    private final ApplicationEventPublisher applicationEventPublisher;
     @PostMapping("/login")
     public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody AccountLoginRequest request
             , BindingResult bindingResult, HttpServletResponse response) {
@@ -77,20 +72,6 @@ public class AuthController {
         Long userId = currentUser.getId();
         UserProfileResponse res = authService.updateProfile(userId, request);
         return ResponseEntity.ok(new  ApiResponse<>(res, "Cập nhật thành công", 200));
-    }
-
-    @PostMapping("/profile/avatar/upload-url")
-    public ResponseEntity<ApiResponse<UploadPostResponse>> getAvatarUploadUrl(@AuthenticationPrincipal User currentUser, @Valid @RequestBody UploadUrlRequest request
-            , BindingResult bindingResult) {
-        if(bindingResult.hasErrors()){
-            return ResponseEntity.badRequest().body(new ApiResponse<>(null
-                    , Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), 400));
-        }
-        
-        ProfileImageUploadEvent event = new ProfileImageUploadEvent(this, request);
-        applicationEventPublisher.publishEvent(event);
-        
-        return ResponseEntity.ok(new ApiResponse<>(event.getResponse(), "Lấy upload url thành công", 200));
     }
 
     @PostMapping("/forgot-password")

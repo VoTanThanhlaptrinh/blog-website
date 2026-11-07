@@ -15,7 +15,7 @@ Backend chia theo các module domain, mỗi module có 4 lớp `api` → `applic
 | **identity** | Đăng ký, đăng nhập, hồ sơ, phân quyền, OAuth2 | Đã triển khai hoàn thiện | Đã tích hợp `AuthService` & `TokenService` |
 | **content** | Quản lý bài viết (blog/post), Tiền kiểm bài viết | Đã triển khai hoàn thiện (Hỗ trợ `DRAFT`, `PENDING`, `PUBLISHED`, `REJECTED`) | Dùng dữ liệu mẫu (chưa tích hợp API) |
 | **interaction** | Like, Comment, Share, Bookmark, View | Đã triển khai đầy đủ API & Service | Dùng dữ liệu mẫu (chưa tích hợp API) |
-| **storage** | Upload ảnh (Cloudflare R2), presigned URL | Đã triển khai | Đã tích hợp `FileService` |
+| **storage** | Upload ảnh qua **file-service** dùng chung (Cloudflare R2 phía sau): xin presigned URL, confirm ảnh khi lưu | Đã triển khai | Đã tích hợp `FileService` |
 | **notification** | Gửi email (kích hoạt, OTP) & In-App Notification (Moderation events) | Đã triển khai Email & In-App Notification | Chưa có giao diện xem thông báo thật |
 | **recommendation** | Gợi ý nội dung | Chưa code (chỉ có khung thư mục) | Dùng dữ liệu mẫu |
 | **admin** | Quản trị hệ thống (Duyệt bài, Báo cáo, Dashboard Analytics) | Đã triển khai đầy đủ API & Service | Đã có UI mẫu (chưa kết nối API) |
@@ -38,7 +38,6 @@ Endpoint gốc: `/api/v1/auth`
 | Đăng xuất | `POST /logout` | Xóa cookie phiên. | Đã triển khai |
 | Xem hồ sơ | `GET /profile` | Lấy thông tin người dùng hiện tại. | Đã triển khai |
 | Cập nhật hồ sơ | `PUT /profile` | Sửa bio, ngày sinh, số điện thoại... | Đã triển khai |
-| Lấy URL upload avatar | `POST /profile/avatar/upload-url` | Phát event storage tạo presigned URL cho ảnh đại diện. | Đã triển khai |
 | Quên mật khẩu | `POST /forgot-password` | Gửi mã OTP qua email. | Đã triển khai |
 | Xác thực OTP | `POST /verify-otp` | Kiểm tra OTP, trả token reset. | Đã triển khai |
 | Đặt lại mật khẩu | `POST /reset-password` | Đặt mật khẩu mới bằng token reset. | Đã triển khai |
@@ -63,7 +62,6 @@ Endpoint gốc: `/api/v1/blogs`
 | Danh sách / tìm kiếm | `GET /blogs` | Phân trang + lọc theo `keyword`, `status`, `userId`. Sắp xếp mặc định theo ngày tạo giảm dần. | Đã triển khai Backend |
 | Cập nhật | `PUT /blogs/{id}` | Sửa bài (kiểm tra quyền sở hữu). | Đã triển khai Backend |
 | Xóa | `DELETE /blogs/{id}` | Xóa mềm bài viết. | Đã triển khai Backend |
-| Kích hoạt ảnh trong bài | `POST /blogs/images/activate` | Chuyển ảnh từ prefix `temp/` sang `blog/` (phát event cho storage). | Đã triển khai Backend |
 
 **Trạng thái bài viết** (`BlogStatus`): `DRAFT` (nháp), `PENDING` (chờ duyệt), `PUBLISHED` (công khai), `REJECTED` (từ chối), `ARCHIVED` (lưu trữ), `DELETED` (đã xóa).
 
@@ -126,15 +124,17 @@ Endpoint gốc: `/api/v1/admin` (yêu cầu quyền `ADMIN`)
 
 ## 6. Nghiệp vụ Lưu trữ ảnh (Storage)
 
-Endpoint gốc: `/api/v1/file`. Nhà cung cấp: **Cloudflare R2** (tương thích S3, dùng presigned URL).
+Endpoint gốc: `/api/v1/file`. Backend **không còn nói chuyện trực tiếp với R2**: mọi thao tác đi qua `file-service` (xem `file-service/README.md`) bằng HTTP client `FileServiceApi` (`storage/infrastructure/fileservice`), xác thực bằng key của blog (`FILE_SERVICE_API_KEY`).
 
 | Nghiệp vụ | Cơ chế | Mô tả |
 |---|---|---|
-| Tạo URL upload | `POST /file` | Trả presigned POST URL để client upload trực tiếp lên R2. |
-| Kích hoạt ảnh | qua event/service | Ảnh upload vào `temp/`, khi bài viết/hồ sơ được lưu thì chuyển sang prefix chính thức (`blog/`, avatar...). |
-| Đổi prefix hàng loạt | `updateImagePrefixes(...)` | Di chuyển nhiều ảnh giữa các prefix. |
+| Tạo URL upload | `POST /file` | Đổi `folder` (`blog/temp`, `blog/thumbnails` → context `post-image`; `profile/avatar` → `avatar`) rồi gọi `presign` của file-service. Trả presigned PUT URL (client upload thẳng lên R2) và `publicUrl` là URL xem trước của bản tạm. |
+| Confirm ảnh bài viết | khi tạo/sửa bài (cả nháp) | `BlogServiceImpl` tìm URL `.../temp/public/blog/...` trong content và thumbnail, phát `BlogImagesActivatedEvent`; storage gọi `confirm-batch` và thay bằng URL chính thức trước khi lưu. Confirm lỗi thì bài không được lưu. |
+| Confirm avatar | khi cập nhật hồ sơ | `AuthServiceImpl` phát `ProfileImageConfirmEvent` cho URL avatar tạm, lưu URL chính thức. |
 
-Listeners: `ContentStorageEventListener` (ảnh bài viết), `IdentityUploadEventListener` (ảnh avatar).
+Ảnh không được confirm nằm ở `temp/` của file-service và sẽ bị lifecycle rule của bucket dọn đi.
+
+Listeners: `ContentStorageEventListener` (ảnh bài viết), `IdentityStorageEventListener` (avatar).
 
 ---
 

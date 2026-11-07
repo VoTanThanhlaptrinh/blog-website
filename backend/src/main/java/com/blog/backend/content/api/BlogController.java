@@ -3,13 +3,10 @@ package com.blog.backend.content.api;
 import com.blog.backend.content.api.dto.*;
 import com.blog.backend.content.application.BlogService;
 import com.blog.backend.content.domain.enums.BlogStatus;
-import com.blog.backend.content.domain.event.BlogImagesActivatedEvent;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.notification.api.ApiResponse;
-import com.blog.backend.storage.api.dto.UpdateImagePrefixRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -26,7 +23,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BlogController {
     private final BlogService blogService;
-    private final ApplicationEventPublisher applicationEventPublisher;
 
     @PostMapping
     public ResponseEntity<ApiResponse<BlogResponse>> createBlog(@AuthenticationPrincipal User currentUser,
@@ -108,24 +104,5 @@ public class BlogController {
                                                         @AuthenticationPrincipal User currentUser) {
         blogService.deleteBlog(id, currentUser);
         return ResponseEntity.ok(new ApiResponse<>(null, "Xóa bài viết thành công", 200));
-    }
-
-    @PostMapping("/images/activate")
-    public ResponseEntity<ApiResponse<Void>> activateBlogImages(
-            @RequestBody @Valid UpdateImagePrefixRequest request,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(null,
-                    Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage(), 400));
-        }
-
-        try {
-            applicationEventPublisher.publishEvent(
-                    new BlogImagesActivatedEvent(this, request.getImageUrls(), "temp/", "blog/")
-            );
-            return ResponseEntity.ok(new ApiResponse<>(null, "Yêu cầu kích hoạt hình ảnh đã được gửi", 200));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(null, e.getMessage(), 400));
-        }
     }
 }

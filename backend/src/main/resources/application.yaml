@@ -20,18 +20,6 @@ spring:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:8080
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${GMAIL_USERNAME}
-    password: ${GMAIL_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-            required: true
   task:
     execution:
       pool:
@@ -45,27 +33,15 @@ identity:
   secret-key: ${SECRET_KEY}
   audience: my-frontend-app
 
-cloudflare:
-  r2:
-    account-id: ${CLOUDFLARE_R2_ACCOUNT_ID}
-    access-key: ${CLOUDFLARE_R2_ACCESS_KEY}
-    secret-key: ${CLOUDFLARE_R2_SECRET_KEY}
-    bucket: ${CLOUDFLARE_R2_BUCKET}
-    public-url: ${CLOUDFLARE_R2_PUBLIC_URL}
+# Shared file-service (upload, confirm, read) - see file-service/README.md.
+# Set FILE_SERVICE_URL / FILE_SERVICE_API_KEY in backend/.env (API_KEY_BLOG of file-service).
+file-service:
+  base-url: ${FILE_SERVICE_URL:http://localhost:4000}
+  api-key: ${FILE_SERVICE_API_KEY}
 
-app:
-  storage:
-    identity:
-      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
-      temp-folder-prefix: "identity/temp/"
-      region: "auto"
-      service: "s3"
-      algorithm: "AWS4-HMAC-SHA256"
-      max-file-size-bytes: 5242880
-    blog:
-      allowed-content-types: image/jpeg, image/png, image/webp, image/gif
-      temp-folder-prefix: "blog/temp/"
-      region: "auto"
-      service: "s3"
-      algorithm: "AWS4-HMAC-SHA256"
-      max-file-size-bytes: 5242880
+# Shared mail-service (plain-text email over REST) - see mail-service/docs/huong-dan-su-dung.md.
+# Set MAIL_SERVICE_URL / MAIL_SERVICE_API_KEY in backend/.env (an API key with scope mail:send created in mail-service).
+mail-service:
+  base-url: ${MAIL_SERVICE_URL:http://localhost:4000/api}
+  api-key: ${MAIL_SERVICE_API_KEY}
+  actor: blog-backend

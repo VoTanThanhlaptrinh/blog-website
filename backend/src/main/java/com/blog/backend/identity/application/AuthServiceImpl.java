@@ -320,21 +320,22 @@ public class AuthServiceImpl implements AuthService {
             return;
         }
 
+        // Ảnh vừa upload còn nằm trong temp/ của file-service: confirm trước khi lưu, nếu không sẽ bị dọn mất
+        String avatarUrl = newAvatarUrl;
+        if (newAvatarUrl.contains("/temp/")) {
+            ProfileImageConfirmEvent event = new ProfileImageConfirmEvent(this, newAvatarUrl);
+            publisher.publishEvent(event);
+            if (event.getPermanentUrl() != null) {
+                avatarUrl = event.getPermanentUrl();
+            }
+        }
+
         // Khởi tạo Image nếu chưa có
         if (user.getAvatar() == null) {
             user.setAvatar(new Image());
         }
-        user.getAvatar().setUrl(newAvatarUrl);
-
-        // Ép Hibernate lưu xuống DB ngay lập tức để sinh ID cho Image mới
-        userRepository.saveAndFlush(user);
-
-        // Phát sự kiện
-        ProfileImageConfirmEvent event = new ProfileImageConfirmEvent(
-                this,
-                user.getAvatar().getId(),
-                newAvatarUrl);
-        publisher.publishEvent(event);
+        user.getAvatar().setUrl(avatarUrl);
+        userRepository.save(user);
     }
 
     private UserProfileResponse mapToResponse(User user) {

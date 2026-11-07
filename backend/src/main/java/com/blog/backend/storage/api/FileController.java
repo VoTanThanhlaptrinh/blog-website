@@ -27,11 +27,8 @@ public class FileController {
                     , bindingResult.getAllErrors().get(0).getDefaultMessage(), 400));
         }
 
-        try {
-            UploadPostResponse response = storageService.generatePresignedUrl(uploadUrlRequest);
-            return ResponseEntity.ok(new ApiResponse<>(response, "Upload URL generated successfully", 200));
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body(new ApiResponse<>(null, e.getMessage(), 400));
-        }
+        // file-service errors surface as FileServiceException (400/500/503) via GlobalExceptionHandler
+        UploadPostResponse response = storageService.createUploadUrl(uploadUrlRequest);
+        return ResponseEntity.ok(new ApiResponse<>(response, "Upload URL generated successfully", 200));
     }
 }

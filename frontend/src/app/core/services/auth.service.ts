@@ -14,7 +14,6 @@ import {
   UserProfileResponse,
   VerifyOtpRequest,
 } from '../models/auth.model';
-import { UploadPostResponse, UploadUrlRequest } from '../models/file.model';
 
 import { environment } from '../../../environments/environment';
 import { error } from 'console';
@@ -112,13 +111,6 @@ export class AuthService {
         }
       })
     );
-  }
-
-  /**
-   * Lấy presigned URL upload avatar cá nhân
-   */
-  getAvatarUploadUrl(request: UploadUrlRequest): Observable<ApiResponse<UploadPostResponse>> {
-    return this.http.post<ApiResponse<UploadPostResponse>>(`${this.apiUrl}/profile/avatar/upload-url`, request);
   }
 
   /**
