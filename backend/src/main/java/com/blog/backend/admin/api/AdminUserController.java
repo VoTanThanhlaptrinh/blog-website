@@ -3,7 +3,7 @@ package com.blog.backend.admin.api;
 import com.blog.backend.admin.api.dto.AdminUserResponse;
 import com.blog.backend.admin.api.dto.UpdateUserRoleRequest;
 import com.blog.backend.admin.api.dto.UpdateUserStatusRequest;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminUserService;
 import com.blog.backend.content.api.dto.PageResponse;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.identity.domain.enums.UserStatus;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AdminUserController {
 
-    private final AdminService adminService;
+    private final AdminUserService adminService;
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<AdminUserResponse>>> getUsers(

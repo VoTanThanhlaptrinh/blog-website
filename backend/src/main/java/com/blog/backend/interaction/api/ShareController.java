@@ -3,7 +3,7 @@ package com.blog.backend.interaction.api;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.CreateShareRequest;
 import com.blog.backend.interaction.api.dto.ShareResponse;
-import com.blog.backend.interaction.application.ShareService;
+import com.blog.backend.interaction.application.itf.ShareService;
 import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

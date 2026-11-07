@@ -2,7 +2,7 @@ package com.blog.backend.admin.api;
 
 import com.blog.backend.admin.api.dto.CreateReportRequest;
 import com.blog.backend.admin.api.dto.ReportResponse;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminReportService;
 import com.blog.backend.notification.api.ApiResponse;
 import com.blog.backend.identity.domain.entity.User;
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ReportController {
 
-    private final AdminService adminService;
+    private final AdminReportService adminService;
 
     @PostMapping
     public ResponseEntity<ApiResponse<ReportResponse>> createReport(

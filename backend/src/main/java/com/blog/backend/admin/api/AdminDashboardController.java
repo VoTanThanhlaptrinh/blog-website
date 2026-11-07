@@ -2,7 +2,7 @@ package com.blog.backend.admin.api;
 
 import com.blog.backend.admin.api.dto.AdminDashboardSummaryResponse;
 import com.blog.backend.admin.api.dto.DailyGrowthResponse;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminDashboardService;
 import com.blog.backend.notification.api.ApiResponse;
 import com.blog.backend.content.api.dto.BlogResponse;
 import com.blog.backend.identity.domain.entity.User;
@@ -18,7 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminDashboardController {
 
-    private final AdminService adminService;
+    private final AdminDashboardService adminService;
 
     @GetMapping("/summary")
     public ResponseEntity<ApiResponse<AdminDashboardSummaryResponse>> getDashboardSummary(

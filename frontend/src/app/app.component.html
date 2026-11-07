@@ -1,11 +1,11 @@
 <app-top-progress-bar />
 <div class="flex min-h-screen flex-col bg-cream">
-  @if (!isAdminRoute) {
+  @if (!isAdminRoute && !isEditorRoute) {
   <app-header />
   }
 
   <router-outlet />
-  @if (!isAdminRoute) {
+  @if (!isAdminRoute && !isEditorRoute) {
   <app-footer />
   <app-mobile-navbar />
   }

@@ -16,7 +16,7 @@ public class MailNotificationListener {
     @Async
     @EventListener
     public void handleUserRegistrationEvent(UserRegistrationEvent event) {
-        String mailBody = String.format(StringHelper.mailBodyForActivingAccount(),event.getEmail(),event.getToken());
+        String mailBody = StringHelper.mailBodyForActivingAccount(event.getEmail(), event.getToken());
         mailSender.sendMail(event.getEmail(), "Kích hoạt tài khoản", mailBody);
     }
 }

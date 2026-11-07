@@ -5,7 +5,7 @@ import com.blog.backend.content.api.dto.PageResponse;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.BookmarkResponse;
 import com.blog.backend.interaction.api.dto.ToggleBookmarkRequest;
-import com.blog.backend.interaction.application.BookmarkService;
+import com.blog.backend.interaction.application.itf.BookmarkService;
 import com.blog.backend.notification.api.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

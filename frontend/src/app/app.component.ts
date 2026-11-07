@@ -17,6 +17,7 @@ import { filter } from 'rxjs';
 export class AppComponent {
   title = 'frontend';
   isAdminRoute = false;
+  isEditorRoute = false;
   private router = inject(Router);
 
   constructor() {
@@ -24,6 +25,7 @@ export class AppComponent {
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe((event: NavigationEnd) => {
       this.isAdminRoute = event.urlAfterRedirects.startsWith('/admin');
+      this.isEditorRoute = /^\/blog\/(creation|edit)(\/|\?|$)/.test(event.urlAfterRedirects);
     });
   }
 }

@@ -55,6 +55,8 @@ public class User implements UserDetails {
     private Boolean enabled = false;
     @Enumerated(EnumType.STRING)
     private UserStatus status;
+    @Builder.Default
+    private int warningCount = 0;
     @CreatedDate
     private LocalDateTime createdDate;
     @LastModifiedDate

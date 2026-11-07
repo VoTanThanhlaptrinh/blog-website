@@ -1,7 +1,7 @@
 package com.blog.backend.admin.api;
 
 import com.blog.backend.admin.api.dto.RejectBlogRequest;
-import com.blog.backend.admin.application.AdminService;
+import com.blog.backend.admin.application.AdminBlogService;
 import com.blog.backend.notification.api.ApiResponse;
 import com.blog.backend.content.api.dto.BlogResponse;
 import com.blog.backend.content.api.dto.PageResponse;
@@ -15,12 +15,25 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import com.blog.backend.admin.domain.event.AdminGetBlogEvent;
+import org.springframework.context.ApplicationEventPublisher;
+
 @RestController
 @RequestMapping("/api/v1/admin/blogs")
 @RequiredArgsConstructor
 public class AdminBlogController {
 
-    private final AdminService adminService;
+    private final AdminBlogService adminBlogService;
+    private final ApplicationEventPublisher eventPublisher;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<BlogResponse>> getBlogById(
+            @PathVariable Long id,
+            @AuthenticationPrincipal User adminUser) {
+        AdminGetBlogEvent event = new AdminGetBlogEvent(this, id, adminUser);
+        eventPublisher.publishEvent(event);
+        return ResponseEntity.ok(new ApiResponse<>(event.getResult(), "Lấy chi tiết bài viết thành công", 200));
+    }
 
     @GetMapping
     public ResponseEntity<ApiResponse<PageResponse<BlogResponse>>> getBlogsForModeration(
@@ -28,7 +41,7 @@ public class AdminBlogController {
             @RequestParam(required = false) String keyword,
             @PageableDefault(size = 10) Pageable pageable,
             @AuthenticationPrincipal User adminUser) {
-        PageResponse<BlogResponse> result = adminService.getBlogsForModeration(status, keyword, pageable, adminUser);
+        PageResponse<BlogResponse> result = adminBlogService.getBlogsForModeration(status, keyword, pageable, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(result, "Lấy danh sách bài viết duyệt thành công", 200));
     }
 
@@ -36,7 +49,7 @@ public class AdminBlogController {
     public ResponseEntity<ApiResponse<BlogResponse>> approveBlog(
             @PathVariable Long id,
             @AuthenticationPrincipal User adminUser) {
-        BlogResponse response = adminService.approveBlog(id, adminUser);
+        BlogResponse response = adminBlogService.approveBlog(id, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã phê duyệt bài viết", 200));
     }
 
@@ -45,7 +58,7 @@ public class AdminBlogController {
             @PathVariable Long id,
             @Valid @RequestBody RejectBlogRequest request,
             @AuthenticationPrincipal User adminUser) {
-        BlogResponse response = adminService.rejectBlog(id, request, adminUser);
+        BlogResponse response = adminBlogService.rejectBlog(id, request, adminUser);
         return ResponseEntity.ok(new ApiResponse<>(response, "Đã từ chối xuất bản bài viết", 200));
     }
 
@@ -54,7 +67,7 @@ public class AdminBlogController {
             @RequestParam(required = false) BlogStatus status,
             @RequestParam(required = false) String keyword,
             @AuthenticationPrincipal User adminUser) {
-        byte[] csvData = adminService.exportBlogsCsv(status, keyword, adminUser);
+        byte[] csvData = adminBlogService.exportBlogsCsv(status, keyword, adminUser);
         return ResponseEntity.ok()
                 .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=blogs_export.csv")
                 .contentType(org.springframework.http.MediaType.parseMediaType("text/csv"))

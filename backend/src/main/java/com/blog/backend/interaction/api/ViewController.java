@@ -3,7 +3,7 @@ package com.blog.backend.interaction.api;
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.RecordViewRequest;
 import com.blog.backend.interaction.api.dto.ViewResponse;
-import com.blog.backend.interaction.application.ViewService;
+import com.blog.backend.interaction.application.itf.ViewService;
 import com.blog.backend.notification.api.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;

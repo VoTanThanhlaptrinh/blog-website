@@ -14,14 +14,10 @@ public class ContentStorageEventListener {
 
     private final StorageService storageService;
 
+    /** Synchronous on purpose: errors propagate so the blog is not saved with links that will expire. */
     @EventListener
     public void handleBlogImagesActivatedEvent(BlogImagesActivatedEvent event) {
-        log.info("Received BlogImagesActivatedEvent for {} image URLs", event.getImageUrls() != null ? event.getImageUrls().size() : 0);
-        try {
-            storageService.updateImagePrefixes(event.getImageUrls(), event.getSourcePrefix(), event.getTargetPrefix());
-            log.info("Successfully processed BlogImagesActivatedEvent");
-        } catch (Exception e) {
-            log.error("Failed to process BlogImagesActivatedEvent: {}", e.getMessage(), e);
-        }
+        event.setConfirmedUrls(storageService.confirmTempUrls(event.getImageUrls()));
+        log.info("Confirmed {} blog image(s) with file-service", event.getConfirmedUrls().size());
     }
 }

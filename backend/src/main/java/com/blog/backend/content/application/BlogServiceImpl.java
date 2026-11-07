@@ -3,6 +3,7 @@ package com.blog.backend.content.application;
 import com.blog.backend.content.api.dto.*;
 import com.blog.backend.content.domain.entity.Blog;
 import com.blog.backend.content.domain.enums.BlogStatus;
+import com.blog.backend.content.domain.event.BlogImagesActivatedEvent;
 import com.blog.backend.content.domain.exception.BlogAlreadyDeletedException;
 import com.blog.backend.content.domain.exception.BlogNotFoundException;
 import com.blog.backend.content.domain.exception.UnauthorizedBlogAccessException;
@@ -14,6 +15,7 @@ import com.blog.backend.interaction.domain.enums.CommentStatus;
 import com.blog.backend.interaction.domain.repository.CommentRepository;
 import com.blog.backend.interaction.domain.repository.LikeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
@@ -23,17 +25,27 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class BlogServiceImpl implements BlogService {
 
+    /** URL of an image still in file-service's temp/ area (stops at markdown/HTML delimiters). */
+    private static final Pattern TEMP_IMAGE_URL =
+            Pattern.compile("https?://[^\\s()\"'<>\\[\\]]+/temp/public/blog/[^\\s()\"'<>\\[\\]]+");
+
     private final BlogRepository blogRepository;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
     private final CategoryRepository categoryRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -54,11 +66,13 @@ public class BlogServiceImpl implements BlogService {
             category = categoryRepository.findById(request.getCategoryId()).orElse(null);
         }
 
+        Map<String, String> confirmedUrls = confirmTempImages(request.getContent(), request.getThumbnailUrl());
+
         Blog blog = Blog.builder()
                 .title(request.getTitle())
                 .description(request.getDescription())
-                .content(request.getContent())
-                .thumbnailUrl(request.getThumbnailUrl())
+                .content(replaceUrls(request.getContent(), confirmedUrls))
+                .thumbnailUrl(replaceUrls(request.getThumbnailUrl(), confirmedUrls))
                 .status(targetStatus)
                 .user(currentUser)
                 .category(category)
@@ -172,8 +186,9 @@ public class BlogServiceImpl implements BlogService {
 
         if (request.getTitle() != null) blog.setTitle(request.getTitle());
         if (request.getDescription() != null) blog.setDescription(request.getDescription());
-        if (request.getContent() != null) blog.setContent(request.getContent());
-        if (request.getThumbnailUrl() != null) blog.setThumbnailUrl(request.getThumbnailUrl());
+        Map<String, String> confirmedUrls = confirmTempImages(request.getContent(), request.getThumbnailUrl());
+        if (request.getContent() != null) blog.setContent(replaceUrls(request.getContent(), confirmedUrls));
+        if (request.getThumbnailUrl() != null) blog.setThumbnailUrl(replaceUrls(request.getThumbnailUrl(), confirmedUrls));
         if (request.getStatus() != null) {
             BlogStatus targetStatus = request.getStatus();
             if (targetStatus == BlogStatus.PUBLISHED && !isAdmin(currentUser)) {
@@ -310,6 +325,43 @@ public class BlogServiceImpl implements BlogService {
         if (user == null || user.getAuthorities() == null) return false;
         return user.getAuthorities().stream()
                 .anyMatch(auth -> "ROLE_ADMIN".equals(auth.getAuthority()) || "ADMIN".equals(auth.getAuthority()));
+    }
+
+    /**
+     * Images uploaded from the editor point at file-service's temp/ area, which is cleared after a day.
+     * Asks the storage module to confirm them (also for drafts) and returns temp URL -> permanent URL.
+     */
+    private Map<String, String> confirmTempImages(String content, String thumbnailUrl) {
+        Set<String> tempUrls = new LinkedHashSet<>();
+        if (content != null) {
+            Matcher matcher = TEMP_IMAGE_URL.matcher(content);
+            while (matcher.find()) {
+                tempUrls.add(matcher.group());
+            }
+        }
+        if (thumbnailUrl != null && TEMP_IMAGE_URL.matcher(thumbnailUrl).matches()) {
+            tempUrls.add(thumbnailUrl);
+        }
+        if (tempUrls.isEmpty()) {
+            return Map.of();
+        }
+
+        BlogImagesActivatedEvent event = new BlogImagesActivatedEvent(this, List.copyOf(tempUrls));
+        eventPublisher.publishEvent(event);
+        return event.getConfirmedUrls();
+    }
+
+    private static String replaceUrls(String text, Map<String, String> replacements) {
+        if (text == null || replacements.isEmpty()) {
+            return text;
+        }
+        String result = text;
+        for (Map.Entry<String, String> entry : replacements.entrySet()) {
+            if (entry.getValue() != null) {
+                result = result.replace(entry.getKey(), entry.getValue());
+            }
+        }
+        return result;
     }
 
     private BlogResponse mapToResponse(Blog blog, User currentUser) {

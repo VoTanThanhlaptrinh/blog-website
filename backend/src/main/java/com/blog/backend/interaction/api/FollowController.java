@@ -2,7 +2,7 @@ package com.blog.backend.interaction.api;
 
 import com.blog.backend.identity.domain.entity.User;
 import com.blog.backend.interaction.api.dto.FollowStatusResponse;
-import com.blog.backend.interaction.application.FollowService;
+import com.blog.backend.interaction.application.itf.FollowService;
 import com.blog.backend.notification.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

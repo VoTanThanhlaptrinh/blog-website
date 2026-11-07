@@ -23,6 +23,21 @@ export class AdminBlogService {
   private readonly errorSubject = new BehaviorSubject<string | null>(null);
   readonly error$ = this.errorSubject.asObservable();
 
+  getBlogById(id: number | string): Observable<BlogResponse> {
+    this.loadingSubject.next(true);
+    this.errorSubject.next(null);
+    return this.http.get<ApiResponse<BlogResponse>>(`${this.apiUrl}/${id}`).pipe(
+      map(res => res.data),
+      tap(() => this.loadingSubject.next(false)),
+      catchError(err => {
+        const errorMessage = err?.error?.message || 'Không thể lấy thông tin bài viết';
+        this.errorSubject.next(errorMessage);
+        this.loadingSubject.next(false);
+        return throwError(() => err);
+      })
+    );
+  }
+
   getBlogsForModeration(params: AdminBlogQueryParams = {}): Observable<PageResponse<BlogResponse>> {
     this.loadingSubject.next(true);
     this.errorSubject.next(null);

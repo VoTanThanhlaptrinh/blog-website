@@ -192,19 +192,6 @@ export class BlogService {
   }
 
   /**
-   * Activate temp blog images (move from temp/ to blog/ storage prefix)
-   */
-  activateBlogImages(imageUrls: string[]): Observable<void> {
-    return this.http.post<ApiResponse<void>>(`${this.apiUrl}/images/activate`, { imageUrls }).pipe(
-      map((res) => res.data),
-      catchError((err) => {
-        const errorMessage = err?.error?.message || 'Không thể kích hoạt hình ảnh bài viết';
-        return throwError(() => new Error(errorMessage));
-      })
-    );
-  }
-
-  /**
    * Fetch statistics for home page hero section
    */
   /**

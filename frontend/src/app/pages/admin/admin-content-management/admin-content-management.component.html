@@ -123,10 +123,11 @@
                             <tr *ngFor="let blog of blogs" class="hover:bg-stone-50 transition-colors group">
                                 <td class="px-6 py-4 max-w-[200px] md:max-w-[250px] lg:max-w-[300px]">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-body-md font-bold text-text-ink leading-tight line-clamp-2"
+                                        <a [routerLink]="['/admin/articles/review', blog.id]"
+                                            class="text-body-md font-bold text-text-ink hover:text-accent-rust hover:underline cursor-pointer leading-tight line-clamp-2 transition-colors"
                                             [title]="blog.title">
                                             {{ blog.title }}
-                                        </span>
+                                        </a>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
@@ -183,6 +184,14 @@
                                         <!-- Dropdown Menu -->
                                         <div *ngIf="activeDropdownBlogId === blog.id"
                                             class="absolute right-0 mt-1 w-44 bg-pure-white border border-text-ink/10 rounded-lg shadow-lg z-50 py-1 font-body-md text-sm text-left">
+
+                                            <!-- Review Action -->
+                                            <a [routerLink]="['/admin/articles/review', blog.id]"
+                                                (click)="closeDropdown()"
+                                                class="w-full px-4 py-2 text-text-ink hover:bg-stone-100 flex items-center gap-2 font-bold transition-colors block">
+                                                <span class="material-symbols-outlined text-sm">visibility</span>
+                                                Xem chi tiết
+                                            </a>
 
                                             <!-- Approve Action -->
                                             <button *ngIf="blog.status === BlogStatus.PENDING"
